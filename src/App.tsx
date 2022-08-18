@@ -1,25 +1,42 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { ThemeProvider } from "styled-components";
+import theme from "utils/theme";
+import "./App.css";
+import { useState } from "react";
+import { AppContextProvider } from "contexts/auth";
+import Routes from "routes";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { AxiosError } from "axios";
 
 function App() {
+  const [authValues, setAuthValues] = useState({
+    token: "",
+    id_empresa: null,
+    signed: false,
+  });
+
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: (_, error) => {
+          const err = error as AxiosError;
+          const status = err?.response?.status;
+          if (!status || [401, 403, 404].includes(status)) {
+            return false;
+          }
+          return true;
+        },
+      },
+    },
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <AppContextProvider value={{ authValues, setAuthValues }}>
+        <ThemeProvider theme={theme}>
+          <Routes />
+        </ThemeProvider>
+      </AppContextProvider>
+    </QueryClientProvider>
   );
 }
 
