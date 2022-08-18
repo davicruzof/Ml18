@@ -22,7 +22,8 @@ export const login = async (credentials: LoginData): Promise<LoginResponse> => {
     const { data } = await api.post("/auth/login", credentials);
     return data;
   } catch (err) {
-    const { error } = (err as AxiosError<any, any>)?.response?.data;
-    throw new Error(error);
+    // const { error } = (err as AxiosError<any, any>)?.response?.data;
+    console.log(error)
+    throw new Error('');
   }
 };
