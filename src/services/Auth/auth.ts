@@ -23,7 +23,7 @@ export const login = async (credentials: LoginData): Promise<LoginResponse> => {
     return data;
   } catch (err) {
     // const { error } = (err as AxiosError<any, any>)?.response?.data;
-    console.log(error)
+    console.log(err)
     throw new Error('');
   }
 };
