@@ -40,9 +40,7 @@ const LoginScreen = () => {
     mutationFn: (formData: LoginData) => login(formData),
     onSuccess: ({ token, error }: LoginResponse) => {
       if (error) {
-        setSnackStatus(true);
-        setSnackType("error");
-        setSnackMessage(error);
+        console.log(error);
       } else {
         setAuthValues({
           id_empresa: 1,

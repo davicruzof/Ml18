@@ -30,12 +30,15 @@ function Routes() {
     <BrowserRouter>
       {/* {width * 2 < 1200 && authValues.signed && <SwipeableTemporaryDrawer />} */}
 
-      <div style={{ display: "flex", flexDirection: "row" }}>
+        {authValues.signed || storage ? 
+        
+      (<div style={{ display: "flex", flexDirection: "row" }}>
         {authValues.signed && <Sider />}
-        <div style={{ padding: 20 }}>
-          {authValues.signed || storage ? <UserRoutes /> : <AuthRoutes />}
-        </div>
+      <div style={{ padding: 20 }}>
+        {authValues.signed || storage ? <UserRoutes /> : <AuthRoutes />}
       </div>
+      </div>)
+        : <AuthRoutes />}
     </BrowserRouter>
   );
 }
