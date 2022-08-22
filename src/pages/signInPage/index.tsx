@@ -17,13 +17,14 @@ import { useNavigate } from "react-router-dom";
 import api from "services/api";
 import { useMutation } from "react-query";
 import { LoginResponse } from "services/Auth/types";
+import { trim_cpf_cnpj } from "utils/format";
 
 const LoginScreen = () => {
   const navigation = useNavigate();
   const {
     control,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm<LoginData>({
     resolver: yupResolver(schemaValidation),
   });
@@ -71,7 +72,8 @@ const LoginScreen = () => {
   });
 
   const handleSendFormLogin = (formData: LoginData) => {
-    if (isValid || Boolean(errors)) {
+    if (Boolean(errors)) {
+      formData.cpf = trim_cpf_cnpj(formData.cpf);
       signIn(formData);
     } else {
       setSnackStatus(true);

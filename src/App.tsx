@@ -1,4 +1,9 @@
 import { ThemeProvider } from "styled-components";
+import {
+  createTheme,
+  ThemeProvider as MUIProvider,
+} from "@mui/material/styles";
+import { ptBR } from "@mui/x-data-grid";
 import theme from "utils/theme";
 import "./App.css";
 import { useState } from "react";
@@ -29,13 +34,17 @@ function App() {
     },
   });
 
+  const themeMUI = createTheme({}, ptBR);
+
   return (
     <QueryClientProvider client={queryClient}>
-      <AppContextProvider value={{ authValues, setAuthValues }}>
-        <ThemeProvider theme={theme}>
-          <Routes />
-        </ThemeProvider>
-      </AppContextProvider>
+      <MUIProvider theme={themeMUI}>
+        <AppContextProvider value={{ authValues, setAuthValues }}>
+          <ThemeProvider theme={theme}>
+            <Routes />
+          </ThemeProvider>
+        </AppContextProvider>
+      </MUIProvider>
     </QueryClientProvider>
   );
 }

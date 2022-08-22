@@ -13,8 +13,6 @@ function Routes() {
 
   const storage = localStorage.getItem("logado");
 
-  console.log(storage);
-
   useEffect(() => {
     (() => {
       if (storage) {
@@ -30,15 +28,16 @@ function Routes() {
     <BrowserRouter>
       {/* {width * 2 < 1200 && authValues.signed && <SwipeableTemporaryDrawer />} */}
 
-        {authValues.signed || storage ? 
-        
-      (<div style={{ display: "flex", flexDirection: "row" }}>
-        {authValues.signed && <Sider />}
-      <div style={{ padding: 20 }}>
-        {authValues.signed || storage ? <UserRoutes /> : <AuthRoutes />}
-      </div>
-      </div>)
-        : <AuthRoutes />}
+      {authValues.signed || storage ? (
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          {authValues.signed && <Sider />}
+          <div style={{ padding: 20, flex: 1 }}>
+            {authValues.signed || storage ? <UserRoutes /> : <AuthRoutes />}
+          </div>
+        </div>
+      ) : (
+        <AuthRoutes />
+      )}
     </BrowserRouter>
   );
 }

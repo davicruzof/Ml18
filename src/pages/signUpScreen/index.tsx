@@ -17,7 +17,7 @@ import { RegisterProps } from "services/User/types";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ButtonComponent from "components/Buttons/Button";
 import InputPassword from "components/InputControl/inputPassword";
-import { formatData } from "utils/format";
+import { formatData, trim_cpf_cnpj } from "utils/format";
 
 export default function SignupScreen() {
   const navigation = useNavigate();
@@ -31,7 +31,7 @@ export default function SignupScreen() {
   const {
     control,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm<RegisterProps>({
     resolver: yupResolver(schemaValidation),
   });
@@ -42,7 +42,9 @@ export default function SignupScreen() {
       setSnackStatus(true);
       setSnackType("success");
       setSnackMessage("Cadastrado com sucesso!");
-      navigation("/", { replace: true });
+      setTimeout(() => {
+        navigation("/", { replace: true });
+      }, 3000);
     },
     onError: () => {
       setSnackStatus(true);
@@ -53,7 +55,8 @@ export default function SignupScreen() {
 
   const handleSendFormRegister = async (formData: RegisterProps) => {
     formData.dt_nascimento = formatData(new Date(formData.dt_nascimento));
-    if (isValid && check) {
+    formData.cpf = trim_cpf_cnpj(formData.cpf);
+    if (check) {
       registerUser(formData);
     } else {
       if (!check) {

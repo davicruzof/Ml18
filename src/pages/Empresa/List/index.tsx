@@ -1,122 +1,110 @@
-// import { Chip, IconButton, Pagination } from "@mui/material";
-// import { useEffect, useState } from "react";
-// import Sider from "components/Sider";
-// import {
-//   getEnterpriseByName,
-//   getEnterprises,
-// } from "@services/Enterprises/enterprises";
-// import * as S from "./styles";
-// import EditIcon from "@mui/icons-material/Edit";
-// import { Input } from "components/TextInput";
-// import { width } from "@utils/constants";
-// import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getEnterprises } from "services/Enterprises/enterprises";
+import * as S from "./styles";
+import { useNavigate } from "react-router-dom";
+import { EnterPriseType } from "./types";
+import ButtonComponent from "components/Buttons/Button";
+import { DataGrid } from "@mui/x-data-grid";
+import { useQuery } from "react-query";
+import Loading from "components/Loading/Loading";
+import { Chip, IconButton } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
 
-// export default function ListEnterprise() {
-//   const navigation = useNavigate();
-//   const [rows, setRows] = useState([]);
-//   const [page, setPag] = useState("1");
-//   const [enterpriseName, setEnterpriseName] = useState("");
-//   const size = 5;
+export default function ListEnterprise() {
+  const navigation = useNavigate();
+  const [rows, setRows] = useState<EnterPriseType[]>([]);
+  const [pageSize, setPageSize] = useState<number>(5);
 
-//   useEffect(() => {
-//     setFullEnterprises();
-//   }, []);
+  const { data: dataEnterprises, isLoading } = useQuery("getEnterprises", {
+    queryFn: () => getEnterprises(),
+    enabled: true,
+    keepPreviousData: false,
+  });
 
-//   useEffect(() => {
-//     (async () => {
-//       if (enterpriseName.length > 0) {
-//         const response = await getEnterpriseByName({
-//           nomeempresarial: enterpriseName,
-//         });
-//         setRows(response.data);
-//       } else {
-//         setFullEnterprises();
-//       }
-//     })();
-//   }, [enterpriseName]);
+  const handleEditClick = (id: number) => {
+    console.log(id);
+  };
 
-//   const setFullEnterprises = async () => {
-//     const response = await getEnterprises();
-//     setRows(response.data);
-//   };
+  const VISIBLE_FIELDS = [
+    { field: "nomeempresarial", headerName: "Empresa", width: 350 },
+    { field: "cnpj", headerName: "CNPJ", width: 200 },
+    {
+      field: "status",
+      type: "actions",
+      headerName: "Status",
+      width: 200,
+      cellClassName: "actions",
+      getActions: (data: any) => {
+        return [
+          <Chip
+            label={data.row.status ? "Ativo" : "Desativado"}
+            color={data.row.status ? "success" : "error"}
+          />,
+        ];
+      },
+    },
+    {
+      field: "actions",
+      type: "actions",
+      headerName: "Actions",
+      width: 100,
+      cellClassName: "actions",
+      getActions: ({ id, ...rest }: any) => {
+        return [
+          <IconButton
+            color="primary"
+            aria-label="upload picture"
+            component="label"
+            onClick={() => handleEditClick(id)}
+          >
+            <EditIcon />
+          </IconButton>,
+        ];
+      },
+    },
+  ];
 
-//   const handleChange = (
-//     event: React.MouseEvent<HTMLElement>,
-//     newAlignment: string
-//   ) => {
-//     setPag(newAlignment);
-//   };
+  useEffect(() => {
+    if (dataEnterprises?.data) {
+      let data: EnterPriseType[] = [];
+      dataEnterprises.data.map((item: any) =>
+        data.push({
+          id: item.id_empresa,
+          ...item,
+        })
+      );
+      setRows(data);
+    }
+  }, [dataEnterprises]);
 
-//   const editEnterprise = (id) => {
-//     navigation("/Empresa/edit?id=" + id, { replace: true });
-//   };
+  if (isLoading) {
+    return <Loading />;
+  }
 
-//   return (
-//     <S.Container>
-//       <Sider />
-//       <S.Wrapper>
-//         <Input
-//           type="search"
-//           label="Pesquise uma empresa pelo nome"
-//           value={enterpriseName}
-//           variant="outlined"
-//           onChange={(e) => setEnterpriseName(e.target.value)}
-//         />
+  return (
+    <S.Container>
+      <S.Wrapper>
+        <ButtonComponent
+          onClick={() => {}}
+          loading={false}
+          title="+ Adicionar nova empresa"
+          active={false}
+        />
+      </S.Wrapper>
 
-//         <S.TableTitle>
-//           <S.ID>ID</S.ID>
-//           <S.RAZAO>Razão social</S.RAZAO>
-//           {width * 2 >= 1200 && (
-//             <>
-//               <S.CNPJ>CNPJ</S.CNPJ>
-//               <S.SITUACAO>Situação Cadastral</S.SITUACAO>
-//             </>
-//           )}
-
-//           <S.ACTION>Action</S.ACTION>
-//         </S.TableTitle>
-
-//         {rows.map(
-//           (val, index) =>
-//             index <= size * +page &&
-//             index >= (page === "1" ? 0 : +page * size - 4) && (
-//               <S.TableItem key={index}>
-//                 <S.ID>{val.id_empresa}</S.ID>
-//                 <S.RAZAO>{val.nomeempresarial}</S.RAZAO>
-//                 {width * 2 >= 1200 && (
-//                   <>
-//                     <S.CNPJ>{val.cnpj}</S.CNPJ>
-//                     <S.SITUACAO>
-//                       <Chip label="ativa" color="success" />
-//                     </S.SITUACAO>
-//                   </>
-//                 )}
-//                 <S.ACTION>
-//                   <IconButton onClick={() => editEnterprise(val.id_empresa)}>
-//                     <EditIcon />
-//                   </IconButton>
-//                 </S.ACTION>
-//               </S.TableItem>
-//             )
-//         )}
-
-//         <S.WrapperPagination>
-//           <Pagination
-//             count={Math.ceil(rows.length / size)}
-//             color="primary"
-//             shape="rounded"
-//             onChange={(e) => handleChange(e, e.target.textContent)}
-//             variant="outlined"
-//             hideNextButton
-//             hidePrevButton
-//           />
-//         </S.WrapperPagination>
-//       </S.Wrapper>
-//     </S.Container>
-//   );
-// }
-import React from "react";
-
-export default function index() {
-  return <div>index</div>;
+      {rows && !isLoading && (
+        <div style={{ height: 400, width: "100%" }}>
+          <DataGrid
+            columns={VISIBLE_FIELDS}
+            rows={rows}
+            pageSize={pageSize}
+            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+            rowsPerPageOptions={[5, 10, 20, 50, 100]}
+            pagination
+            disableSelectionOnClick
+          />
+        </div>
+      )}
+    </S.Container>
+  );
 }

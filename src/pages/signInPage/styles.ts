@@ -32,6 +32,8 @@ export const Form = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  flex: 1;
+  width: 100%;
   padding: ${(props) => props.theme.spacing.xxlarge}px
     ${(props) => `${props.theme.spacing.xxsmall}%`};
 
