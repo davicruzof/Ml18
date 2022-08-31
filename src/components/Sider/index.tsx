@@ -1,7 +1,5 @@
-import SiderFather from "./SiderFather/SiderFather";
 import * as S from "./styles";
 
-import SiderItem from "../SiderItem";
 import { Itens } from "./util";
 import { Button } from "@mui/material";
 import { useContext } from "react";
@@ -20,6 +18,10 @@ export default function Sider() {
     window.location.reload();
   };
 
+  const handleClick = (route: string) => {
+    navigate(`/${route}/List`, { replace: true });
+  };
+
   return (
     <S.Container>
       <div
@@ -36,24 +38,16 @@ export default function Sider() {
         />
       </div>
 
-      <SiderFather item="Empresa">
-        <SiderItem itens={Itens.Empresa} modulo="Empresa" />
-      </SiderFather>
-      <SiderFather item="Funcionários">
-        <SiderItem itens={Itens.Funcionario} modulo="Funcionario" />
-      </SiderFather>
-      <SiderFather item="Empresa">
-        <SiderItem itens={Itens.Empresa} modulo="Empresa" />
-      </SiderFather>
-      <SiderFather item="Funcionários">
-        <SiderItem itens={Itens.Funcionario} modulo="Funcionario" />
-      </SiderFather>
-      <SiderFather item="Empresa">
-        <SiderItem itens={Itens.Empresa} modulo="Empresa" />
-      </SiderFather>
-      <SiderFather item="Funcionários">
-        <SiderItem itens={Itens.Funcionario} modulo="Funcionario" />
-      </SiderFather>
+      {Itens.map((item, index) => (
+        <Button
+          key={index}
+          sx={{ m: 2, mt: 1, border: "1px solid #435BC2" }}
+          variant="text"
+          onClick={() => handleClick(item)}
+        >
+          {item}
+        </Button>
+      ))}
       <Button variant="outlined" color="error" sx={{ m: 2 }} onClick={logout}>
         Sair
         <Logout sx={{ pl: 1, fontSize: "1rem" }} />

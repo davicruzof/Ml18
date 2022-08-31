@@ -22,7 +22,8 @@ export default function ListEnterprise() {
   });
 
   const handleEditClick = (id: number) => {
-    console.log(id);
+    // console.log(id);
+    navigation(`/Empresa/Edit?id=${id}`, { replace: true });
   };
 
   const VISIBLE_FIELDS = [
@@ -85,7 +86,7 @@ export default function ListEnterprise() {
     <S.Container>
       <S.Wrapper>
         <ButtonComponent
-          onClick={() => {}}
+          onClick={() => navigation("/Empresa/New", { replace: true })}
           loading={false}
           title="+ Adicionar nova empresa"
           active={false}
