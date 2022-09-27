@@ -11,10 +11,12 @@ export default function SelectComponent({
   handleChange,
   value,
   label,
+  disable = false,
 }: {
   itens: Array<string>;
   value: string;
   label: string;
+  disable?: boolean;
   handleChange: (event: SelectChangeEvent<any>) => void;
 }) {
   return (
@@ -24,6 +26,7 @@ export default function SelectComponent({
         labelId="simple-select-label"
         id="simple-select"
         value={value}
+        disabled={disable}
         label={label}
         onChange={handleChange}
       >

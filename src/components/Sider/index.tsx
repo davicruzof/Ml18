@@ -19,6 +19,7 @@ export default function Sider() {
   };
 
   const handleClick = (route: string) => {
+    console.log(route);
     navigate(`/${route}/List`, { replace: true });
   };
 
@@ -43,7 +44,9 @@ export default function Sider() {
           key={index}
           sx={{ m: 2, mt: 1, border: "1px solid #435BC2" }}
           variant="text"
-          onClick={() => handleClick(item)}
+          onClick={() =>
+            handleClick(item.replaceAll("õ", "o").replaceAll("ç", "c"))
+          }
         >
           {item}
         </Button>

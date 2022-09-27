@@ -1,1 +1,1 @@
-export const Itens = ["Empresa", "Funcionario", "Eventos"];
+export const Itens = ["Empresa", "Funcionario", "Eventos", "Solicitações"];
