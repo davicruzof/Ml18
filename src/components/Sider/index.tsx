@@ -19,7 +19,6 @@ export default function Sider() {
   };
 
   const handleClick = (route: string) => {
-    console.log(route);
     navigate(`/${route}/List`, { replace: true });
   };
 

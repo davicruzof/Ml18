@@ -22,7 +22,6 @@ export default function ListEnterprise() {
   });
 
   const handleEditClick = (id: number) => {
-    // console.log(id);
     navigation(`/Empresa/Edit?id=${id}`, { replace: true });
   };
 

@@ -54,8 +54,6 @@ export default function Create_Edit() {
     {
       mutationFn: (idEnterprise: number) => getEnterpriseById(idEnterprise),
       onSuccess: ({ data }) => {
-        console.log(data);
-
         setUf(data.uf);
         setCep(data.cep);
         setNomeEmpresarial(data.nomeempresarial);

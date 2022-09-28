@@ -50,7 +50,6 @@ export default function Create() {
       enabled: true,
       keepPreviousData: false,
       onSuccess: (data: DptTypes[]) => {
-        console.log(data);
         data.length > 0 && setDepartamentos(data);
       },
       onError: () => {
@@ -67,7 +66,6 @@ export default function Create() {
   } = useMutation({
     mutationFn: (formData: string) => getTypeSolicitations(formData),
     onSuccess: (data: TypeSolicitations[]) => {
-      console.log(data);
       if (data.length > 0) {
         setTiposSolicitacao(data);
       } else {

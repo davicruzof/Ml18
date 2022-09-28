@@ -3,6 +3,7 @@ import ListEnterprise from "pages/Empresa/List";
 import Solicitacoes from "pages/Solicitacoes/Create";
 import Home from "pages/Home/index";
 import { Routes, Route } from "react-router-dom";
+import DptRequest from "pages/Solicitacoes/DptRequest";
 
 function UserRoutes() {
   return (
@@ -14,7 +15,7 @@ function UserRoutes() {
         <Route path="Edit" element={<Enterprise />} />
       </Route>
       <Route path="Solicitacoes/">
-        <Route path="List" element={<Solicitacoes />} />
+        <Route path="List" element={<DptRequest />} />
         <Route path="New" element={<Solicitacoes />} />
         {/* <Route path="Edit" element={<Enterprise />} /> */}
       </Route>
