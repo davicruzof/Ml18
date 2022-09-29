@@ -11,6 +11,7 @@ import { useQuery } from "react-query";
 import { getDepartments } from "@services/Solicitacoes";
 import { handleChecked, handleCheckedToggle, intersection, not } from "./utils";
 import DptButton from "./button";
+import Loading from "components/Loading/Loading";
 
 export default function DptRequest() {
   const [departamentosLeft, setDepartamentosLeft] = useState<DptTypes[]>([]);
@@ -85,7 +86,11 @@ export default function DptRequest() {
     setChecked(not(checked, rightChecked));
   };
 
-  const listLeftItens = (items: DptTypes[]) => (
+  const listItens = (
+    items: DptTypes[],
+    checked: readonly string[],
+    handleToggle: (value: string) => () => void
+  ) => (
     <Paper sx={{ width: 200, height: 230, overflow: "auto" }}>
       <List dense component="div" role="list">
         {items.map((value: DptTypes) => {
@@ -96,39 +101,7 @@ export default function DptRequest() {
               key={value.id_area}
               role="listitem"
               button
-              onClick={handleToggleLeft(value.area)}
-            >
-              <ListItemIcon>
-                <Checkbox
-                  checked={checkedLeft.indexOf(value.area) !== -1}
-                  tabIndex={-1}
-                  disableRipple
-                  inputProps={{
-                    "aria-labelledby": labelId,
-                  }}
-                />
-              </ListItemIcon>
-              <ListItemText id={labelId} primary={`${value.area}`} />
-            </ListItem>
-          );
-        })}
-        <ListItem />
-      </List>
-    </Paper>
-  );
-
-  const listRightItens = (items: DptTypes[]) => (
-    <Paper sx={{ width: 200, height: 230, overflow: "auto" }}>
-      <List dense component="div" role="list">
-        {items.map((value: DptTypes) => {
-          const labelId = `transfer-list-item-${value.area}-label`;
-
-          return (
-            <ListItem
-              key={value.id_area}
-              role="listitem"
-              button
-              onClick={handleToggleRight(value.area)}
+              onClick={handleToggle(value.area)}
             >
               <ListItemIcon>
                 <Checkbox
@@ -153,9 +126,15 @@ export default function DptRequest() {
     refetchDpts();
   }, []);
 
+  if (isLoadingDepartamentos) {
+    return <Loading />;
+  }
+
   return (
     <Grid container spacing={2} justifyContent="center" alignItems="center">
-      <Grid item>{listLeftItens(departamentosLeft)}</Grid>
+      <Grid item>
+        {listItens(departamentosLeft, checkedLeft, handleToggleLeft)}
+      </Grid>
       <Grid item>
         <Grid container direction="column" alignItems="center">
           <DptButton
@@ -180,7 +159,9 @@ export default function DptRequest() {
           />
         </Grid>
       </Grid>
-      <Grid item>{listRightItens(departamentosRight)}</Grid>
+      <Grid item>
+        {listItens(departamentosRight, checked, handleToggleRight)}
+      </Grid>
     </Grid>
   );
 }

@@ -12,3 +12,13 @@ export const login = async (credentials: LoginData): Promise<LoginResponse> => {
     throw new Error(error);
   }
 };
+
+export const user = async () => {
+  try {
+    const { data } = await api.get("/auth/me");
+    return data;
+  } catch (err) {
+    const { error } = (err as AxiosError<any, any>)?.response?.data;
+    throw new Error(error);
+  }
+};
