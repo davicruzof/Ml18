@@ -1,11 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Grid from "@mui/material/Grid";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Checkbox from "@mui/material/Checkbox";
-import Paper from "@mui/material/Paper";
 import { DptTypes } from "@services/Solicitacoes/types";
 import { useMutation, useQuery } from "react-query";
 import { getDepartments } from "@services/Solicitacoes";
@@ -17,7 +16,7 @@ import {
   getEmployeeById,
   updateEmployeeAreas,
 } from "@services/Employee/employee";
-import { EmployeeAreasType, EmployeeByIdType } from "@services/Employee/types";
+import { EmployeeAreasType } from "@services/Employee/types";
 import * as S from "./style";
 import Button from "components/Buttons/Button";
 
