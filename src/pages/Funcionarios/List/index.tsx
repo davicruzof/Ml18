@@ -8,8 +8,8 @@ import { useQuery } from "react-query";
 import Loading from "components/Loading/Loading";
 import { IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import { getAllEmployee } from "@services/Employee/employee";
-import { EmployeeType } from "@services/Employee/types";
+import { getAllEmployee } from "services/Employee/employee";
+import { EmployeeType } from "services/Employee/types";
 
 const List: React.FC = () => {
   const { data: Employees, isLoading: isLoadingEmployee } = useQuery(
