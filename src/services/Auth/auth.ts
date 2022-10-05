@@ -13,7 +13,7 @@ export const login = async (credentials: LoginData): Promise<LoginResponse> => {
   }
 };
 
-export const user = async () => {
+export const getMe = async () => {
   try {
     const { data } = await api.get("/auth/me");
     return data;

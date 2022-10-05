@@ -73,17 +73,8 @@ const List: React.FC = () => {
 
   return (
     <S.Container>
-      <S.Wrapper>
-        <ButtonComponent
-          onClick={() => navigation("/Empresa/New", { replace: true })}
-          loading={false}
-          title="+ Adicionar nova empresa"
-          active={false}
-        />
-      </S.Wrapper>
-
       {rows && !isLoadingEmployee && (
-        <div style={{ height: 650, width: "100%" }}>
+        <div style={{ width: "100%", height: 665 }}>
           <DataGrid
             columns={VISIBLE_FIELDS}
             rows={rows}
