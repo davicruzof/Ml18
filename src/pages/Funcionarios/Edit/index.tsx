@@ -11,7 +11,7 @@ import { getDepartments } from "services/Solicitacoes";
 import { handleChecked, handleCheckedToggle, intersection, not } from "./utils";
 import DptButton from "./button";
 import Loading from "components/Loading/Loading";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   getEmployeeById,
   updateEmployeeAreas,
@@ -19,9 +19,11 @@ import {
 import { EmployeeAreasType } from "services/Employee/types";
 import * as S from "./style";
 import Button from "components/Buttons/Button";
+import Snack from "components/Snack";
 
 export default function EditEmployee() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [departamentosLeft, setDepartamentosLeft] = useState<DptTypes[]>([]);
   const [departamentosRight, setDepartamentosRight] = useState<DptTypes[]>([]);
   const [departamentosListLeft, setDepartamentosListLeft] = useState<string[]>(
@@ -36,6 +38,10 @@ export default function EditEmployee() {
   const leftChecked = intersection(checkedLeft, departamentosListLeft);
   const rightChecked = intersection(checked, departamentosListRight);
 
+  const [snackMessage, setSnackMessage] = useState("");
+  const [snackStatus, setSnackStatus] = useState(false);
+  const [snackType, setSnackType] = useState<"error" | "success">("success");
+
   const {
     mutate: getEmployeeByIdFunc,
     isLoading: isLoadingEmployeeById,
@@ -48,8 +54,13 @@ export default function EditEmployee() {
     useMutation({
       mutationFn: (formData: EmployeeAreasType) =>
         updateEmployeeAreas(formData),
-      onSuccess: (data) => {
-        console.log(data);
+      onSuccess: () => {
+        setSnackStatus(true);
+        setSnackType("success");
+        setSnackMessage("Departamentos vinculados com sucesso!");
+        setTimeout(() => {
+          navigate("/Funcionario/List", { replace: true });
+        }, 3000);
       },
     });
 
@@ -260,6 +271,12 @@ export default function EditEmployee() {
           active={departamentosRight.length === 0}
         />
       </S.WrapperContent>
+      <Snack
+        handleClose={() => setSnackStatus(false)}
+        message={snackMessage}
+        open={snackStatus}
+        type={snackType}
+      />
     </S.Container>
   );
 }

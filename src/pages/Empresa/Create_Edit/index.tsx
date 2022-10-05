@@ -14,7 +14,7 @@ import Snack from "components/Snack";
 import cep from "cep-promise";
 import { ValueType } from "./types";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import {
   createEnterprise,
   getEnterpriseById,
