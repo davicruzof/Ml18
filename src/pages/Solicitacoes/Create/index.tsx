@@ -22,7 +22,7 @@ import {
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import Loading from "components/Loading/Loading";
 
-export default function Create() {
+export default function Edit() {
   const [departamentos, setDepartamentos] = useState<DptTypes[]>([]);
   const [departamento, setDepartamento] = useState("");
   const [tiposSolicitacao, setTiposSolicitacao] = useState<TypeSolicitations[]>(

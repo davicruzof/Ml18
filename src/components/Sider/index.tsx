@@ -4,12 +4,13 @@ import { Itens } from "./util";
 import { Button } from "@mui/material";
 import { useContext } from "react";
 import { AuthContext } from "../../contexts/auth";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Logout } from "@mui/icons-material";
 
 export default function Sider() {
   const { setAuthValues } = useContext(AuthContext);
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   const logout = () => {
     localStorage.clear();
@@ -39,16 +40,17 @@ export default function Sider() {
       </div>
 
       {Itens.map((item, index) => (
-        <Button
+        <S.ActionButton
+          active={pathname.includes(
+            item.replaceAll("õ", "o").replaceAll("ç", "c")
+          )}
           key={index}
-          sx={{ m: 2, mt: 1, border: "1px solid #435BC2" }}
-          variant="text"
           onClick={() =>
             handleClick(item.replaceAll("õ", "o").replaceAll("ç", "c"))
           }
         >
           {item}
-        </Button>
+        </S.ActionButton>
       ))}
       <Button variant="outlined" color="error" sx={{ m: 2 }} onClick={logout}>
         Sair

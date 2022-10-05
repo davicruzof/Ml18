@@ -31,9 +31,9 @@ function Routes() {
       {authValues.signed || storage ? (
         <div style={{ display: "flex", flexDirection: "row" }}>
           {authValues.signed && <Sider />}
-          <div style={{ padding: 20, flex: 1 }}>
-            {authValues.signed || storage ? <UserRoutes /> : <AuthRoutes />}
-          </div>
+          {/* <div style={{ padding: 20, flex: 1 }}> */}
+          {authValues.signed || storage ? <UserRoutes /> : <AuthRoutes />}
+          {/* </div> */}
         </div>
       ) : (
         <AuthRoutes />
