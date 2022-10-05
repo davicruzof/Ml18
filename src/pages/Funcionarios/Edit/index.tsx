@@ -5,9 +5,9 @@ import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Checkbox from "@mui/material/Checkbox";
-import { DptTypes } from "@services/Solicitacoes/types";
+import { DptTypes } from "services/Solicitacoes/types";
 import { useMutation, useQuery } from "react-query";
-import { getDepartments } from "@services/Solicitacoes";
+import { getDepartments } from "services/Solicitacoes";
 import { handleChecked, handleCheckedToggle, intersection, not } from "./utils";
 import DptButton from "./button";
 import Loading from "components/Loading/Loading";
@@ -15,8 +15,8 @@ import { useParams } from "react-router-dom";
 import {
   getEmployeeById,
   updateEmployeeAreas,
-} from "@services/Employee/employee";
-import { EmployeeAreasType } from "@services/Employee/types";
+} from "services/Employee/employee";
+import { EmployeeAreasType } from "services/Employee/types";
 import * as S from "./style";
 import Button from "components/Buttons/Button";
 

@@ -12,12 +12,12 @@ import {
   DptTypes,
   TypeRequest,
   TypeSolicitations,
-} from "@services/Solicitacoes/types";
+} from "services/Solicitacoes/types";
 import {
   createRequest,
   getDepartments,
   getTypeSolicitations,
-} from "@services/Solicitacoes";
+} from "services/Solicitacoes";
 
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import Loading from "components/Loading/Loading";
