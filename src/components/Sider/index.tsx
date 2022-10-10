@@ -42,11 +42,17 @@ export default function Sider() {
 
       {Itens.map((item, index) => (
         <S.ActionButton
-          active={pathname
-            .toLocaleLowerCase()
-            .includes(
-              item.toLocaleLowerCase().replaceAll("õ", "o").replaceAll("ç", "c")
-            )}
+          active={
+            pathname
+              .toLocaleLowerCase()
+              .includes(
+                item
+                  .toLocaleLowerCase()
+                  .replaceAll("õ", "o")
+                  .replaceAll("ç", "c")
+              ) ||
+            (pathname === "/" && index === 0)
+          }
           key={index}
           onClick={() =>
             handleClick(item.replaceAll("õ", "o").replaceAll("ç", "c"))
