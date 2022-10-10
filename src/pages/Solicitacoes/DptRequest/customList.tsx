@@ -6,7 +6,7 @@ import {
   ListItemText,
   Paper,
 } from "@mui/material";
-import { DptTypes } from "@services/Solicitacoes/types";
+import { DptTypes } from "services/Solicitacoes/types";
 
 const customList = (
   items: DptTypes[],

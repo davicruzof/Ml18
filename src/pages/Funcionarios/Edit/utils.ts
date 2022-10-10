@@ -1,4 +1,4 @@
-import { DptTypes } from "@services/Solicitacoes/types";
+import { DptTypes } from "services/Solicitacoes/types";
 
 export function not(a: string[], b: string[]) {
   return a.filter((value) => b.indexOf(value) === -1);

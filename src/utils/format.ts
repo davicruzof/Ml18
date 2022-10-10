@@ -1,4 +1,4 @@
-import { Time } from "@services/Solicitacoes/types";
+import { Time } from "services/Solicitacoes/types";
 
 export const trim_cpf_cnpj = (value: string) => {
   return value.replaceAll(".", "").replace("-", "");

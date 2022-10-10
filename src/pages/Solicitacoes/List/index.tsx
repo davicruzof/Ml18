@@ -22,11 +22,11 @@ import {
 } from "@mui/material";
 
 import EditIcon from "@mui/icons-material/Edit";
-import { getMe } from "@services/Auth/auth";
-import { listRequests, updateRequest } from "@services/Solicitacoes";
-import { listRequestResponse } from "@services/Solicitacoes/types";
-import { TypeListRequest } from "@services/Solicitacoes/types";
-import { UserData } from "@services/Auth/types";
+import { getMe } from "services/Auth/auth";
+import { listRequests, updateRequest } from "services/Solicitacoes";
+import { listRequestResponse } from "services/Solicitacoes/types";
+import { TypeListRequest } from "services/Solicitacoes/types";
+import { UserData } from "services/Auth/types";
 import { statusUtil } from "../util";
 import { returnTime } from "@utils/format";
 import InputForm from "components/Input";
