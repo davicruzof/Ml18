@@ -2,7 +2,6 @@ import React from "react";
 import { useEffect, useState } from "react";
 import * as S from "./styles";
 import { useNavigate } from "react-router-dom";
-import ButtonComponent from "components/Buttons/Button";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useQuery } from "react-query";
 import Loading from "components/Loading/Loading";
