@@ -21,7 +21,12 @@ export type TypeRequest = {
   justificativa: string;
 };
 
-export type Status = 'ATENDIDA' | 'PENDENTE' | 'ANDAMENTO';
+export type TypeListRequest = {
+  status?: string;
+  departamento?: number[];
+};
+
+export type Status = "ATENDIDA" | "PENDENTE" | "ANDAMENTO";
 
 export type Time = {
   days?: number;
@@ -32,6 +37,7 @@ export type Time = {
 };
 
 export type listRequestResponse = {
+  id?: string;
   id_solicitacao: string;
   id_empresa: number;
   id_funcionario: number;

@@ -3,21 +3,21 @@ import ListEnterprise from "pages/Empresa/List";
 import Solicitacoes from "pages/Solicitacoes/Create";
 import Home from "pages/Home/index";
 import { Routes, Route } from "react-router-dom";
-import DptRequest from "pages/Solicitacoes/DptRequest";
+import ListRquests from "pages/Solicitacoes/List";
 import EmployeeList from "pages/Funcionarios/List";
 import EditEmployee from "pages/Funcionarios/Edit";
 
 function UserRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<EmployeeList />} />
       <Route path="Empresa/">
         <Route path="List" element={<ListEnterprise />} />
         <Route path="New" element={<Enterprise />} />
         <Route path="Edit" element={<Enterprise />} />
       </Route>
       <Route path="Solicitacoes/">
-        <Route path="List" element={<DptRequest />} />
+        <Route path="List" element={<ListRquests />} />
         <Route path="New" element={<Solicitacoes />} />
         {/* <Route path="Edit" element={<Enterprise />} /> */}
       </Route>

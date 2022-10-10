@@ -1,3 +1,5 @@
+import { Time } from "@services/Solicitacoes/types";
+
 export const trim_cpf_cnpj = (value: string) => {
   return value.replaceAll(".", "").replace("-", "");
 };
@@ -16,4 +18,19 @@ export const formatData = (date: Date) => {
       : data.getUTCDate() + 1;
 
   return `${data.getUTCFullYear()}-${month}-${day}`;
+};
+
+export const returnTime = (time: Time) => {
+  if (time?.days) {
+    const timeSingle = time.days > 1 ? "dias" : "dia";
+    return `${time.days} ${timeSingle}`;
+  }
+  if (time?.hours) {
+    const timeSingle = time.hours > 1 ? "horas" : "hora";
+    return `${time.hours} ${timeSingle}`;
+  }
+  if (time?.minutes) {
+    const timeSingle = time.minutes > 1 ? "minutos" : "minuto";
+    return `${time.minutes} ${timeSingle}`;
+  }
 };

@@ -9,8 +9,6 @@ const Home: React.FC = () => {
     keepPreviousData: false,
   });
 
-  console.log(userData);
-
   return <div>kkkk</div>;
 };
 

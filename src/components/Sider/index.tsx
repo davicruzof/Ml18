@@ -1,3 +1,4 @@
+import React from "react";
 import * as S from "./styles";
 
 import { Itens } from "./util";
@@ -41,9 +42,11 @@ export default function Sider() {
 
       {Itens.map((item, index) => (
         <S.ActionButton
-          active={pathname.includes(
-            item.replaceAll("õ", "o").replaceAll("ç", "c")
-          )}
+          active={pathname
+            .toLocaleLowerCase()
+            .includes(
+              item.toLocaleLowerCase().replaceAll("õ", "o").replaceAll("ç", "c")
+            )}
           key={index}
           onClick={() =>
             handleClick(item.replaceAll("õ", "o").replaceAll("ç", "c"))

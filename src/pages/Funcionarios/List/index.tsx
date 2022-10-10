@@ -68,7 +68,11 @@ const List: React.FC = () => {
   }, [Employees]);
 
   if (isLoadingEmployee) {
-    return <Loading />;
+    return (
+      <div style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Loading />
+      </div>
+    );
   }
 
   return (

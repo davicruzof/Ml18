@@ -5,18 +5,19 @@ export type LoginResponse = {
 };
 
 export type UserData = {
-  id_usuario: string;
-  id_status: number;
-  telefone: string;
-  id_funcionario: string;
-  id_grupo: number;
-  id_empresa: number;
-  nome: string;
-  cpf: string;
-  celular: string;
-  email: string;
-  cnh_validade: string;
-  dt_nascimento: string;
+  user: {
+    id_usuario: string;
+    id_status: number;
+    id_funcionario: string;
+    id_grupo: number;
+    id_empresa: number;
+    nome: string;
+    cpf: string;
+    celular: string;
+    email: string;
+    cnh_validade: string;
+    dt_nascimento: string;
+  };
   departamentos: Departamento[];
 };
 

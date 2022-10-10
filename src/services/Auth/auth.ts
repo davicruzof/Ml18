@@ -1,7 +1,7 @@
 import { AxiosError } from "axios";
 import { LoginData } from "pages/signInPage/types";
 import api from "../api";
-import { LoginResponse } from "./types";
+import { LoginResponse, UserData } from "./types";
 
 export const login = async (credentials: LoginData): Promise<LoginResponse> => {
   try {
@@ -13,7 +13,7 @@ export const login = async (credentials: LoginData): Promise<LoginResponse> => {
   }
 };
 
-export const getMe = async () => {
+export const getMe = async (): Promise<UserData> => {
   try {
     const { data } = await api.get("/auth/me");
     return data;

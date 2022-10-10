@@ -228,7 +228,7 @@ export default function EditEmployee() {
             {listItens(
               departamentosLeft,
               checkedLeft,
-              "Selecione um departamento",
+              "Selecione os departamentos",
               handleToggleLeft
             )}
           </Grid>
