@@ -28,7 +28,7 @@ import { listRequestResponse } from "services/Solicitacoes/types";
 import { TypeListRequest } from "services/Solicitacoes/types";
 import { UserData } from "services/Auth/types";
 import { statusUtil } from "../util";
-import { returnTime } from "@utils/format";
+import { returnTime } from "utils/format";
 import InputForm from "components/Input";
 import { ValueType } from "./types";
 
