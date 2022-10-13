@@ -10,7 +10,7 @@ import EditEmployee from "pages/Funcionarios/Edit";
 function UserRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<EmployeeList />} />
+      <Route path="/" element={<ListRquests />} />
       <Route path="Empresa/">
         <Route path="List" element={<ListEnterprise />} />
         <Route path="New" element={<Enterprise />} />
@@ -23,7 +23,7 @@ function UserRoutes() {
       </Route>
       <Route path="Funcionario/">
         <Route path="List" element={<EmployeeList />} />
-        <Route path="Edit/:id" element={<EditEmployee />} />
+        <Route path="Edit" element={<EditEmployee />} />
         {/* <Route path="new" element={<NewEmployee />} /> */}
       </Route>
     </Routes>

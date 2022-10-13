@@ -11,7 +11,7 @@ import { getDepartments } from "services/Solicitacoes";
 import { handleChecked, handleCheckedToggle, intersection, not } from "./utils";
 import DptButton from "./button";
 import Loading from "components/Loading/Loading";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   getEmployeeById,
   updateEmployeeAreas,
@@ -22,7 +22,9 @@ import Button from "components/Buttons/Button";
 import Snack from "components/Snack";
 
 export default function EditEmployee() {
-  const { id } = useParams();
+  const {
+    state: { id },
+  } = useLocation();
   const navigate = useNavigate();
   const [departamentosLeft, setDepartamentosLeft] = useState<DptTypes[]>([]);
   const [departamentosRight, setDepartamentosRight] = useState<DptTypes[]>([]);

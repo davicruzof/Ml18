@@ -7,16 +7,10 @@ import { useMutation, useQuery } from "react-query";
 import Loading from "components/Loading/Loading";
 import {
   Box,
-  Button,
   Chip,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   FormControl,
   IconButton,
   InputLabel,
-  OutlinedInput,
   Select,
   SelectChangeEvent,
 } from "@mui/material";
@@ -31,18 +25,17 @@ import { statusUtil } from "../util";
 import { returnTime } from "utils/format";
 import InputForm from "components/Input";
 import { ValueType } from "./types";
+import DialogComponent from "components/Dialog";
 
-export default function ListEnterprise() {
+export default function ListRequests() {
   const navigation = useNavigate();
   const [rows, setRows] = useState<listRequestResponse[]>([]);
+  const [updateRow, setUpdateRow] = useState<listRequestResponse>();
   const [pageSize, setPageSize] = useState<number>(10);
 
   const [parecer, setParecer] = useState("");
-  const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
-  const [newStatus, setNewStatus] = useState<number | string>("");
   const [newStatus2, setNewStatus2] = useState<number | string>("");
-  const [idUpdate, setIDUpdate] = useState<number | string>("");
   const [idUpdate2, setIDUpdate2] = useState<number | string>("");
   const [idFunc, setIdFunc] = useState<number | string>("");
 
@@ -93,7 +86,6 @@ export default function ListEnterprise() {
       mutationFn: (formData: any) => updateRequest(formData),
       onSuccess: (data: any) => {
         refetch();
-        setOpen(false);
         setOpen2(false);
       },
       onError: () => {
@@ -101,50 +93,13 @@ export default function ListEnterprise() {
       },
     });
 
-  const handleChange = (event: SelectChangeEvent<typeof newStatus>) => {
-    setNewStatus("");
-    setNewStatus(event.target.value);
-  };
-
-  const handleChange2 = (event: SelectChangeEvent<typeof newStatus>) => {
+  const handleChange2 = (event: SelectChangeEvent<typeof newStatus2>) => {
     setNewStatus2("");
     setNewStatus2(event.target.value);
   };
 
-  const handleClickOpen = (id: string) => {
-    setIDUpdate(id);
-    setOpen(true);
-  };
-
-  const handleClose = (
-    event: React.SyntheticEvent<unknown>,
-    reason?: string
-  ) => {
-    if (reason !== "backdropClick") {
-      setOpen(false);
-    }
-  };
-
-  const handleClose2 = (
-    event: React.SyntheticEvent<unknown>,
-    reason?: string
-  ) => {
-    if (reason !== "backdropClick") {
-      setOpen2(false);
-    }
-  };
-
-  const handleUpdateStatus = () => {
-    if (idUpdate && newStatus) {
-      const sendData = {
-        id_solicitacao: idUpdate,
-        status: newStatus,
-      };
-      updateStatusRequest(sendData);
-    }
-  };
-
   const handleUpdateStatus2 = () => {
+    setNewStatus2("");
     if (idUpdate2 && newStatus2) {
       const sendData = {
         id_solicitacao: idUpdate2,
@@ -157,37 +112,39 @@ export default function ListEnterprise() {
 
   const handleUpdate = (data: any) => {
     setOpen2(!open2);
+    setUpdateRow(data);
+    setParecer(data.parecer);
     setNewStatus2(data.status);
     setIDUpdate2(data.id_solicitacao);
   };
 
   const VISIBLE_FIELDS = [
-    { field: "id", headerName: "ID", width: 50 },
-    { field: "id_funcionario", headerName: "Funcionário", width: 100 },
-    { field: "area", headerName: "Departamento", width: 200 },
-    { field: "modulo", headerName: "Tipo de Solicitação", width: 200 },
-    { field: "justificativa", headerName: "Descrição", width: 300 },
+    { field: "nome", headerName: "Funcionário", width: 300 },
+    { field: "area", headerName: "Departamento", width: 150 },
+    { field: "modulo", headerName: "Tipo", width: 100 },
     {
       field: "status",
       headerName: "Status",
       width: 150,
       renderCell: (data: any) => {
         const { title, bg, color } = statusUtil[data.row.status];
-        return [
-          <Chip
-            label={title}
-            onClick={() => handleClickOpen(data.row.id_solicitacao)}
-            style={{ color, backgroundColor: bg }}
-          />,
-        ];
+        return [<Chip label={title} style={{ color, backgroundColor: bg }} />];
       },
     },
     {
       field: "data",
-      headerName: "Tempo",
-      width: 150,
+      headerName: "Criado há",
+      width: 80,
       renderCell: (data: any) => {
         return [<span>{returnTime(data.row.cadastrado_a)}</span>];
+      },
+    },
+    {
+      field: "update",
+      headerName: "Atualizado há",
+      width: 110,
+      renderCell: (data: any) => {
+        return [<span>{returnTime(data.row.atualizado_a)}</span>];
       },
     },
     {
@@ -237,6 +194,25 @@ export default function ListEnterprise() {
     );
   }
 
+  const SelectStatus = ({
+    newStatus,
+    handleChange,
+  }: {
+    newStatus: string | number;
+    handleChange: (event: SelectChangeEvent<typeof newStatus>) => void;
+  }) => {
+    return (
+      <FormControl sx={{ mb: 1, minWidth: 250, width: "100%" }}>
+        <InputLabel htmlFor="demo-dialog-native">Status</InputLabel>
+        <Select native value={newStatus} onChange={handleChange} label="Status">
+          <option value="SOLICITADO">Solicitado</option>
+          <option value="ANDAMENTO">Em andamento</option>
+          <option value="ATENDIDA">Finalizada</option>
+        </Select>
+      </FormControl>
+    );
+  };
+
   return (
     <S.Container>
       <S.Wrapper>
@@ -249,7 +225,7 @@ export default function ListEnterprise() {
       </S.Wrapper>
 
       {rows.length > 0 && rows[0]?.id && dataRequests && (
-        <div style={{ width: "100%", height: 685 }}>
+        <div style={{ width: "100%", height: "100%" }}>
           <DataGrid
             loading={isLoadingRequests || isLoadingUserData}
             columns={VISIBLE_FIELDS}
@@ -265,64 +241,30 @@ export default function ListEnterprise() {
         </div>
       )}
 
-      <Dialog disableEscapeKeyDown open={open2} onClose={handleClose2}>
-        <DialogTitle>Atualizar status da solicitacao</DialogTitle>
-        <DialogContent>
-          <Box component="form" sx={{ display: "flex", flexWrap: "wrap" }}>
-            <FormControl sx={{ m: 1, width: "100%" }}>
-              <InputLabel htmlFor="demo-dialog-native">Status</InputLabel>
-              <Select
-                native
-                value={newStatus2}
-                onChange={handleChange2}
-                input={<OutlinedInput label="Age" id="demo-dialog-native" />}
-              >
-                <option aria-label="None" value="" />
-                <option value="ANDAMENTO">Em andamento</option>
-                <option value="ATENDIDA">Finalizada</option>
-              </Select>
-            </FormControl>
-            <FormControl sx={{ m: 1, width: "100%" }}>
-              <InputForm
-                label="Parecer da solicitacao"
-                multiline
-                maxRows={8}
-                onChange={(e: ValueType) => setParecer(e.target.value)}
-                value={parecer}
-              />
-            </FormControl>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose2}>Cancel</Button>
-          <Button onClick={handleUpdateStatus2}>Atualizar</Button>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog disableEscapeKeyDown open={open} onClose={handleClose}>
-        <DialogTitle>Atualizar status da solicitacao</DialogTitle>
-        <DialogContent>
-          <Box component="form" sx={{ display: "flex", flexWrap: "wrap" }}>
-            <FormControl sx={{ m: 1, minWidth: 250 }}>
-              <InputLabel htmlFor="demo-dialog-native">Status</InputLabel>
-              <Select
-                native
-                value={newStatus}
-                onChange={handleChange}
-                input={<OutlinedInput label="Age" id="demo-dialog-native" />}
-              >
-                <option aria-label="None" value="" />
-                <option value="ANDAMENTO">Em andamento</option>
-                <option value="ATENDIDA">Finalizada</option>
-              </Select>
-            </FormControl>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleUpdateStatus}>Atualizar</Button>
-        </DialogActions>
-      </Dialog>
+      <DialogComponent
+        open={open2}
+        title="Atualizar solicitação"
+        setOpen={setOpen2}
+        buttonConfirmText="Atualizar"
+        handleButtonConfirm={handleUpdateStatus2}
+      >
+        <Box component="form" sx={{ display: "flex", flexWrap: "wrap" }}>
+          <FormControl sx={{ mb: 3, width: "100%" }}>
+            <h4>Justificativa:</h4>
+            <span>{updateRow?.justificativa}</span>
+          </FormControl>
+          <SelectStatus newStatus={newStatus2} handleChange={handleChange2} />
+          <FormControl sx={{ mt: 1, width: "100%" }}>
+            <InputForm
+              label="Parecer da solicitacao"
+              multiline
+              maxRows={8}
+              onChange={(e: ValueType) => setParecer(e.target.value)}
+              value={parecer}
+            />
+          </FormControl>
+        </Box>
+      </DialogComponent>
     </S.Container>
   );
 }

@@ -40,9 +40,7 @@ const LoginScreen = () => {
   const { mutate: signIn, isLoading } = useMutation({
     mutationFn: (formData: LoginData) => login(formData),
     onSuccess: ({ token, error }: LoginResponse) => {
-      if (error) {
-        console.log(error);
-      } else {
+      if (!error) {
         setAuthValues({
           id_empresa: 1,
           token: token,

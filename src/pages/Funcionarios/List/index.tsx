@@ -11,6 +11,9 @@ import { getAllEmployee } from "services/Employee/employee";
 import { EmployeeType } from "services/Employee/types";
 
 const List: React.FC = () => {
+  const navigation = useNavigate();
+  const [rows, setRows] = useState<EmployeeType[]>([]);
+  const [pageSize, setPageSize] = useState<number>(10);
   const { data: Employees, isLoading: isLoadingEmployee } = useQuery(
     "getAllEmployee",
     {
@@ -20,18 +23,17 @@ const List: React.FC = () => {
     }
   );
 
-  const navigation = useNavigate();
-  const [rows, setRows] = useState<EmployeeType[]>([]);
-  const [pageSize, setPageSize] = useState<number>(10);
-
   const handleEditClick = (id: number) => {
-    navigation(`/Funcionario/Edit/${id}`, { replace: true });
+    navigation(`/Funcionario/Edit`, { state: { id }, replace: true });
   };
 
   const width = window.innerHeight;
 
   const VISIBLE_FIELDS = [
-    { field: "nome", headerName: "Nome", width: width },
+    { field: "nome", headerName: "Nome", width: 400 },
+    { field: "registro", headerName: "Registro", width: 100 },
+    { field: "funcao", headerName: "Função", width: 250 },
+    { field: "cpf", headerName: "CPF", width: 150 },
     {
       field: "Editar",
       type: "actions",
@@ -77,7 +79,7 @@ const List: React.FC = () => {
   return (
     <S.Container>
       {rows && !isLoadingEmployee && (
-        <div style={{ width: "100%", height: 665 }}>
+        <div style={{ width: "100%", height: "100%" }}>
           <DataGrid
             columns={VISIBLE_FIELDS}
             rows={rows}
