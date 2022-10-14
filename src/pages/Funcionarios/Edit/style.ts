@@ -21,7 +21,8 @@ export const LoadingContainer = styled.div`
 export const Header = styled(Grid).attrs({
   container: true,
 })`
-  flex-direction: column;
+  display: flex;
+  flex-direction: column !important;
   background: ${(props) => props.theme.colors.white};
   border-radius: 12px;
   padding: 40px;
@@ -59,6 +60,9 @@ export const SubTitle = styled.span`
 `;
 
 export const LabelHeader = styled.span`
+  display: flex;
+  flex: 1;
+  width: 100%;
   font-size: 14px;
   margin-bottom: 8px;
   font-weight: bold;
