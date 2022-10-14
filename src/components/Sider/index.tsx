@@ -24,6 +24,8 @@ export default function Sider() {
     navigate(`/${route}/List`, { replace: true });
   };
 
+  console.log(pathname.toLocaleLowerCase());
+
   return (
     <S.Container>
       <div
@@ -40,27 +42,37 @@ export default function Sider() {
         />
       </div>
 
-      {Itens.map((item, index) => (
-        <S.ActionButton
-          active={
-            pathname
-              .toLocaleLowerCase()
-              .includes(
-                item
-                  .toLocaleLowerCase()
-                  .replaceAll("õ", "o")
-                  .replaceAll("ç", "c")
-              ) ||
+      {Itens.map((item, index) => {
+        console.log(
+          pathname
+            .toLocaleLowerCase()
+            .includes(
+              item.toLocaleLowerCase().replaceAll("õ", "o").replaceAll("ç", "c")
+            ) ||
             (pathname === "/" && index === 0)
-          }
-          key={index}
-          onClick={() =>
-            handleClick(item.replaceAll("õ", "o").replaceAll("ç", "c"))
-          }
-        >
-          {item}
-        </S.ActionButton>
-      ))}
+        );
+        return (
+          <S.ActionButton
+            active={
+              pathname
+                .toLocaleLowerCase()
+                .includes(
+                  item
+                    .toLocaleLowerCase()
+                    .replaceAll("õ", "o")
+                    .replaceAll("ç", "c")
+                ) ||
+              (pathname === "/" && index === 0)
+            }
+            key={index}
+            onClick={() =>
+              handleClick(item.replaceAll("õ", "o").replaceAll("ç", "c"))
+            }
+          >
+            {item}
+          </S.ActionButton>
+        );
+      })}
       <Button variant="outlined" color="error" sx={{ m: 2 }} onClick={logout}>
         Sair
         <Logout sx={{ pl: 1, fontSize: "1rem" }} />

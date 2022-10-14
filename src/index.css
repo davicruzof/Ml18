@@ -15,11 +15,6 @@ body {
   background-color: rgba(67,91,196, 0.10)!important;
 }
 
-/* div:empty {
-  display: none!important;
-  width: 0!important;
-} */
-
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

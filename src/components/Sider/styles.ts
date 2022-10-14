@@ -19,13 +19,19 @@ export const AccordionContainer = styled.div`
   flex-direction: column;
 `;
 
-export const ActionButton = styled(Button)<{ active: boolean }>`
+export const ActionButton = styled.a<{ active: boolean }>`
   margin: ${(props) => props.theme.spacing.small}px;
   margin-top: ${(props) => props.theme.spacing.xsmall}px;
   border: 1px solid ${(props) => props.theme.colors.primary};
   background: ${(props) =>
     props.active ? props.theme.colors.primary : "transparent"};
   color: ${(props) => (props.active ? "#fff" : props.theme.colors.primary)};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 15px;
+  border-radius: 4px;
+  cursor: pointer;
 
   &:hover {
     background: ${(props) => props.theme.colors.primary};
