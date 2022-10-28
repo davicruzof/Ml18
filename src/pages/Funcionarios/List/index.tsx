@@ -2,7 +2,12 @@ import React from "react";
 import { useEffect, useState } from "react";
 import * as S from "./styles";
 import { useNavigate } from "react-router-dom";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridColDef,
+  GridToolbar,
+  GridValueGetterParams,
+} from "@mui/x-data-grid";
 import { useQuery } from "react-query";
 import Loading from "components/Loading/Loading";
 import { IconButton } from "@mui/material";
@@ -24,10 +29,8 @@ const List: React.FC = () => {
   );
 
   const handleEditClick = (id: number) => {
-    navigation(`/Funcionario/Edit`, { state: { id }, replace: true });
+    navigation(`/ti/permission/edit`, { state: { id }, replace: true });
   };
-
-  const width = window.innerHeight;
 
   const VISIBLE_FIELDS = [
     { field: "nome", headerName: "Nome", width: 400 },
@@ -76,28 +79,29 @@ const List: React.FC = () => {
     );
   }
 
+  const height = window.innerHeight - 100;
+
   return (
-    <S.Container>
-      {rows && !isLoadingEmployee && (
-        <div style={{ width: "100%", height: "100%" }}>
-          <DataGrid
-            columns={VISIBLE_FIELDS}
-            rows={rows}
-            pageSize={pageSize}
-            components={{ Toolbar: GridToolbar }}
-            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-            rowsPerPageOptions={[5, 10, 20, 50, 100]}
-            pagination
-            style={{
-              paddingLeft: 20,
-              justifyContent: "space-between",
-              display: "flex",
-            }}
-            disableSelectionOnClick
-          />
-        </div>
-      )}
-    </S.Container>
+    rows &&
+    !isLoadingEmployee && (
+      <DataGrid
+        columns={VISIBLE_FIELDS}
+        rows={rows}
+        pageSize={pageSize}
+        components={{ Toolbar: GridToolbar }}
+        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+        rowsPerPageOptions={[5, 10, 20, 50, 100]}
+        pagination
+        style={{
+          paddingLeft: 20,
+          justifyContent: "space-between",
+          display: "flex",
+          margin: 20,
+          height,
+        }}
+        disableSelectionOnClick
+      />
+    )
   );
 };
 

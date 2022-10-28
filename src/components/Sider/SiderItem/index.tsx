@@ -10,7 +10,8 @@ import {
   faComment,
   faCircle,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AuthContext } from "contexts/auth";
 
 interface SiderItemProps {
   title: string;
@@ -21,7 +22,7 @@ interface SiderItemProps {
 export function SiderItem({ title, subitems, active }: SiderItemProps) {
   const { pathname } = useLocation();
   const navigate = useNavigate();
-
+  const { setAuthValues } = useContext(AuthContext);
   const [openItem, setOpenItem] = useState(false);
 
   const classActive = (active: boolean) =>
@@ -32,6 +33,13 @@ export function SiderItem({ title, subitems, active }: SiderItemProps) {
       pathname.toLocaleLowerCase().includes(cleanString(title)) &&
       pathname.toLocaleLowerCase().includes(cleanString(item))
     );
+  };
+
+  const logout = () => {
+    localStorage.clear();
+    setAuthValues(null);
+    navigate("/Login", { replace: true });
+    window.location.reload();
   };
 
   const cleanString = (item: string) => {
@@ -87,7 +95,10 @@ export function SiderItem({ title, subitems, active }: SiderItemProps) {
         data-accordion="false"
       >
         <li className="nav-item" id="item-menu">
-          <a className={classActive(active)} onClick={removeClass}>
+          <a
+            className={classActive(active)}
+            onClick={title === "Sair" ? logout : removeClass}
+          >
             <FontAwesomeIcon className="nav-icon" icon={returnIcon()} />
             <p>
               {title}

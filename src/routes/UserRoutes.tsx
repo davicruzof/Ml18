@@ -6,6 +6,7 @@ import ListRequests from "pages/Solicitacoes/List";
 import EmployeeList from "pages/Funcionarios/List";
 import EditEmployee from "pages/Funcionarios/Edit";
 import Sider from "components/Sider";
+import { NotFound } from "pages/NotFound";
 
 function UserRoutes() {
   return (
@@ -34,10 +35,33 @@ function UserRoutes() {
         />
         <Route path="New" element={<Solicitacoes />} />
       </Route>
-      <Route path="Funcionario/">
-        <Route path="List" element={<EmployeeList />} />
-        <Route path="Edit" element={<EditEmployee />} />
+      <Route path="ti/">
+        <Route
+          path="permissoes"
+          element={
+            <Sider>
+              <EmployeeList />
+            </Sider>
+          }
+        />
+        <Route
+          path="permission/edit"
+          element={
+            <Sider>
+              <EditEmployee />
+            </Sider>
+          }
+        />
       </Route>
+
+      <Route
+        path="*"
+        element={
+          <Sider>
+            <NotFound />
+          </Sider>
+        }
+      />
     </Routes>
   );
 }

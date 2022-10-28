@@ -1,30 +1,48 @@
-import React from "react";
-import * as S from "./styles";
-
-import { Itens, MenuItens } from "./util";
-import { Button } from "@mui/material";
-import { useContext } from "react";
-import { AuthContext } from "../../contexts/auth";
-import { useLocation, useNavigate } from "react-router-dom";
-import { Logout } from "@mui/icons-material";
+import { MenuItens } from "./util";
+import { useLocation } from "react-router-dom";
 import { SiderItem } from "./SiderItem";
+import { useMutation, useQuery } from "react-query";
+import { getEnterpriseById } from "@services/Enterprises/enterprises";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "contexts/auth";
+import LOGO from "assets/logo.png";
+import { getUser } from "@services/User/user";
 
 export default function Sider({ children }: { children: JSX.Element }) {
-  const { setAuthValues } = useContext(AuthContext);
-  const navigate = useNavigate();
+  const { authValues } = useContext(AuthContext);
+  const [nome, setNome] = useState("ML 18 Portal");
+  const [logo, setLogo] = useState("");
+
+  const { mutate: getEnterPrise } = useMutation({
+    mutationFn: (formData: number) => getEnterpriseById(formData),
+    onSuccess: ({ data }: any) => {
+      if (data.logo !== "") {
+        setLogo(data.logo);
+        setNome(data.nomeempresarial.split(" ").slice(0, 1).join(" "));
+      }
+    },
+  });
+
+  const { data: dataUser } = useQuery("getUser", {
+    queryFn: () => getUser(),
+    enabled: true,
+    keepPreviousData: true,
+  });
+
+  useEffect(() => {
+    if (authValues.id_empresa) {
+      getEnterPrise(authValues.id_empresa);
+    }
+  }, [authValues]);
+
   const { pathname } = useLocation();
-
-  const logout = () => {
-    localStorage.clear();
-    setAuthValues(null);
-    navigate("/Login", { replace: true });
-    window.location.reload();
-  };
-
   return (
     <div>
       <nav className="main-header navbar navbar-expand navbar-white navbar-light">
-        <ul className="navbar-nav">
+        <ul
+          className="navbar-nav row"
+          style={{ justifyContent: "space-between", width: "100%" }}
+        >
           <li className="nav-item">
             <a
               className="nav-link"
@@ -35,18 +53,51 @@ export default function Sider({ children }: { children: JSX.Element }) {
               <i className="fas fa-bars"></i>
             </a>
           </li>
+          <li className="nav-item d-none d-sm-inline-block">
+            <a href="#" className="nav-link">
+              Olá,{" "}
+              {dataUser?.user?.nome
+                .split(" ")
+                .slice(0, 1)
+                .join(" ")
+                .toLowerCase()}
+            </a>
+          </li>
         </ul>
       </nav>
-      <div className="content-wrapper">
-        <section className="content">
-          <div className="container-fluid">{children}</div>
-        </section>
+      <div className="content-wrapper" style={{ height: "auto" }}>
+        {children}
       </div>
       <aside className="main-sidebar sidebar-dark-primary elevation-4">
         <a className="brand-link">
-          {/* <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
-          style="opacity: .8"> */}
-          <span className="brand-text font-weight-light">AdminLTE 3</span>
+          {logo ? (
+            <img
+              src={logo}
+              alt="logo"
+              className=" img-circle elevation-2"
+              style={{
+                height: 50,
+                width: 50,
+                marginRight: 15,
+                padding: 3,
+                objectFit: "contain",
+              }}
+            ></img>
+          ) : (
+            <img
+              src={LOGO}
+              alt="logo"
+              className=" img-circle elevation-2"
+              style={{
+                height: 50,
+                width: 50,
+                marginRight: 15,
+                padding: 3,
+                objectFit: "contain",
+              }}
+            ></img>
+          )}
+          <span className="brand-text">{nome}</span>
         </a>
         <div className="sidebar">
           {MenuItens.map((item, index) => (

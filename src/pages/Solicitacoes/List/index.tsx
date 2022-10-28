@@ -214,32 +214,39 @@ const ListRequests = () => {
     );
   };
 
+  const height = window.innerHeight - 100;
+
   return (
     <S.Container>
-      <S.Wrapper>
+      {/* <S.Wrapper>
         <ButtonComponent
           onClick={() => navigation("/Solicitacoes/New", { replace: true })}
           loading={false}
           title="+ Adicionar nova solicitação"
           active={false}
         />
-      </S.Wrapper>
+      </S.Wrapper> */}
 
       {rows.length > 0 && rows[0]?.id && dataRequests && (
-        <div style={{ width: "100%", height: "100%" }}>
-          <DataGrid
-            loading={isLoadingRequests || isLoadingUserData}
-            columns={VISIBLE_FIELDS}
-            rows={rows}
-            style={{ padding: 15, paddingBottom: 5, paddingLeft: 20 }}
-            components={{ Toolbar: GridToolbar }}
-            pageSize={pageSize}
-            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-            rowsPerPageOptions={[5, 10, 20, 50, 100]}
-            pagination
-            disableSelectionOnClick
-          />
-        </div>
+        <DataGrid
+          loading={isLoadingRequests || isLoadingUserData}
+          columns={VISIBLE_FIELDS}
+          rows={rows}
+          // style={{ padding: 15, paddingBottom: 5, paddingLeft: 20 }}
+          components={{ Toolbar: GridToolbar }}
+          pageSize={pageSize}
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+          rowsPerPageOptions={[5, 10, 20, 50, 100]}
+          pagination
+          style={{
+            paddingLeft: 20,
+            justifyContent: "space-between",
+            display: "flex",
+            margin: 20,
+            height,
+          }}
+          disableSelectionOnClick
+        />
       )}
 
       <DialogComponent

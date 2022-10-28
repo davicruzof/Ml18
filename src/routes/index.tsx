@@ -23,15 +23,7 @@ function Routes() {
 
   return (
     <BrowserRouter>
-      {authValues.signed || storage ? (
-        <div>
-          <section>
-            <UserRoutes />
-          </section>
-        </div>
-      ) : (
-        <AuthRoutes />
-      )}
+      {authValues.signed || storage ? <UserRoutes /> : <AuthRoutes />}
     </BrowserRouter>
   );
 }

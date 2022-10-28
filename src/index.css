@@ -15,6 +15,10 @@ body {
   background-color: rgba(67,91,196, 0.10)!important;
 }
 
+.css-1kwdphh-MuiDataGrid-virtualScrollerContent {
+  height: 50vh!important;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
