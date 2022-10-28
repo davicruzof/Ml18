@@ -6,7 +6,7 @@ import { LoginResponse, UserData } from "./types";
 export const login = async (credentials: LoginData): Promise<LoginResponse> => {
   try {
     const { data } = await api.post("/auth/login", credentials);
-    return data;
+    return { result: data, empresa: credentials };
   } catch (err) {
     const { error } = (err as AxiosError<any, any>)?.response?.data;
     throw new Error(error);

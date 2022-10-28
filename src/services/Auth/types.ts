@@ -1,7 +1,12 @@
+import { LoginData } from "pages/signInPage/types";
+
 export type LoginResponse = {
-  type: string;
-  token: string;
-  error?: string;
+  result: {
+    type: string;
+    token: string;
+    error?: string;
+  };
+  empresa: LoginData;
 };
 
 export type UserData = {

@@ -39,22 +39,22 @@ const LoginScreen = () => {
 
   const { mutate: signIn, isLoading } = useMutation({
     mutationFn: (formData: LoginData) => login(formData),
-    onSuccess: ({ token, error }: LoginResponse) => {
-      if (!error) {
+    onSuccess: ({ result, empresa }: LoginResponse) => {
+      if (!result.error) {
         setAuthValues({
-          id_empresa: 1,
-          token: token,
+          id_empresa: empresa.id_empresa,
+          token: result.token,
           signed: true,
         });
 
-        api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        api.defaults.headers.common["Authorization"] = `Bearer ${result.token}`;
 
         localStorage.setItem("logado", "true");
         localStorage.setItem(
           "authValues",
           JSON.stringify({
-            id_empresa: 1,
-            token: token,
+            id_empresa: empresa.id_empresa,
+            token: result.token,
             signed: true,
           })
         );
