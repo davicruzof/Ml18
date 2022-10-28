@@ -7,18 +7,19 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "contexts/auth";
 import LOGO from "assets/logo.png";
 import { getUser } from "services/User/user";
+import Loading from "components/Loading/Loading";
 
 export default function Sider({ children }: { children: JSX.Element }) {
   const { authValues } = useContext(AuthContext);
-  const [nome, setNome] = useState("ML 18 Portal");
+  const [nome, setNome] = useState("");
   const [logo, setLogo] = useState("");
 
-  const { mutate: getEnterPrise } = useMutation({
+  const { mutate: getEnterPrise, isLoading } = useMutation({
     mutationFn: (formData: number) => getEnterpriseById(formData),
     onSuccess: ({ data }: any) => {
       if (data.logo !== "") {
         setLogo(data.logo);
-        setNome(data.nomeempresarial.split(" ").slice(0, 1).join(" "));
+        setNome(data.nomeempresarial);
       }
     },
   });
@@ -55,12 +56,7 @@ export default function Sider({ children }: { children: JSX.Element }) {
           </li>
           <li className="nav-item d-none d-sm-inline-block">
             <a href="#" className="nav-link">
-              Olá,{" "}
-              {dataUser?.user?.nome
-                .split(" ")
-                .slice(0, 1)
-                .join(" ")
-                .toLowerCase()}
+              Olá, {dataUser?.user?.nome.split(" ").slice(0, 1).join(" ")}
             </a>
           </li>
         </ul>
@@ -69,35 +65,35 @@ export default function Sider({ children }: { children: JSX.Element }) {
         {children}
       </div>
       <aside className="main-sidebar sidebar-dark-primary elevation-4">
-        <a className="brand-link">
-          {logo ? (
-            <img
-              src={logo}
-              alt="logo"
-              className=" img-circle elevation-2"
-              style={{
-                height: 50,
-                width: 50,
-                marginRight: 15,
-                padding: 3,
-                objectFit: "contain",
-              }}
-            ></img>
+        <a
+          className="brand-link"
+          style={{ flexDirection: "row", display: "flex" }}
+        >
+          {isLoading ? (
+            <Loading />
           ) : (
-            <img
-              src={LOGO}
-              alt="logo"
-              className=" img-circle elevation-2"
-              style={{
-                height: 50,
-                width: 50,
-                marginRight: 15,
-                padding: 3,
-                objectFit: "contain",
-              }}
-            ></img>
+            <>
+              {logo && (
+                <img
+                  src={logo}
+                  alt="logo"
+                  className=" img-circle elevation-2"
+                  style={{
+                    height: 50,
+                    width: 50,
+                    marginRight: 15,
+                    padding: 1,
+                    objectFit: "contain",
+                  }}
+                />
+              )}
+              {nome && (
+                <div>
+                  <span style={{ whiteSpace: "break-spaces" }}>{nome}</span>
+                </div>
+              )}
+            </>
           )}
-          <span className="brand-text">{nome}</span>
         </a>
         <div className="sidebar">
           {MenuItens.map((item, index) => (

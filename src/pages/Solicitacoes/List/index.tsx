@@ -121,29 +121,38 @@ const ListRequests = () => {
 
   const VISIBLE_FIELDS = [
     { field: "nome", headerName: "Funcionário", width: 300 },
-    { field: "area", headerName: "Departamento", width: 150 },
-    { field: "modulo", headerName: "Tipo", width: 100 },
+    { field: "area", headerName: "Departamento", width: 200 },
+    { field: "modulo", headerName: "Tipo", width: 150 },
     {
       field: "status",
       headerName: "Status",
       width: 150,
       renderCell: (data: any) => {
         const { title, bg, color } = statusUtil[data.row.status];
-        return [<Chip label={title} style={{ color, backgroundColor: bg }} />];
+        const title2 = title === "Solicitado" ? "Pendente" : title;
+        return [<Chip label={title2} style={{ color, backgroundColor: bg }} />];
       },
     },
     {
-      field: "data",
-      headerName: "Criado há",
-      width: 80,
+      field: "cadastro",
+      headerName: "Data",
+      width: 100,
       renderCell: (data: any) => {
-        return [<span>{returnTime(data.row.cadastrado_a)}</span>];
+        return [<span>{data.row.dt_cadastro}</span>];
       },
     },
+    // {
+    //   field: "data",
+    //   headerName: "Criado há",
+    //   width: 80,
+    //   renderCell: (data: any) => {
+    //     return [<span>{returnTime(data.row.cadastrado_a)}</span>];
+    //   },
+    // },
     {
       field: "update",
-      headerName: "Atualizado há",
-      width: 110,
+      headerName: "Atualizado",
+      width: 80,
       renderCell: (data: any) => {
         return [<span>{returnTime(data.row.atualizado_a)}</span>];
       },
