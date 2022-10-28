@@ -2,11 +2,11 @@ import { MenuItens } from "./util";
 import { useLocation } from "react-router-dom";
 import { SiderItem } from "./SiderItem";
 import { useMutation, useQuery } from "react-query";
-import { getEnterpriseById } from "@services/Enterprises/enterprises";
+import { getEnterpriseById } from "services/Enterprises/enterprises";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "contexts/auth";
 import LOGO from "assets/logo.png";
-import { getUser } from "@services/User/user";
+import { getUser } from "services/User/user";
 
 export default function Sider({ children }: { children: JSX.Element }) {
   const { authValues } = useContext(AuthContext);
