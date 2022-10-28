@@ -1,7 +1,7 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import { InputForm } from "components/InputControl";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { LoginData, schemaValidation } from "./types";
 import InputPassword from "components/InputControl/inputPassword";
@@ -68,6 +68,12 @@ const LoginScreen = () => {
       setSnackMessage(error.message);
     },
   });
+
+  useEffect(() => {
+    (() => {
+      localStorage.clear();
+    })();
+  }, []);
 
   const handleSendFormLogin = (formData: LoginData) => {
     if (Boolean(errors)) {
