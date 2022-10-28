@@ -1,14 +1,15 @@
 import React from "react";
 import * as S from "./styles";
 
-import { Itens } from "./util";
+import { Itens, MenuItens } from "./util";
 import { Button } from "@mui/material";
 import { useContext } from "react";
 import { AuthContext } from "../../contexts/auth";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Logout } from "@mui/icons-material";
+import { SiderItem } from "./SiderItem";
 
-export default function Sider() {
+export default function Sider({ children }: { children: JSX.Element }) {
   const { setAuthValues } = useContext(AuthContext);
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -20,63 +21,54 @@ export default function Sider() {
     window.location.reload();
   };
 
-  const handleClick = (route: string) => {
-    navigate(`/${route}/List`, { replace: true });
-  };
-
-  console.log(pathname.toLocaleLowerCase());
-
   return (
-    <S.Container>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          marginBottom: 32,
-        }}
-      >
-        <img
-          height={100}
-          width={100}
-          src="https://www.bing.com/th?id=Aad21b7b10461ff482b0a74753c2348f2&w=80&h=80&c=7&o=6&dpr=1.5&pid=SANGAM"
-        />
+    <div>
+      <nav className="main-header navbar navbar-expand navbar-white navbar-light">
+        <ul className="navbar-nav">
+          <li className="nav-item">
+            <a
+              className="nav-link"
+              data-widget="pushmenu"
+              href="#"
+              role="button"
+            >
+              <i className="fas fa-bars"></i>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <div className="content-wrapper">
+        <section className="content">
+          <div className="container-fluid">{children}</div>
+        </section>
       </div>
-
-      {Itens.map((item, index) => {
-        console.log(
-          pathname
-            .toLocaleLowerCase()
-            .includes(
-              item.toLocaleLowerCase().replaceAll("õ", "o").replaceAll("ç", "c")
-            ) ||
-            (pathname === "/" && index === 0)
-        );
-        return (
-          <S.ActionButton
-            active={
-              pathname
-                .toLocaleLowerCase()
-                .includes(
-                  item
-                    .toLocaleLowerCase()
-                    .replaceAll("õ", "o")
-                    .replaceAll("ç", "c")
-                ) ||
-              (pathname === "/" && index === 0)
-            }
-            key={index}
-            onClick={() =>
-              handleClick(item.replaceAll("õ", "o").replaceAll("ç", "c"))
-            }
-          >
-            {item}
-          </S.ActionButton>
-        );
-      })}
-      <Button variant="outlined" color="error" sx={{ m: 2 }} onClick={logout}>
-        Sair
-        <Logout sx={{ pl: 1, fontSize: "1rem" }} />
-      </Button>
-    </S.Container>
+      <aside className="main-sidebar sidebar-dark-primary elevation-4">
+        <a className="brand-link">
+          {/* <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+          style="opacity: .8"> */}
+          <span className="brand-text font-weight-light">AdminLTE 3</span>
+        </a>
+        <div className="sidebar">
+          {MenuItens.map((item, index) => (
+            <SiderItem
+              key={index}
+              title={item.title}
+              active={
+                pathname
+                  .toLocaleLowerCase()
+                  .includes(
+                    item.title
+                      .toLocaleLowerCase()
+                      .replaceAll("õ", "o")
+                      .replaceAll("ç", "c")
+                  ) ||
+                (pathname === "/" && index === 0)
+              }
+              subitems={item.subitems}
+            />
+          ))}
+        </div>
+      </aside>
+    </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as S from "./styles";
 import { useNavigate } from "react-router-dom";
 import ButtonComponent from "components/Buttons/Button";
@@ -26,8 +26,9 @@ import { returnTime } from "utils/format";
 import InputForm from "components/Input";
 import { ValueType } from "./types";
 import DialogComponent from "components/Dialog";
+import Sider from "components/Sider";
 
-export default function ListRequests() {
+const ListRequests = () => {
   const navigation = useNavigate();
   const [rows, setRows] = useState<listRequestResponse[]>([]);
   const [updateRow, setUpdateRow] = useState<listRequestResponse>();
@@ -267,4 +268,6 @@ export default function ListRequests() {
       </DialogComponent>
     </S.Container>
   );
-}
+};
+
+export default ListRequests;
