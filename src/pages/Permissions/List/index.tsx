@@ -1,24 +1,24 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import * as S from "./styles";
 import { useNavigate } from "react-router-dom";
-import {
-  DataGrid,
-  GridColDef,
-  GridToolbar,
-  GridValueGetterParams,
-} from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useQuery } from "react-query";
 import Loading from "components/Loading/Loading";
 import { IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { getAllEmployee } from "services/Employee/employee";
 import { EmployeeType } from "services/Employee/types";
+import Empty from "components/Empty";
 
 const List: React.FC = () => {
   const navigation = useNavigate();
-  const [rows, setRows] = useState<EmployeeType[]>([]);
+  const height = window.innerHeight - 100;
+
+  const [employeePermission, setEmployeePermission] = useState<EmployeeType[]>(
+    []
+  );
   const [pageSize, setPageSize] = useState<number>(10);
+
   const { data: Employees, isLoading: isLoadingEmployee } = useQuery(
     "getAllEmployee",
     {
@@ -67,41 +67,36 @@ const List: React.FC = () => {
           ...item,
         })
       );
-      setRows(data);
+      setEmployeePermission(data);
     }
   }, [Employees]);
 
   if (isLoadingEmployee) {
-    return (
-      <div style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Loading />
-      </div>
-    );
+    return <Loading />;
   }
 
-  const height = window.innerHeight - 100;
+  if (employeePermission.length === 0) {
+    return <Empty text="Nenhum funcionário foi encontrada!" />;
+  }
 
   return (
-    rows &&
-    !isLoadingEmployee && (
-      <DataGrid
-        columns={VISIBLE_FIELDS}
-        rows={rows}
-        pageSize={pageSize}
-        components={{ Toolbar: GridToolbar }}
-        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-        rowsPerPageOptions={[5, 10, 20, 50, 100]}
-        pagination
-        style={{
-          paddingLeft: 20,
-          justifyContent: "space-between",
-          display: "flex",
-          margin: 20,
-          height,
-        }}
-        disableSelectionOnClick
-      />
-    )
+    <DataGrid
+      columns={VISIBLE_FIELDS}
+      rows={employeePermission}
+      pageSize={pageSize}
+      components={{ Toolbar: GridToolbar }}
+      onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+      rowsPerPageOptions={[5, 10, 20, 50, 100]}
+      pagination
+      style={{
+        paddingLeft: 20,
+        justifyContent: "space-between",
+        display: "flex",
+        margin: 20,
+        height,
+      }}
+      disableSelectionOnClick
+    />
   );
 };
 

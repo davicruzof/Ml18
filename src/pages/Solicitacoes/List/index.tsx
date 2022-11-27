@@ -14,6 +14,7 @@ import { statusUtil } from "../util";
 import { returnTime } from "utils/format";
 import Empty from "components/Empty";
 import Dialog from "./updateStatus";
+import Snack from "components/Snack";
 
 const ListRequests = () => {
   const [requests, setRequests] = useState<listRequestResponse[]>([]);
@@ -25,6 +26,10 @@ const ListRequests = () => {
   const [status, setStatus] = useState<string>("");
   const [idRequest, setIdRequest] = useState<number | string>("");
   const [idFunc, setIdFunc] = useState<number | string>("");
+
+  const [snackMessage, setSnackMessage] = useState("");
+  const [snackStatus, setSnackStatus] = useState(false);
+  const [snackType, setSnackType] = useState<"error" | "success">("success");
 
   const { isLoading: isLoadingUserData } = useQuery("getMe", {
     queryFn: () => getMe(),
@@ -69,6 +74,10 @@ const ListRequests = () => {
     useMutation({
       mutationFn: (formData: any) => updateRequest(formData),
       onSuccess: () => {
+        setSnackStatus(true);
+        setSnackType("success");
+        setSnackMessage("Solicitação atualizada com sucesso!");
+
         const sendData = {
           status: "",
           departamento: departamentos,
@@ -77,7 +86,9 @@ const ListRequests = () => {
         setOpen(false);
       },
       onError: () => {
-        alert("Ocorreu um erro, tente novamente!");
+        setSnackStatus(true);
+        setSnackType("error");
+        setSnackMessage("Ocorreu um erro, tente novamente!");
       },
     });
 
@@ -187,6 +198,13 @@ const ListRequests = () => {
         id_solicitacao={idRequest}
         updateStatusRequest={updateStatusRequest}
         justificativa={updateRow?.justificativa}
+      />
+
+      <Snack
+        handleClose={() => setSnackStatus(false)}
+        message={snackMessage}
+        open={snackStatus}
+        type={snackType}
       />
     </div>
   );
