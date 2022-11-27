@@ -1,16 +1,18 @@
-import { MenuItens } from "./util";
-import { useLocation } from "react-router-dom";
-import { SiderItem } from "./SiderItem";
 import { useMutation, useQuery } from "react-query";
 import { getEnterpriseById } from "services/Enterprises/enterprises";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "contexts/auth";
 import { getUser } from "services/User/user";
 import Loading from "components/Loading/Loading";
-import { getMe } from "services/Auth/auth";
-import { UserData } from "services/Auth/types";
 
-export default function Sider({ children }: { children: JSX.Element }) {
+import { Navigation } from "react-minimal-side-navigation";
+import Icon from "awesome-react-icons";
+import "react-minimal-side-navigation/lib/ReactMinimalSideNavigation.css";
+import { useNavigate } from "react-router-dom";
+import { MenuItens } from "./util";
+
+export function SideBar({ children }: any) {
+  const navigate = useNavigate();
   const { authValues } = useContext(AuthContext);
   const [nome, setNome] = useState("");
   const [logo, setLogo] = useState("");
@@ -22,15 +24,6 @@ export default function Sider({ children }: { children: JSX.Element }) {
         setLogo(data.logo);
         setNome(data.nomeempresarial);
       }
-    },
-  });
-
-  const { isLoading: isLoadingUserData, refetch } = useQuery("getMe", {
-    queryFn: () => getMe(),
-    enabled: true,
-    keepPreviousData: true,
-    onSuccess: (data: UserData) => {
-      console.log(data);
     },
   });
 
@@ -46,7 +39,10 @@ export default function Sider({ children }: { children: JSX.Element }) {
     }
   }, [authValues]);
 
-  const { pathname } = useLocation();
+  const navigation = (route: string) => {
+    navigate(route, { replace: true });
+  };
+
   return (
     <div>
       <nav className="main-header navbar navbar-expand navbar-white navbar-light">
@@ -106,25 +102,11 @@ export default function Sider({ children }: { children: JSX.Element }) {
           )}
         </a>
         <div className="sidebar">
-          {MenuItens.map((item, index) => (
-            <SiderItem
-              key={index}
-              title={item.title}
-              active={
-                pathname
-                  .toLocaleLowerCase()
-                  .includes(
-                    item.title
-                      .toLocaleLowerCase()
-                      .replaceAll("õ", "o")
-                      .replaceAll("ã", "a")
-                      .replaceAll("ç", "c")
-                  ) ||
-                (pathname === "/" && index === 0)
-              }
-              subitems={item.subitems}
-            />
-          ))}
+          <Navigation
+            activeItemId="/management/members"
+            onSelect={({ itemId }) => navigation(itemId)}
+            items={MenuItens}
+          />
         </div>
       </aside>
     </div>

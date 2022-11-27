@@ -19,6 +19,50 @@ body {
   height: 50vh!important;
 }
 
+.side-navigation-panel 
+.side-navigation-panel-select 
+.side-navigation-panel-select-wrap 
+.side-navigation-panel-select-option {
+  color: #fff!important;
+}
+
+.side-navigation-panel 
+.side-navigation-panel-select 
+.side-navigation-panel-select-wrap 
+.side-navigation-panel-select-option-selected {
+  background-color: transparent!important;
+}
+.side-navigation-panel-select-wrap:hover 
+.side-navigation-panel-select-option:hover {
+    background-color: transparent!important;
+}
+
+.side-navigation-panel 
+.side-navigation-panel-select 
+.side-navigation-panel-select-inner 
+.side-navigation-panel-select-inner-wrap 
+.side-navigation-panel-select-inner-option-selected {
+  background-color: transparent!important;
+}
+
+
+.side-navigation-panel 
+.side-navigation-panel-select 
+.side-navigation-panel-select-inner 
+.side-navigation-panel-select-inner-wrap 
+.side-navigation-panel-select-inner-option {
+  color: #fff!important;
+}
+
+.side-navigation-panel:hover 
+.side-navigation-panel-select:hover 
+.side-navigation-panel-select-inner:hover
+.side-navigation-panel-select-inner-wrap:hover 
+.side-navigation-panel-select-inner-option:hover {
+  background-color: transparent!important;
+  color: #fff!important;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

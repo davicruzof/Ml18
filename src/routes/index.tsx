@@ -6,6 +6,8 @@ import api from "../services/api";
 import AuthRoutes from "./AuthRoutes";
 import UserRoutes from "./UserRoutes";
 
+import { SideBar } from "components/SiderBar";
+
 function Routes() {
   const { authValues, setAuthValues } = useContext(AuthContext);
 
@@ -25,9 +27,9 @@ function Routes() {
   return (
     <BrowserRouter>
       {authValues.signed || storage ? (
-        <Sider>
+        <SideBar>
           <UserRoutes />
-        </Sider>
+        </SideBar>
       ) : (
         <AuthRoutes />
       )}
