@@ -49,15 +49,14 @@ export const createEnterprise = (credentials: any) => {
     throw new Error(error);
   }
 };
-// new Promise((resolve) => {
-//   setTimeout(() => {
-//     api
-//       .post("/enterprises/create", credentials)
-//       .then(function (response) {
-//         resolve(response);
-//       })
-//       .catch(function (error) {
-//         resolve(error.response);
-//       });
-//   }, 0);
-// });
+
+export const updateEnterprise = (credentials: any) => {
+  try {
+    console.log(credentials);
+    const data = api.put("/enterprises/update", credentials);
+    return data;
+  } catch (err) {
+    const { error } = (err as AxiosError<any, any>)?.response?.data;
+    throw new Error(error);
+  }
+};

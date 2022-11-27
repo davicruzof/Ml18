@@ -1,17 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import InputForm from "components/Input";
 import * as S from "./styles";
 import ButtonComponent from "components/Buttons/Button";
-import {
-  SelectChangeEvent,
-  Button,
-  FormGroup,
-  InputAdornment,
-} from "@mui/material";
+import { SelectChangeEvent, Button, FormGroup } from "@mui/material";
 import { IMAGEM_DEFAULT } from "utils/constants";
-import SelectComponent from "components/Select";
 import Snack from "components/Snack";
-import cep from "cep-promise";
 import { ValueType } from "./types";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
@@ -28,7 +21,13 @@ export default function Create_Edit() {
 
   const id = location.state?.idEnterprise;
 
-  const [cor, setCor] = useState<string>("");
+  const [prefixo, setPrefixo] = useState<string>("");
+  const [placa, setPlaca] = useState<string>("");
+  const [ano, setAno] = useState<string>("");
+  const [anoModelo, setAnoModelo] = useState<string>("");
+  const [modelo, setModelo] = useState<string>("");
+  const [chassis, setChassis] = useState<string>("");
+
   const [logo, setLogo] = useState<File | null>(null);
   const navigate = useNavigate();
   const [logoURl, setLogoURL] = useState<string>("");
@@ -37,38 +36,13 @@ export default function Create_Edit() {
   const [snackMessage, setSnackMessage] = useState("");
   const [snackStatus, setSnackStatus] = useState(false);
 
-  const [uf, setUf] = useState("");
-  const [rua, setRua] = useState("");
-  const [cnpj, setCnpj] = useState("");
-  const [email, setEmail] = useState("");
-  const [cepValue, setCep] = useState("");
-  const [bairro, setBairro] = useState("");
-  const [cidade, setCidade] = useState("");
-  const [numero, setNumero] = useState("");
-  const [telefone, setTelefone] = useState("");
-  const [complemento, setComplemento] = useState("");
-  const [nomeEmpresarial, setNomeEmpresarial] = useState("");
   const [snackType, setSnackType] = useState<"error" | "success">("success");
 
   const { mutate: getEnterprise, isLoading: isLoadingEdit } = useMutation(
     "getEnterpriseById",
     {
       mutationFn: (idEnterprise: number) => getEnterpriseById(idEnterprise),
-      onSuccess: ({ data }) => {
-        data.uf !== null && setUf(data.uf);
-        data.cep !== null && setCep(data.cep);
-        data.nomeempresarial !== null &&
-          setNomeEmpresarial(data.nomeempresarial);
-        data.municipio !== null && setCidade(data.municipio);
-        data.logo !== null && setLogoURL(data.logo);
-        data.cnpj !== null && setCnpj(data.cnpj);
-        data.email !== null && setEmail(data.email);
-        data.telefone !== null && setTelefone(data.telefone);
-        data.primary_color !== null && setCor(data.primary_color);
-        data.complemento !== null && setComplemento(data.complemento);
-        data.bairro !== null && setBairro(data.bairro);
-        data.numero !== null && setNumero(data.numero);
-      },
+      onSuccess: ({ data }) => {},
       onError: () => {
         setSnackStatus(true);
         setSnackType("error");
@@ -82,24 +56,6 @@ export default function Create_Edit() {
       getEnterprise(parseInt(id));
     }
   }, []);
-
-  useEffect(() => {
-    if (cep.length > 8 || cep.length < 8) {
-      setBairro("");
-      setCidade("");
-      setUf("");
-      setRua("");
-    }
-
-    if (cepValue.length === 8) {
-      cep(cepValue).then((val) => {
-        setBairro(val.neighborhood);
-        setCidade(val.city);
-        setUf(val.state);
-        setRua(val.street);
-      });
-    }
-  }, [cepValue]);
 
   const { mutate: registerEnterprise, isLoading } = useMutation({
     mutationFn: (formData: FormData) => createEnterprise(formData),
@@ -157,22 +113,13 @@ export default function Create_Edit() {
     });
 
   const onCanSubmit = () => {
-    return nomeEmpresarial.length > 0 && cnpj.length > 0;
+    return true;
   };
 
   const createObjectEnterprise = () => {
     const form = new FormData();
     logo && form.append("logo", logo, "logo.jpg");
     id && form.append("id_empresa", id);
-    form.append("nomeempresarial", nomeEmpresarial);
-    form.append("cnpj", cnpj);
-    form.append("logradouro", rua);
-    form.append("numero", numero);
-    form.append("complemento", complemento);
-    form.append("cep", cepValue);
-    form.append("bairro", bairro);
-    form.append("municipio", cidade);
-    form.append("uf", uf);
     form.append("situacao_cadastral", situacaoCadastral);
     form.append("id_grupo", "1");
 
@@ -220,146 +167,94 @@ export default function Create_Edit() {
 
       <FormGroup row sx={{ justifyContent: "space-between" }}>
         <InputForm
-          label="Razão social"
-          onChange={(e: ValueType) => setNomeEmpresarial(e.target.value)}
-          value={nomeEmpresarial}
+          label="Prefixo"
+          onChange={(e: ValueType) => setPrefixo(e.target.value)}
+          value={prefixo}
           required
         />
         <FormGroup sx={{ mr: 2 }} />
         <InputForm
-          name="cnpj"
-          label="CNPJ"
-          onChange={(e: ValueType) => setCnpj(e.target.value)}
-          value={cnpj}
-          required
-        />
-      </FormGroup>
-
-      <FormGroup row sx={{ justifyContent: "space-between" }}>
-        <InputForm
-          label="CEP"
-          onChange={(e: ValueType) => setCep(e.target.value)}
-          value={cepValue}
+          label="Placa"
+          onChange={(e: ValueType) => setPlaca(e.target.value)}
+          value={placa}
           required
         />
         <FormGroup sx={{ mr: 2 }} />
         <InputForm
-          label="Estado"
-          onChange={(e: ValueType) => setUf(e.target.value)}
-          value={uf}
+          label="Ano Fabricação"
+          onChange={(e: ValueType) => setAno(e.target.value)}
+          value={ano}
           required
         />
         <FormGroup sx={{ mr: 2 }} />
-
         <InputForm
-          label="Cidade"
-          onChange={(e: ValueType) => setCidade(e.target.value)}
-          value={cidade}
+          label="Ano Modelo"
+          onChange={(e: ValueType) => setAnoModelo(e.target.value)}
+          value={anoModelo}
           required
         />
       </FormGroup>
 
-      <InputForm
-        label="Rua"
-        onChange={(e: ValueType) => setRua(e.target.value)}
-        value={rua}
-        required
-      />
-
-      <FormGroup row sx={{ justifyContent: "space-between" }}>
-        <InputForm
-          label="Bairro"
-          onChange={(e: ValueType) => setBairro(e.target.value)}
-          value={bairro}
-        />
-        <FormGroup sx={{ mr: 2 }} />
-        <InputForm
-          label="Numero"
-          onChange={(e: ValueType) => setNumero(e.target.value)}
-          value={numero}
-          required
-        />
-        <FormGroup sx={{ mr: 2 }} />
-        <InputForm
-          onChange={(e: ValueType) => setComplemento(e.target.value)}
-          value={complemento}
-          label="Complemento"
-        />
-      </FormGroup>
-
-      <FormGroup row sx={{ justifyContent: "space-between" }}>
-        <InputForm
-          label="Email"
-          type="email"
-          onChange={(e: ValueType) => setEmail(e.target.value)}
-          value={email}
-        />
-        <FormGroup sx={{ mr: 2 }} />
-        <InputForm
-          label="Telefone"
-          type="tel"
-          onChange={(e: ValueType) => setTelefone(e.target.value)}
-          value={telefone}
-        />
-      </FormGroup>
-
-      <FormGroup row>
-        <SelectComponent
-          itens={["Ativo", "Inativo", "Suspenso"]}
-          handleChange={handleChange}
-          value={situacaoCadastral}
-          label="Status"
-        />
-
-        <FormGroup sx={{ mr: 2 }} />
-
-        <InputForm
-          label="Cor"
-          InputProps={{
-            startAdornment: <InputAdornment position="start">#</InputAdornment>,
+      <FormGroup row style={{ flex: 1 }}>
+        <FormGroup
+          sx={{
+            justifyContent: "space-between",
+            marginRight: 2,
+            flex: 1,
           }}
-          onChange={(e: ValueType) => setCor(e.target.value)}
-          value={cor}
-        />
+        >
+          <InputForm
+            label="Modelo"
+            onChange={(e: ValueType) => setModelo(e.target.value)}
+            value={modelo}
+            required
+          />
+          <FormGroup sx={{ mr: 2 }} />
+          <InputForm
+            label="Chassis"
+            onChange={(e: ValueType) => setChassis(e.target.value)}
+            value={chassis}
+            required
+          />
+          <FormGroup sx={{ mr: 2 }} />
+          <FormGroup row>
+            <InputForm
+              label="Garagem"
+              onChange={(e: ValueType) => setChassis(e.target.value)}
+              value={chassis}
+              required
+            />
+            <FormGroup sx={{ mr: 2 }} />
+            <InputForm
+              label="Media Km/L"
+              onChange={(e: ValueType) => setChassis(e.target.value)}
+              value={chassis}
+              required
+            />
+          </FormGroup>
+        </FormGroup>
 
-        <div
-          style={{
-            backgroundColor: cor ? `#${cor}` : "#fff",
-            height: 52,
-            width: 80,
-            borderRadius: 4,
-            borderWidth: 1,
-            borderStyle: "solid",
-            borderColor: theme.colors.text.disabled,
-            marginLeft: 14,
-          }}
-        />
+        <FormGroup style={{ width: 130 }}>
+          <img
+            src={logoURl.length > 0 ? logoURl : IMAGEM_DEFAULT}
+            height={logoURl.length > 0 ? 100 : 52}
+            width={logoURl.length > 0 ? 100 : 52}
+            style={{
+              backgroundColor: theme.colors.primary,
+              height: 130,
+              width: 130,
+              padding: 1,
+              objectFit: "cover",
+              boxShadow: "0 3px 6px rgba(0,0,0,.16),0 3px 6px rgba(0,0,0,.23)",
+            }}
+          />
 
-        <FormGroup sx={{ mr: 3 }} />
-
-        <img
-          src={logoURl.length > 0 ? logoURl : IMAGEM_DEFAULT}
-          height={logoURl.length > 0 ? 100 : 52}
-          width={logoURl.length > 0 ? 100 : 52}
-          style={{
-            marginRight: 20,
-            backgroundColor: theme.colors.primary,
-            height: 50,
-            width: 50,
-            padding: 1,
-            objectFit: "cover",
-            borderRadius: "50%",
-            boxShadow: "0 3px 6px rgba(0,0,0,.16),0 3px 6px rgba(0,0,0,.23)",
-          }}
-        />
-
-        <FormGroup>
           <Button
             variant="contained"
             component="label"
-            style={{ height: logoURl.length > 0 ? 42 : 52 }}
+            style={{ height: logoURl.length > 0 ? 42 : 52, marginTop: 20 }}
           >
-            Selecione o logo
+            Selecione o foto
             <InputFile name="logo" handleLogo={handleLogo} />
           </Button>
 
@@ -372,7 +267,7 @@ export default function Create_Edit() {
               style={{ height: 42 }}
               onClick={() => setLogoURL("")}
             >
-              remover
+              remover foto
             </Button>
           )}
         </FormGroup>
@@ -384,7 +279,7 @@ export default function Create_Edit() {
       >
         <Button
           variant="text"
-          onClick={() => navigate("/Admin/Empresas", { replace: true })}
+          onClick={() => navigate("/backOffice/Veiculos", { replace: true })}
           sx={{ mt: 3 }}
         >
           Voltar

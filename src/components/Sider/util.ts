@@ -4,8 +4,22 @@ export const MenuItens = [
     subitems: ["Monitoramento", "Cadastro"],
   },
   {
+    title: "Admin",
+    subitems: ["Empresas"],
+  },
+  {
+    title: "BackOffice",
+    subitems: ["Linha", "Veículos", "Grupos"],
+  },
+  {
     title: "TI",
-    subitems: ["Usuário", "Permissões", "Parâmetro", "Grupo usuários"],
+    subitems: [
+      "Usuário",
+      "Permissões",
+      "Parâmetro",
+      "Grupo usuários",
+      "Exclusão de conta",
+    ],
   },
   {
     title: "RH",

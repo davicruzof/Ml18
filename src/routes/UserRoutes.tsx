@@ -5,65 +5,35 @@ import { Routes, Route } from "react-router-dom";
 import ListRequests from "pages/Solicitacoes/List";
 import EmployeeList from "pages/Funcionarios/List";
 import EditEmployee from "pages/Funcionarios/Edit";
-import Sider from "components/Sider";
 import { NotFound } from "pages/NotFound";
+import DeleteAccount from "pages/DeleteAccount";
+import Frota from "pages/Frota/List";
+import Create_Edit from "pages/Frota/Create_Edit";
 
-function UserRoutes() {
+export default function UserRoutes() {
   return (
     <Routes>
-      <Route
-        path="/"
-        element={
-          <Sider>
-            <ListRequests />
-          </Sider>
-        }
-      />
-      <Route path="Empresa/">
-        <Route path="List" element={<ListEnterprise />} />
+      <Route path="/" element={<ListRequests />} />
+      <Route path="Admin/">
+        <Route path="Empresas" element={<ListEnterprise />} />
         <Route path="New" element={<Enterprise />} />
-        <Route path="Edit" element={<Enterprise />} />
+        <Route path="Empresa/Edit" element={<Enterprise />} />
       </Route>
       <Route path="solicitacoes/">
-        <Route
-          path="monitoramento"
-          element={
-            <Sider>
-              <ListRequests />
-            </Sider>
-          }
-        />
+        <Route path="monitoramento" element={<ListRequests />} />
         <Route path="New" element={<Solicitacoes />} />
       </Route>
+      <Route path="backOffice/">
+        <Route path="Veiculos" element={<Frota />} />
+        <Route path="NewVeiculo" element={<Create_Edit />} />
+      </Route>
       <Route path="ti/">
-        <Route
-          path="permissoes"
-          element={
-            <Sider>
-              <EmployeeList />
-            </Sider>
-          }
-        />
-        <Route
-          path="permission/edit"
-          element={
-            <Sider>
-              <EditEmployee />
-            </Sider>
-          }
-        />
+        <Route path="permissoes" element={<EmployeeList />} />
+        <Route path="permission/edit" element={<EditEmployee />} />
+        <Route path="exclusao-de-conta" element={<DeleteAccount />} />
       </Route>
 
-      <Route
-        path="*"
-        element={
-          <Sider>
-            <NotFound />
-          </Sider>
-        }
-      />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }
-
-export default UserRoutes;

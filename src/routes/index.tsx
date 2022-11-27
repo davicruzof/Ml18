@@ -1,3 +1,4 @@
+import Sider from "components/Sider";
 import { useContext, useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
 import { AuthContext } from "../contexts/auth";
@@ -23,7 +24,13 @@ function Routes() {
 
   return (
     <BrowserRouter>
-      {authValues.signed || storage ? <UserRoutes /> : <AuthRoutes />}
+      {authValues.signed || storage ? (
+        <Sider>
+          <UserRoutes />
+        </Sider>
+      ) : (
+        <AuthRoutes />
+      )}
     </BrowserRouter>
   );
 }

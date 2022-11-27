@@ -47,6 +47,8 @@ export function SiderItem({ title, subitems, active }: SiderItemProps) {
       .toLocaleLowerCase()
       .replaceAll(" ", "-")
       .replaceAll("õ", "o")
+      .replaceAll("ã", "a")
+      .replaceAll("í", "i")
       .replaceAll("ç", "c")
       .replaceAll("â", "a")
       .replaceAll("á", "a");

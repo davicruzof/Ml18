@@ -8,6 +8,8 @@ import { AuthContext } from "contexts/auth";
 import LOGO from "assets/logo.png";
 import { getUser } from "services/User/user";
 import Loading from "components/Loading/Loading";
+import { getMe } from "services/Auth/auth";
+import { UserData } from "services/Auth/types";
 
 export default function Sider({ children }: { children: JSX.Element }) {
   const { authValues } = useContext(AuthContext);
@@ -21,6 +23,15 @@ export default function Sider({ children }: { children: JSX.Element }) {
         setLogo(data.logo);
         setNome(data.nomeempresarial);
       }
+    },
+  });
+
+  const { isLoading: isLoadingUserData, refetch } = useQuery("getMe", {
+    queryFn: () => getMe(),
+    enabled: true,
+    keepPreviousData: true,
+    onSuccess: (data: UserData) => {
+      console.log(data);
     },
   });
 
@@ -107,6 +118,7 @@ export default function Sider({ children }: { children: JSX.Element }) {
                     item.title
                       .toLocaleLowerCase()
                       .replaceAll("õ", "o")
+                      .replaceAll("ã", "a")
                       .replaceAll("ç", "c")
                   ) ||
                 (pathname === "/" && index === 0)

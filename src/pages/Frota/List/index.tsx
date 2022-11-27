@@ -10,7 +10,7 @@ import Loading from "components/Loading/Loading";
 import { Chip, IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 
-export default function ListEnterprise() {
+export default function Frota() {
   const navigation = useNavigate();
   const [rows, setRows] = useState<EnterPriseType[]>([]);
   const [pageSize, setPageSize] = useState<number>(10);
@@ -83,17 +83,15 @@ export default function ListEnterprise() {
     }
   }, [dataEnterprises]);
 
-  if (isLoading) {
-    return <Loading />;
-  }
-
   return (
     <S.Container>
       <S.Wrapper>
         <ButtonComponent
-          onClick={() => navigation("/Admin/New", { replace: true })}
+          onClick={() =>
+            navigation("/backOffice/NewVeiculo", { replace: true })
+          }
           loading={false}
-          title="+ Adicionar nova empresa"
+          title="+ Adicionar nova veículo"
           active={false}
         />
       </S.Wrapper>
