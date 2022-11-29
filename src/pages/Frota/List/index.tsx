@@ -87,9 +87,7 @@ export default function Frota() {
     <S.Container>
       <S.Wrapper>
         <ButtonComponent
-          onClick={() =>
-            navigation("/backOffice/NewVeiculo", { replace: true })
-          }
+          onClick={() => navigation("/frota/AddVeiculo", { replace: true })}
           loading={false}
           title="+ Adicionar nova veículo"
           active={false}

@@ -1,10 +1,11 @@
 import { GoRequestChanges } from "react-icons/go";
 import { HiOutlineDesktopComputer } from "react-icons/hi";
+import { BiBus } from "react-icons/bi";
 
 export const MenuItens = [
   {
     title: "Solicitações",
-    itemId: "#",
+    itemId: "/solicitacoes/monitoramento",
     elemBefore: () => <GoRequestChanges style={{ fontSize: 28 }} />,
 
     subNav: [
@@ -16,7 +17,7 @@ export const MenuItens = [
   },
   {
     title: "TI",
-    itemId: "#",
+    itemId: "/ti/permissoes",
     elemBefore: () => <HiOutlineDesktopComputer style={{ fontSize: 28 }} />,
     subNav: [
       {
@@ -26,6 +27,17 @@ export const MenuItens = [
       {
         title: "Exclusão de conta",
         itemId: "/ti/delete_account",
+      },
+    ],
+  },
+  {
+    title: "Frota",
+    itemId: "/frota/listagem",
+    elemBefore: () => <BiBus style={{ fontSize: 28 }} />,
+    subNav: [
+      {
+        title: "Listagem",
+        itemId: "/frota/listagem",
       },
     ],
   },

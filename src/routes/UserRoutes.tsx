@@ -23,9 +23,9 @@ export default function UserRoutes() {
         <Route path="monitoramento" element={<ListRequests />} />
         <Route path="New" element={<Solicitacoes />} />
       </Route>
-      <Route path="backOffice/">
-        <Route path="Veiculos" element={<Frota />} />
-        <Route path="NewVeiculo" element={<Create_Edit />} />
+      <Route path="frota/">
+        <Route path="Listagem" element={<Frota />} />
+        <Route path="AddVeiculo" element={<Create_Edit />} />
       </Route>
       <Route path="ti/">
         <Route path="permissoes" element={<EmployeePermissionList />} />

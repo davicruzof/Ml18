@@ -277,7 +277,7 @@ export default function Create_Edit() {
       >
         <Button
           variant="text"
-          onClick={() => navigate("/backOffice/Veiculos", { replace: true })}
+          onClick={() => navigate("/frota/Listagem", { replace: true })}
           sx={{ mt: 3 }}
         >
           Voltar
