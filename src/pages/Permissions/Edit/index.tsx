@@ -70,6 +70,8 @@ export default function EditEmployee() {
     return emp && emp.data && emp.data[0];
   }, [emp]);
 
+  console.log(employee);
+
   const { isLoading: isLoadingDepartamentos, refetch: refetchDpts } = useQuery(
     "getDepartments",
     {
@@ -218,6 +220,7 @@ export default function EditEmployee() {
       {employee && (
         <S.Header>
           <S.Title>Dados do Funcionário</S.Title>
+          <S.LabelHeader>Registro: {employee.registro}</S.LabelHeader>
           <S.LabelHeader>Nome: {employee.nome}</S.LabelHeader>
           <S.LabelHeader>Função: {employee.funcao}</S.LabelHeader>
           <S.LabelHeader>Email: {employee.email}</S.LabelHeader>

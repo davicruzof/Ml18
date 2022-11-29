@@ -52,7 +52,6 @@ export const createEnterprise = (credentials: any) => {
 
 export const updateEnterprise = (credentials: any) => {
   try {
-    console.log(credentials);
     const data = api.put("/enterprises/update", credentials);
     return data;
   } catch (err) {

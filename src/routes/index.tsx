@@ -1,4 +1,3 @@
-import Sider from "components/Sider";
 import { useContext, useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
 import { AuthContext } from "../contexts/auth";

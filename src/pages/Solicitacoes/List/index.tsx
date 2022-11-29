@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useMutation, useQuery } from "react-query";
 import Loading from "components/Loading/Loading";
@@ -59,7 +59,7 @@ const ListRequests = () => {
     data.map((item) => {
       if (
         item.id_funcionario_analise === idFunc ||
-        item.status !== "ATENDIDA"
+        (item.status !== "ATENDIDA" && item.modulo !== "Exclusão de conta")
       ) {
         send.push({
           id: item.id_solicitacao,
@@ -162,7 +162,11 @@ const ListRequests = () => {
     }
   }, [departamentos]);
 
-  if (isLoadingRequests || isLoadingUserData || isLoadingUpdateRequests) {
+  const loading = useMemo(() => {
+    return isLoadingRequests || isLoadingUserData || isLoadingUpdateRequests;
+  }, [isLoadingRequests, isLoadingUserData, isLoadingUpdateRequests]);
+
+  if (loading) {
     return <Loading />;
   }
 

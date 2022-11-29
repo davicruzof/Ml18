@@ -1,103 +1,49 @@
-import React, { useEffect, useState } from "react";
-import * as S from "./styles";
+import { useEffect, useState } from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useMutation } from "react-query";
 import Loading from "components/Loading/Loading";
-import {
-  Box,
-  Chip,
-  FormControl,
-  IconButton,
-  InputLabel,
-  Select,
-  SelectChangeEvent,
-} from "@mui/material";
+import { Chip, IconButton } from "@mui/material";
 
-import EditIcon from "@mui/icons-material/Edit";
-import { listRequests, updateRequest } from "services/Solicitacoes";
+import EditIcon from "@mui/icons-material/RemoveRedEyeOutlined";
+import { listRequests } from "services/Solicitacoes";
 import { listRequestResponse } from "services/Solicitacoes/types";
 import { TypeListRequest } from "services/Solicitacoes/types";
 import { statusUtil } from "./util";
 import { returnTime } from "utils/format";
-import InputForm from "components/Input";
-import { ValueType } from "./types";
-import DialogComponent from "components/Dialog";
+import Empty from "components/Empty";
+import Dialog from "./updateStatus";
 
 const DeleteAccount = () => {
-  const [rows, setRows] = useState<listRequestResponse[]>([]);
+  const [requests, setRequests] = useState<listRequestResponse[]>([]);
   const [updateRow, setUpdateRow] = useState<listRequestResponse>();
   const [pageSize, setPageSize] = useState<number>(10);
 
-  const [parecer, setParecer] = useState("");
-  const [open2, setOpen2] = useState(false);
-  const [newStatus2, setNewStatus2] = useState<number | string>("");
-  const [idUpdate2, setIDUpdate2] = useState<number | string>("");
-  const [idFunc, setIdFunc] = useState<number | string>("");
+  const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    const sendData = {
-      status: "",
-      departamento: [9],
-    };
-    getListRequests(sendData);
-  }, []);
-
-  const {
-    mutate: getListRequests,
-    isLoading: isLoadingRequests,
-    data: dataRequests,
-  } = useMutation({
+  const { mutate: getRequests, isLoading: isLoadingRequests } = useMutation({
     mutationFn: (formData: TypeListRequest) => listRequests(formData),
     onSuccess: (data: listRequestResponse[]) => {
       if (data) {
-        const send: listRequestResponse[] = [];
-        data.map((item) => {
-          if (item.status !== "ATENDIDA") {
-            send.push({
-              id: item.id_solicitacao,
-              ...item,
-            });
-          }
-        });
-        setRows(send);
+        const requestsFormatted = formatRequests(data);
+        setRequests(requestsFormatted);
       }
     },
   });
 
-  const { mutate: updateStatusRequest, isLoading: isLoadingUpdateRequests } =
-    useMutation({
-      mutationFn: (formData: any) => updateRequest(formData),
-      onSuccess: (data: any) => {
-        setOpen2(false);
-      },
-      onError: () => {
-        alert("Ocorreu um erro, tente novamente!");
-      },
+  const formatRequests = (data: listRequestResponse[]) => {
+    const send: listRequestResponse[] = [];
+    data.map((item) => {
+      send.push({
+        id: item.id_solicitacao,
+        ...item,
+      });
     });
-
-  const handleChange2 = (event: SelectChangeEvent<typeof newStatus2>) => {
-    setNewStatus2("");
-    setNewStatus2(event.target.value);
-  };
-
-  const handleUpdateStatus2 = () => {
-    setNewStatus2("");
-    if (idUpdate2 && newStatus2) {
-      const sendData = {
-        id_solicitacao: idUpdate2,
-        status: newStatus2,
-        parecer,
-      };
-      updateStatusRequest(sendData);
-    }
+    return send;
   };
 
   const handleUpdate = (data: any) => {
-    setOpen2(!open2);
+    setOpen(!open);
     setUpdateRow(data);
-    setParecer(data.parecer);
-    setNewStatus2(data.status);
-    setIDUpdate2(data.id_solicitacao);
   };
 
   const VISIBLE_FIELDS = [
@@ -120,7 +66,6 @@ const DeleteAccount = () => {
         return [<span>{data.row.dt_cadastro}</span>];
       },
     },
-
     {
       field: "update",
       headerName: "Atualizado",
@@ -150,98 +95,54 @@ const DeleteAccount = () => {
     },
   ];
 
-  useEffect(() => {
-    if (dataRequests) {
-      const send: listRequestResponse[] = [];
-      dataRequests.map((item) => {
-        if (item.status !== "ATENDIDA") {
-          send.push({
-            id: item.id_solicitacao,
-            ...item,
-          });
-        }
-      });
-      setRows(send);
-    }
-  }, [dataRequests]);
-
-  if (isLoadingRequests || isLoadingUpdateRequests) {
-    return (
-      <div style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Loading />
-      </div>
-    );
-  }
-
-  const SelectStatus = ({
-    newStatus,
-    handleChange,
-  }: {
-    newStatus: string | number;
-    handleChange: (event: SelectChangeEvent<typeof newStatus>) => void;
-  }) => {
-    return (
-      <FormControl sx={{ mb: 1, minWidth: 250, width: "100%" }}>
-        <InputLabel htmlFor="demo-dialog-native">Status</InputLabel>
-        <Select native value={newStatus} onChange={handleChange} label="Status">
-          <option value="SOLICITADO">Solicitado</option>
-          <option value="ANDAMENTO">Em andamento</option>
-          <option value="ATENDIDA">Finalizada</option>
-        </Select>
-      </FormControl>
-    );
-  };
-
   const height = window.innerHeight - 100;
 
-  return (
-    <S.Container>
-      {rows.length > 0 && rows[0]?.id && dataRequests && (
-        <DataGrid
-          loading={isLoadingRequests}
-          columns={VISIBLE_FIELDS}
-          rows={rows}
-          components={{ Toolbar: GridToolbar }}
-          pageSize={pageSize}
-          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-          rowsPerPageOptions={[5, 10, 20, 50, 100]}
-          pagination
-          style={{
-            paddingLeft: 20,
-            justifyContent: "space-between",
-            display: "flex",
-            margin: 20,
-            height,
-          }}
-          disableSelectionOnClick
-        />
-      )}
+  const newRequest = () => {
+    const sendData = {
+      status: "",
+      departamento: [9],
+    };
+    getRequests(sendData);
+  };
 
-      <DialogComponent
-        open={open2}
-        title="Atualizar solicitação"
-        setOpen={setOpen2}
-        buttonConfirmText="Atualizar"
-        handleButtonConfirm={handleUpdateStatus2}
-      >
-        <Box component="form" sx={{ display: "flex", flexWrap: "wrap" }}>
-          <FormControl sx={{ mb: 3, width: "100%" }}>
-            <h4>Justificativa:</h4>
-            <span>{updateRow?.justificativa}</span>
-          </FormControl>
-          <SelectStatus newStatus={newStatus2} handleChange={handleChange2} />
-          <FormControl sx={{ mt: 1, width: "100%" }}>
-            <InputForm
-              label="Parecer da solicitacao"
-              multiline
-              maxRows={8}
-              onChange={(e: ValueType) => setParecer(e.target.value)}
-              value={parecer}
-            />
-          </FormControl>
-        </Box>
-      </DialogComponent>
-    </S.Container>
+  useEffect(() => {
+    newRequest();
+  }, []);
+
+  useEffect(() => {
+    !open && newRequest();
+  }, [open]);
+
+  if (isLoadingRequests) {
+    return <Loading />;
+  }
+
+  if (requests.length === 0) {
+    return <Empty text="Nenhuma solicitação foi encontrada!" />;
+  }
+
+  return (
+    <div>
+      <DataGrid
+        columns={VISIBLE_FIELDS}
+        rows={requests}
+        components={{ Toolbar: GridToolbar }}
+        pageSize={pageSize}
+        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+        rowsPerPageOptions={[5, 10, 20, 50, 100]}
+        pagination
+        style={{
+          paddingLeft: 20,
+          justifyContent: "space-between",
+          display: "flex",
+          margin: 20,
+          height,
+        }}
+        disableSelectionOnClick
+      />
+
+      <Dialog open={open} setOpen={setOpen} row={updateRow} />
+    </div>
   );
 };
 

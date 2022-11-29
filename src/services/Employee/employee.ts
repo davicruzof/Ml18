@@ -35,3 +35,13 @@ export const updateEmployeeAreas = (credentials: EmployeeAreasType) => {
     throw new Error(error);
   }
 };
+
+export const deleteAccount = (id_funcionario: number) => {
+  try {
+    const data = api.post("/employee/deleteAccount", { id_funcionario });
+    return data;
+  } catch (err) {
+    const { error } = (err as AxiosError<any, any>)?.response?.data;
+    throw new Error(error);
+  }
+};

@@ -4,7 +4,7 @@ import { HiOutlineDesktopComputer } from "react-icons/hi";
 export const MenuItens = [
   {
     title: "Solicitações",
-    itemId: "/solicitacoes/monitoramento",
+    itemId: "#",
     elemBefore: () => <GoRequestChanges style={{ fontSize: 28 }} />,
 
     subNav: [
@@ -16,12 +16,16 @@ export const MenuItens = [
   },
   {
     title: "TI",
-    itemId: "/ti/permissoes",
+    itemId: "#",
     elemBefore: () => <HiOutlineDesktopComputer style={{ fontSize: 28 }} />,
     subNav: [
       {
         title: "Permissões",
         itemId: "/ti/permissoes",
+      },
+      {
+        title: "Exclusão de conta",
+        itemId: "/ti/delete_account",
       },
     ],
   },

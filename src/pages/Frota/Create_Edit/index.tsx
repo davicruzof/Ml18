@@ -150,8 +150,6 @@ export default function Create_Edit() {
     }
   };
 
-  console.log(logoURl);
-
   const handleChange = (event: SelectChangeEvent) => {
     setSituacaoCadastral(event.target.value as string);
   };

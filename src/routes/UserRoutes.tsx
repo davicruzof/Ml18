@@ -30,7 +30,7 @@ export default function UserRoutes() {
       <Route path="ti/">
         <Route path="permissoes" element={<EmployeePermissionList />} />
         <Route path="permission/edit" element={<EmployeePermissionEdit />} />
-        <Route path="exclusao-de-conta" element={<DeleteAccount />} />
+        <Route path="delete_account" element={<DeleteAccount />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />
