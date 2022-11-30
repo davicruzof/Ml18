@@ -138,13 +138,13 @@ const LoginScreen = () => {
           active={false}
         />
 
-        <Button
+        {/* <Button
           sx={{ mt: 4 }}
           variant="text"
           onClick={() => navigation("Signup", { replace: true })}
         >
           Criar Conta
-        </Button>
+        </Button> */}
       </S.Form>
 
       <Snack

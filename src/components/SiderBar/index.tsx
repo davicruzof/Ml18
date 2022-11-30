@@ -6,10 +6,10 @@ import { getUser } from "services/User/user";
 import Loading from "components/Loading/Loading";
 
 import { Navigation } from "react-minimal-side-navigation";
-import Icon from "awesome-react-icons";
 import "react-minimal-side-navigation/lib/ReactMinimalSideNavigation.css";
 import { useNavigate } from "react-router-dom";
 import { MenuItens } from "./util";
+import Button from "components/Buttons/Button";
 
 export function SideBar({ children }: any) {
   const navigate = useNavigate();
@@ -60,10 +60,17 @@ export function SideBar({ children }: any) {
               <i className="fas fa-bars"></i>
             </a>
           </li>
-          <li className="nav-item d-none d-sm-inline-block">
+          <li
+            className="nav-item"
+            style={{
+              flexDirection: "row",
+              display: "flex",
+            }}
+          >
             <a href="#" className="nav-link">
               Olá, {dataUser?.user?.nome.split(" ").slice(0, 1).join(" ")}
             </a>
+            <Button style={{ marginTop: 0 }} title="Sair" />
           </li>
         </ul>
       </nav>

@@ -7,7 +7,7 @@ function AuthRoutes() {
     <Routes>
       <Route path="/" element={<LoginScreen />} />
       <Route path="Login" element={<LoginScreen />} />
-      <Route path="Signup" element={<Signup />} />
+      {/* <Route path="Signup" element={<Signup />} /> */}
       <Route path="*" element={<LoginScreen />} />
     </Routes>
   );
