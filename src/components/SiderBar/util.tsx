@@ -30,28 +30,28 @@ export const MenuItens = [
       },
     ],
   },
-  // {
-  //   title: "Frota",
-  //   itemId: "/frota/listagem",
-  //   elemBefore: () => <BiBus style={{ fontSize: 28 }} />,
-  //   subNav: [
-  //     {
-  //       title: "Listagem",
-  //       itemId: "/frota/listagem",
-  //     },
-  //   ],
-  // },
-  // {
-  //   title: "Empresa",
-  //   itemId: "/Admin/Empresas",
-  //   elemBefore: () => <BiBus style={{ fontSize: 28 }} />,
-  //   subNav: [
-  //     {
-  //       title: "Listagem",
-  //       itemId: "/frota/listagem",
-  //     },
-  //   ],
-  // },
+  {
+    title: "Frota",
+    itemId: "/frota/listagem",
+    elemBefore: () => <BiBus style={{ fontSize: 28 }} />,
+    subNav: [
+      {
+        title: "Listagem",
+        itemId: "/frota/listagem",
+      },
+    ],
+  },
+  {
+    title: "Empresa",
+    itemId: "/Admin/Empresas",
+    elemBefore: () => <BiBus style={{ fontSize: 28 }} />,
+    subNav: [
+      {
+        title: "Listagem",
+        itemId: "/frota/listagem",
+      },
+    ],
+  },
   // {
   //   title: "Admin",
   //   subitems: ["Empresas"],

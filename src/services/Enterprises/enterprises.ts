@@ -40,8 +40,11 @@ export const getEnterpriseById = (
   }
 };
 
-export const createEnterprise = (credentials: any) => {
+export const createEnterprise = (credentials: FormData) => {
   try {
+    credentials.forEach((element, key) => {
+      console.log(key, " - ", element);
+    });
     const data = api.post("/enterprises/create", credentials);
     return data;
   } catch (err) {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import InputForm from "components/Input";
 import * as S from "./styles";
 import ButtonComponent from "components/Buttons/Button";
@@ -8,13 +8,11 @@ import Snack from "components/Snack";
 import { ValueType } from "./types";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
-import {
-  createEnterprise,
-  getEnterpriseById,
-  updateEnterprise,
-} from "services/Enterprises/enterprises";
+import { updateEnterprise } from "services/Enterprises/enterprises";
 import { InputFile } from "components/InputControl/inputFile";
 import theme from "utils/theme";
+import SelectComponent from "components/Select";
+import { createVehicle } from "services/Vehicle";
 
 export default function Create_Edit() {
   const location = useLocation();
@@ -23,66 +21,87 @@ export default function Create_Edit() {
 
   const [prefixo, setPrefixo] = useState<string>("");
   const [placa, setPlaca] = useState<string>("");
-  const [ano, setAno] = useState<string>("");
   const [anoModelo, setAnoModelo] = useState<string>("");
+  const [anoFabricacao, setAnoFabricacao] = useState<string>("");
   const [modelo, setModelo] = useState<string>("");
   const [chassis, setChassis] = useState<string>("");
+  const [garagem, setGaragem] = useState<string>("");
+  const [media, setMedia] = useState<string>("");
 
   const [logo, setLogo] = useState<File | null>(null);
   const navigate = useNavigate();
   const [logoURl, setLogoURL] = useState<string>("");
-  const [situacaoCadastral, setSituacaoCadastral] = useState<string>("Ativo");
 
   const [snackMessage, setSnackMessage] = useState("");
   const [snackStatus, setSnackStatus] = useState(false);
 
   const [snackType, setSnackType] = useState<"error" | "success">("success");
 
-  const { mutate: getEnterprise, isLoading: isLoadingEdit } = useMutation(
-    "getEnterpriseById",
-    {
-      mutationFn: (idEnterprise: number) => getEnterpriseById(idEnterprise),
-      onSuccess: ({ data }) => {},
-      onError: () => {
-        setSnackStatus(true);
-        setSnackType("error");
-        setSnackMessage("Ocorreu um erro ao tentar buscar dados!");
-      },
-    }
-  );
+  const [anos, setAnos] = useState<string[]>([]);
 
   useEffect(() => {
-    if (id) {
-      getEnterprise(parseInt(id));
+    const dataNow = new Date();
+    const ANOS = [];
+    for (let index = 0; index < 30; index++) {
+      const ano = dataNow.getFullYear() - index;
+      ANOS.push(ano.toString());
     }
+
+    setAnos(ANOS);
   }, []);
 
-  const { mutate: registerEnterprise, isLoading } = useMutation({
-    mutationFn: (formData: FormData) => createEnterprise(formData),
-    onSuccess: (data) => {
-      if (data.status === 200) {
-        if (data.data.sucess) {
-          setSnackStatus(true);
-          setSnackType("success");
-          setSnackMessage("Cadastrado com sucesso!");
-          setTimeout(() => {
-            navigate("/Empresa/List", { replace: true });
-          }, 3000);
-        }
+  const handleError = (text: string) => {
+    setSnackStatus(true);
+    setSnackType("error");
+    setSnackMessage(text);
+  };
 
-        if (data.data.error) {
-          setSnackStatus(true);
-          setSnackType("error");
-          setSnackMessage(data.data.error);
-        }
+  // const { mutate: getEnterprise, isLoading: isLoadingEdit } = useMutation(
+  //   "getEnterpriseById",
+  //   {
+  //     mutationFn: (idEnterprise: number) => getEnterpriseById(idEnterprise),
+  //     onSuccess: ({ data }) => {},
+  //     onError: () => {
+  //       setSnackStatus(true);
+  //       setSnackType("error");
+  //       setSnackMessage("Ocorreu um erro ao tentar buscar dados!");
+  //     },
+  //   }
+  // );
+
+  // useEffect(() => {
+  //   if (id) {
+  //     getEnterprise(parseInt(id));
+  //   }
+  // }, []);
+
+  const results = (data: any, text: string) => {
+    if (data.status === 200) {
+      if (data.data.sucess) {
+        setSnackStatus(true);
+        setSnackType("success");
+        setSnackMessage(text);
+        setTimeout(() => {
+          navigate("/Admin/Empresas", { replace: true });
+        }, 2000);
       }
-    },
-    onError: () => {
-      setSnackStatus(true);
-      setSnackType("error");
-      setSnackMessage("Ocorreu um erro ao tentar cadastrar!");
-    },
-  });
+
+      if (data.data.error) {
+        handleError(data.data.error);
+      }
+    }
+  };
+
+  const { mutate: registerVehicle, isLoading: isLoadingRegisterVehicle } =
+    useMutation({
+      mutationFn: (formData: FormData) => createVehicle(formData),
+      onSuccess: (data) => {
+        results(data, "Veículo cadastrado com sucesso!");
+      },
+      onError: () => {
+        handleError("Ocorreu um erro ao tentar cadastrar!");
+      },
+    });
 
   const { mutate: editEnterprise, isLoading: isLoadingEditEnterprise } =
     useMutation({
@@ -113,45 +132,59 @@ export default function Create_Edit() {
     });
 
   const onCanSubmit = () => {
-    return true;
+    return Boolean(
+      chassis &&
+        placa &&
+        anoFabricacao &&
+        anoModelo &&
+        modelo &&
+        garagem &&
+        media
+    );
   };
 
-  const createObjectEnterprise = () => {
+  const createObjVehicle = () => {
     const form = new FormData();
-    logo && form.append("logo", logo, "logo.jpg");
-    id && form.append("id_empresa", id);
-    form.append("situacao_cadastral", situacaoCadastral);
-    form.append("id_grupo", "1");
+
+    form.append("chassi", chassis);
+    form.append("placa", placa);
+    form.append("ano_fabricacao", anoFabricacao);
+    form.append("ano_modelo", anoModelo);
+    form.append("modelo", modelo);
+    form.append("prefixo", prefixo);
+    form.append("media_consumo", media);
+    logo && form.append("foto", logo);
 
     return form;
   };
 
   const handleEnterprise = async () => {
     if (onCanSubmit()) {
-      const dataSend = createObjectEnterprise();
+      const dataSend = createObjVehicle();
 
-      registerEnterprise(dataSend);
+      registerVehicle(dataSend);
     } else {
-      setSnackStatus(true);
-      setSnackType("error");
-      setSnackMessage("Preencha os dados obrigatórios!");
+      handleError("Preencha os dados obrigatórios!");
     }
   };
 
   const handleUpdateEnterprise = async () => {
-    if (onCanSubmit()) {
-      const dataSend = createObjectEnterprise();
-
-      editEnterprise(dataSend);
-    } else {
-      setSnackStatus(true);
-      setSnackType("error");
-      setSnackMessage("Preencha os dados obrigatórios!");
-    }
+    // if (onCanSubmit()) {
+    //   const dataSend = createObjectEnterprise();
+    //   editEnterprise(dataSend);
+    // } else {
+    //   setSnackStatus(true);
+    //   setSnackType("error");
+    //   setSnackMessage("Preencha os dados obrigatórios!");
+    // }
   };
 
-  const handleChange = (event: SelectChangeEvent) => {
-    setSituacaoCadastral(event.target.value as string);
+  const handleChangeAnoModelo = (event: SelectChangeEvent) => {
+    setAnoModelo(event.target.value as string);
+  };
+
+  const handleChangeAnoFabricacao = (event: SelectChangeEvent) => {
+    setAnoFabricacao(event.target.value as string);
   };
 
   const handleLogo = (arg0: File) => {
@@ -159,11 +192,15 @@ export default function Create_Edit() {
     setLogoURL(URL.createObjectURL(arg0));
   };
 
+  const isLoading = useMemo(() => {
+    return isLoadingRegisterVehicle;
+  }, [isLoadingRegisterVehicle]);
+
   return (
     <S.Container>
-      <h3>Cadastro de Empresa</h3>
+      <h3 style={{ paddingTop: 16 }}>Cadastro de Veículos</h3>
 
-      <FormGroup row sx={{ justifyContent: "space-between" }}>
+      <FormGroup row sx={{ justifyContent: "space-between", mt: 5 }}>
         <InputForm
           label="Prefixo"
           onChange={(e: ValueType) => setPrefixo(e.target.value)}
@@ -178,18 +215,21 @@ export default function Create_Edit() {
           required
         />
         <FormGroup sx={{ mr: 2 }} />
-        <InputForm
-          label="Ano Fabricação"
-          onChange={(e: ValueType) => setAno(e.target.value)}
-          value={ano}
-          required
-        />
-        <FormGroup sx={{ mr: 2 }} />
-        <InputForm
-          label="Ano Modelo"
-          onChange={(e: ValueType) => setAnoModelo(e.target.value)}
+
+        <SelectComponent
+          itens={anos}
+          handleChange={handleChangeAnoModelo}
           value={anoModelo}
-          required
+          label="Ano Modelo"
+        />
+
+        <FormGroup sx={{ mr: 2 }} />
+
+        <SelectComponent
+          itens={anos}
+          handleChange={handleChangeAnoFabricacao}
+          value={anoFabricacao}
+          label="Ano de Fabricação"
         />
       </FormGroup>
 
@@ -218,15 +258,15 @@ export default function Create_Edit() {
           <FormGroup row>
             <InputForm
               label="Garagem"
-              onChange={(e: ValueType) => setChassis(e.target.value)}
-              value={chassis}
+              onChange={(e: ValueType) => setGaragem(e.target.value)}
+              value={garagem}
               required
             />
             <FormGroup sx={{ mr: 2 }} />
             <InputForm
               label="Media Km/L"
-              onChange={(e: ValueType) => setChassis(e.target.value)}
-              value={chassis}
+              onChange={(e: ValueType) => setMedia(e.target.value)}
+              value={media}
               required
             />
           </FormGroup>

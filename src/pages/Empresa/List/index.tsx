@@ -43,8 +43,10 @@ export default function ListEnterprise() {
       getActions: (data: any) => {
         return [
           <Chip
-            label={data.row.status ? "Ativo" : "Desativado"}
-            color={data.row.status ? "success" : "error"}
+            label={
+              data.row.situacaoCadastral === "Ativo" ? "Ativo" : "Desativado"
+            }
+            color={data.row.situacaoCadastral === "Ativo" ? "success" : "error"}
           />,
         ];
       },

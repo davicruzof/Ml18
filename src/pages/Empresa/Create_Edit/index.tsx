@@ -50,32 +50,35 @@ export default function Create_Edit() {
   const [nomeEmpresarial, setNomeEmpresarial] = useState("");
   const [snackType, setSnackType] = useState<"error" | "success">("success");
 
-  const { mutate: getEnterprise, isLoading: isLoadingEdit } = useMutation(
-    "getEnterpriseById",
-    {
-      mutationFn: (idEnterprise: number) => getEnterpriseById(idEnterprise),
-      onSuccess: ({ data }) => {
-        data.uf !== null && setUf(data.uf);
-        data.cep !== null && setCep(data.cep);
-        data.nomeempresarial !== null &&
-          setNomeEmpresarial(data.nomeempresarial);
-        data.municipio !== null && setCidade(data.municipio);
-        data.logo !== null && setLogoURL(data.logo);
-        data.cnpj !== null && setCnpj(data.cnpj);
-        data.email !== null && setEmail(data.email);
-        data.telefone !== null && setTelefone(data.telefone);
-        data.primary_color !== null && setCor(data.primary_color);
-        data.complemento !== null && setComplemento(data.complemento);
-        data.bairro !== null && setBairro(data.bairro);
-        data.numero !== null && setNumero(data.numero);
-      },
-      onError: () => {
-        setSnackStatus(true);
-        setSnackType("error");
-        setSnackMessage("Ocorreu um erro ao tentar buscar dados!");
-      },
-    }
-  );
+  const handleError = (text: string) => {
+    setSnackStatus(true);
+    setSnackType("error");
+    setSnackMessage(text);
+  };
+
+  const { mutate: getEnterprise } = useMutation("getEnterpriseById", {
+    mutationFn: (idEnterprise: number) => getEnterpriseById(idEnterprise),
+    onSuccess: ({ data }) => {
+      console.log(data);
+      data.uf !== null && setUf(data.uf);
+      data.cep !== null && setCep(data.cep);
+      data.nomeempresarial !== null && setNomeEmpresarial(data.nomeempresarial);
+      data.municipio !== null && setCidade(data.municipio);
+      data.logo !== null && setLogoURL(data.logo);
+      data.cnpj !== null && setCnpj(data.cnpj);
+      data.situacaocadastral !== null &&
+        setSituacaoCadastral(data.situacaocadastral);
+      data.email !== null && setEmail(data.email);
+      data.telefone !== null && setTelefone(data.telefone);
+      data.primary_color !== null && setCor(data.primary_color);
+      data.complemento !== null && setComplemento(data.complemento);
+      data.bairro !== null && setBairro(data.bairro);
+      data.numero !== null && setNumero(data.numero);
+    },
+    onError: () => {
+      handleError("Ocorreu um erro ao tentar buscar dados!");
+    },
+  });
 
   useEffect(() => {
     if (id) {
@@ -101,30 +104,30 @@ export default function Create_Edit() {
     }
   }, [cepValue]);
 
+  const results = (data: any, text: string) => {
+    if (data.status === 200) {
+      if (data.data.sucess) {
+        setSnackStatus(true);
+        setSnackType("success");
+        setSnackMessage(text);
+        setTimeout(() => {
+          navigate("/Admin/Empresas", { replace: true });
+        }, 2000);
+      }
+
+      if (data.data.error) {
+        handleError(data.data.error);
+      }
+    }
+  };
+
   const { mutate: registerEnterprise, isLoading } = useMutation({
     mutationFn: (formData: FormData) => createEnterprise(formData),
     onSuccess: (data) => {
-      if (data.status === 200) {
-        if (data.data.sucess) {
-          setSnackStatus(true);
-          setSnackType("success");
-          setSnackMessage("Cadastrado com sucesso!");
-          setTimeout(() => {
-            navigate("/Empresa/List", { replace: true });
-          }, 3000);
-        }
-
-        if (data.data.error) {
-          setSnackStatus(true);
-          setSnackType("error");
-          setSnackMessage(data.data.error);
-        }
-      }
+      results(data, "Cadastrado com sucesso!");
     },
     onError: () => {
-      setSnackStatus(true);
-      setSnackType("error");
-      setSnackMessage("Ocorreu um erro ao tentar cadastrar!");
+      handleError("Ocorreu um erro ao tentar cadastrar!");
     },
   });
 
@@ -132,27 +135,10 @@ export default function Create_Edit() {
     useMutation({
       mutationFn: (formData: FormData) => updateEnterprise(formData),
       onSuccess: (data) => {
-        if (data.status === 200) {
-          if (data.data.sucess) {
-            setSnackStatus(true);
-            setSnackType("success");
-            setSnackMessage("Cadastrado com sucesso!");
-            setTimeout(() => {
-              navigate("/Empresa/List", { replace: true });
-            }, 3000);
-          }
-
-          if (data.data.error) {
-            setSnackStatus(true);
-            setSnackType("error");
-            setSnackMessage(data.data.error);
-          }
-        }
+        results(data, "Editado com sucesso!");
       },
       onError: () => {
-        setSnackStatus(true);
-        setSnackType("error");
-        setSnackMessage("Ocorreu um erro ao tentar cadastrar!");
+        handleError("Ocorreu um erro ao tentar editar!");
       },
     });
 
@@ -173,7 +159,7 @@ export default function Create_Edit() {
     form.append("bairro", bairro);
     form.append("municipio", cidade);
     form.append("uf", uf);
-    form.append("situacao_cadastral", situacaoCadastral);
+    form.append("situacaocadastral", situacaoCadastral);
     form.append("id_grupo", "1");
 
     return form;
@@ -185,9 +171,7 @@ export default function Create_Edit() {
 
       registerEnterprise(dataSend);
     } else {
-      setSnackStatus(true);
-      setSnackType("error");
-      setSnackMessage("Preencha os dados obrigatórios!");
+      handleError("Preencha os dados obrigatórios!");
     }
   };
 
@@ -197,9 +181,7 @@ export default function Create_Edit() {
 
       editEnterprise(dataSend);
     } else {
-      setSnackStatus(true);
-      setSnackType("error");
-      setSnackMessage("Preencha os dados obrigatórios!");
+      handleError("Preencha os dados obrigatórios!");
     }
   };
 

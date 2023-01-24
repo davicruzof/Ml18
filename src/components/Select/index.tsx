@@ -20,7 +20,7 @@ export default function SelectComponent({
   handleChange: (event: SelectChangeEvent<any>) => void;
 }) {
   return (
-    <FormControl>
+    <FormControl style={{ flex: 1 }}>
       <InputLabel id="simple-select-label">{label}</InputLabel>
       <Select
         labelId="simple-select-label"
