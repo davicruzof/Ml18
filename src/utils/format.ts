@@ -20,6 +20,17 @@ export const formatData = (date: Date) => {
   return `${data.getUTCFullYear()}-${month}-${day}`;
 };
 
+export const formatDataMonth = (date: string) => {
+  const data = new Date(date);
+
+  const month =
+    data.getUTCMonth() + 1 < 10
+      ? `0${data.getUTCMonth() + 1}`
+      : data.getUTCMonth() + 1;
+
+  return `${month}-${data.getUTCFullYear()}`;
+};
+
 export const returnTime = (time: Time) => {
   if (time?.days) {
     const timeSingle = time.days > 1 ? "dias" : "dia";

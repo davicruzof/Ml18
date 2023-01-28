@@ -9,6 +9,7 @@ import { NotFound } from "pages/NotFound";
 import DeleteAccount from "pages/DeleteAccount";
 import Frota from "pages/Frota/List";
 import Create_Edit from "pages/Frota/Create_Edit";
+import FichaPonto from "pages/FichaPonto/List";
 
 export default function UserRoutes() {
   return (
@@ -31,6 +32,9 @@ export default function UserRoutes() {
         <Route path="permissoes" element={<EmployeePermissionList />} />
         <Route path="permission/edit" element={<EmployeePermissionEdit />} />
         <Route path="delete_account" element={<DeleteAccount />} />
+      </Route>
+      <Route path="monitoramento/">
+        <Route path="ficha_ponto" element={<FichaPonto />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />

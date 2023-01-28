@@ -52,6 +52,17 @@ export const MenuItens = [
       },
     ],
   },
+  {
+    title: "Monitoramento",
+    itemId: "/monitoramento/ficha_ponto",
+    elemBefore: () => <BiBus style={{ fontSize: 28 }} />,
+    subNav: [
+      {
+        title: "Ficha Ponto",
+        itemId: "/monitoramento/ficha_ponto",
+      },
+    ],
+  },
   // {
   //   title: "Admin",
   //   subitems: ["Empresas"],
