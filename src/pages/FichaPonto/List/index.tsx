@@ -9,7 +9,7 @@ import Loading from "components/Loading/Loading";
 import { IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Image";
 import { getPdfConfirmed } from "@services/FichaPonto";
-import { formatDataMonth } from "@utils/format";
+import { formatDataMonth, formatFullData } from "@utils/format";
 import Dialog from "./ViewImage";
 
 export default function ListEnterprise() {
@@ -31,12 +31,11 @@ export default function ListEnterprise() {
     setUpdateRow(row);
   };
 
-  console.log(updateRow);
-
   const VISIBLE_FIELDS = [
     { field: "nome", headerName: "Nome", width: 350 },
     { field: "registro", headerName: "Registro", width: 200 },
     { field: "data_registro", headerName: "Referencia", width: 200 },
+    { field: "data_confirmed", headerName: "Data da confirmação", width: 200 },
     {
       field: "actions",
       type: "actions",
@@ -63,9 +62,11 @@ export default function ListEnterprise() {
       let data: EnterPriseType[] = [];
       dataPdf.map((item: any) => {
         const pdf_data = formatDataMonth(item.data_pdf);
+        const dataFormatted = formatFullData(item.data_cadastro);
         data.push({
           id: item.id_pdf_confirmed,
           data_registro: pdf_data,
+          data_confirmed: dataFormatted,
           ...item,
         });
       });

@@ -65,6 +65,7 @@ export function SideBar({ children }: any) {
             style={{
               flexDirection: "row",
               display: "flex",
+              alignItems: "center",
             }}
           >
             <a href="#" className="nav-link">

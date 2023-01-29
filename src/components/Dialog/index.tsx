@@ -15,6 +15,7 @@ const DialogComponent: React.FC<DialogProps> = ({
   children,
   buttonConfirmText,
   handleButtonConfirm,
+  disableClose,
 }) => {
   const handleClose = (
     event: React.SyntheticEvent<unknown>,
@@ -30,7 +31,9 @@ const DialogComponent: React.FC<DialogProps> = ({
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>{children}</DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>fechar</Button>
+        {!Boolean(disableClose) && (
+          <Button onClick={handleClose}>fechar</Button>
+        )}
         <Button onClick={handleButtonConfirm}>{buttonConfirmText}</Button>
       </DialogActions>
     </Dialog>

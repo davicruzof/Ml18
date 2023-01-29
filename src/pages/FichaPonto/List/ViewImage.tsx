@@ -1,4 +1,5 @@
 import { Box, FormControl } from "@mui/material";
+import { formatFullData } from "@utils/format";
 
 import DialogComponent from "components/Dialog";
 
@@ -13,8 +14,6 @@ const Dialog = ({ setOpen, open, row }: DialogProps) => {
     setOpen(!open);
   };
 
-  console.log(row);
-
   if (!row.foto && !row.data_cadastro) {
     return null;
   }
@@ -24,14 +23,16 @@ const Dialog = ({ setOpen, open, row }: DialogProps) => {
       open={open}
       title="Confirmação de Apontamento"
       setOpen={setOpen}
+      disableClose={true}
       buttonConfirmText="fechar"
       handleButtonConfirm={handleUpdateStatus}
     >
       <Box component="form" sx={{ display: "flex", flexWrap: "wrap" }}>
         <FormControl sx={{ mb: 3, width: "100%" }}>
-          <h5>Data da confirmação:{row.data_cadastro}</h5>
+          <span>Data da confirmação:{formatFullData(row.data_cadastro)}</span>
           <img
-            style={{ objectFit: "contain", height: 500, width: "auto" }}
+            loading="lazy"
+            style={{ objectFit: "contain", height: 400, width: 400 }}
             src={row.foto}
           />
         </FormControl>
