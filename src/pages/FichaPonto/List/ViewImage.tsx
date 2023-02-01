@@ -1,5 +1,5 @@
 import { Box, FormControl } from "@mui/material";
-import { formatFullData } from "@utils/format";
+import { formatFullData } from "utils/format";
 
 import DialogComponent from "components/Dialog";
 

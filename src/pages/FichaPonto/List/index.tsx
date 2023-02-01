@@ -8,8 +8,8 @@ import { useQuery } from "react-query";
 import Loading from "components/Loading/Loading";
 import { IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Image";
-import { getPdfConfirmed } from "@services/FichaPonto";
-import { formatDataMonth, formatFullData } from "@utils/format";
+import { getPdfConfirmed } from "services/FichaPonto";
+import { formatDataMonth, formatFullData } from "utils/format";
 import Dialog from "./ViewImage";
 
 export default function ListEnterprise() {
