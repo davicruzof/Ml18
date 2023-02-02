@@ -35,7 +35,7 @@ export default function ListEnterprise() {
     { field: "nome", headerName: "Nome", width: 350 },
     { field: "registro", headerName: "Registro", width: 200 },
     { field: "data_registro", headerName: "Referencia", width: 200 },
-    { field: "data_confirmed", headerName: "Data da confirmação", width: 200 },
+    { field: "data_cadastro", headerName: "Data da confirmação", width: 200 },
     {
       field: "actions",
       type: "actions",
@@ -80,15 +80,6 @@ export default function ListEnterprise() {
 
   return (
     <S.Container>
-      <S.Wrapper>
-        <ButtonComponent
-          onClick={() => navigation("/Admin/New", { replace: true })}
-          loading={false}
-          title="+ Adicionar nova empresa"
-          active={false}
-        />
-      </S.Wrapper>
-
       {rows && !isLoading && (
         <DataGrid
           loading={isLoading}

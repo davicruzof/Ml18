@@ -6,15 +6,15 @@ import { EnterPriseType } from "./types";
 import ButtonComponent from "components/Buttons/Button";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useQuery } from "react-query";
-import Loading from "components/Loading/Loading";
+// import Loading from "components/Loading/Loading";
 import { Chip, IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 
 export default function Frota() {
   const navigation = useNavigate();
   const [rows, setRows] = useState<EnterPriseType[]>([]);
-  const [pageSize, setPageSize] = useState<number>(10);
-  const height = window.innerHeight - 200;
+  // const [pageSize, setPageSize] = useState<number>(10);
+  // const height = window.innerHeight - 200;
 
   const { data: dataEnterprises, isLoading } = useQuery("getEnterprises", {
     queryFn: () => getEnterprises(),
@@ -94,7 +94,7 @@ export default function Frota() {
         />
       </S.Wrapper>
 
-      {rows && !isLoading && (
+      {/* {rows && !isLoading && (
         <DataGrid
           loading={isLoading}
           columns={VISIBLE_FIELDS}
@@ -113,7 +113,7 @@ export default function Frota() {
           }}
           disableSelectionOnClick
         />
-      )}
+      )} */}
     </S.Container>
   );
 }

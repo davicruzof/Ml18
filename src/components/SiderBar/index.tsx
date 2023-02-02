@@ -9,7 +9,7 @@ import { Navigation } from "react-minimal-side-navigation";
 import "react-minimal-side-navigation/lib/ReactMinimalSideNavigation.css";
 import { useNavigate } from "react-router-dom";
 import { MenuItens } from "./util";
-import Button from "components/Buttons/Button";
+import { LoadingButton } from "@mui/lab";
 
 export function SideBar({ children }: any) {
   const navigate = useNavigate();
@@ -43,6 +43,12 @@ export function SideBar({ children }: any) {
     navigate(route, { replace: true });
   };
 
+  const logout = () => {
+    localStorage.clear();
+    navigation("/");
+    location.reload();
+  };
+
   return (
     <div>
       <nav className="main-header navbar navbar-expand navbar-white navbar-light">
@@ -71,7 +77,9 @@ export function SideBar({ children }: any) {
             <a href="#" className="nav-link">
               Olá, {dataUser?.user?.nome.split(" ").slice(0, 1).join(" ")}
             </a>
-            <Button style={{ marginTop: 0 }} title="Sair" />
+            <LoadingButton size="large" variant="contained" onClick={logout}>
+              Sair
+            </LoadingButton>
           </li>
         </ul>
       </nav>
