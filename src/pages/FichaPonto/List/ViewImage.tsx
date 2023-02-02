@@ -1,5 +1,4 @@
 import { Box, FormControl } from "@mui/material";
-import { formatFullData } from "utils/format";
 
 import DialogComponent from "components/Dialog";
 
@@ -29,7 +28,7 @@ const Dialog = ({ setOpen, open, row }: DialogProps) => {
     >
       <Box component="form" sx={{ display: "flex", flexWrap: "wrap" }}>
         <FormControl sx={{ mb: 3, width: "100%" }}>
-          <span>Data da confirmação:{formatFullData(row.data_cadastro)}</span>
+          <span>Data da confirmação:{row.data_cadastro}</span>
           <img
             loading="lazy"
             style={{ objectFit: "contain", height: 400, width: 400 }}

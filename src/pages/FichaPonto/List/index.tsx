@@ -2,14 +2,13 @@ import { useEffect, useState } from "react";
 import * as S from "./styles";
 import { useNavigate } from "react-router-dom";
 import { EnterPriseType } from "./types";
-import ButtonComponent from "components/Buttons/Button";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useQuery } from "react-query";
 import Loading from "components/Loading/Loading";
 import { IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Image";
 import { getPdfConfirmed } from "services/FichaPonto";
-import { formatDataMonth, formatFullData } from "utils/format";
+import { formatDataMonth } from "utils/format";
 import Dialog from "./ViewImage";
 
 export default function ListEnterprise() {
@@ -62,11 +61,9 @@ export default function ListEnterprise() {
       let data: EnterPriseType[] = [];
       dataPdf.map((item: any) => {
         const pdf_data = formatDataMonth(item.data_pdf);
-        const dataFormatted = formatFullData(item.data_cadastro);
         data.push({
           id: item.id_pdf_confirmed,
           data_registro: pdf_data,
-          data_confirmed: dataFormatted,
           ...item,
         });
       });
