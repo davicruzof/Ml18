@@ -360,7 +360,14 @@ export default function Create_Edit() {
 
       <FormGroup
         row
-        sx={{ justifyContent: "center", alignItems: "center", mb: 4 }}
+        sx={{
+          justifyContent: "center",
+          alignItems: "center",
+          mb: 5,
+          flexDirection: "row",
+          flex: 1,
+          flexWrap: "nowrap",
+        }}
       >
         <Button
           variant="text"
@@ -370,12 +377,19 @@ export default function Create_Edit() {
           Voltar
         </Button>
         <FormGroup sx={{ mr: 4 }} />
-        <ButtonComponent
-          disabled={false}
-          title={id ? "Editar" : "Cadastrar"}
-          loading={isLoading || isLoadingEditEnterprise}
-          onClick={id ? handleUpdateEnterprise : handleEnterprise}
-        />
+        <FormGroup
+          row
+          sx={{
+            width: "fit-content",
+          }}
+        >
+          <ButtonComponent
+            disabled={false}
+            title={id ? "Editar" : "Cadastrar"}
+            loading={isLoading || isLoadingEditEnterprise}
+            onClick={id ? handleUpdateEnterprise : handleEnterprise}
+          />
+        </FormGroup>
       </FormGroup>
 
       <Snack

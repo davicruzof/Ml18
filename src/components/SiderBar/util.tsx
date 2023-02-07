@@ -48,7 +48,7 @@ export const MenuItens = [
     subNav: [
       {
         title: "Listagem",
-        itemId: "/frota/listagem",
+        itemId: "/Admin/Empresas",
       },
     ],
   },

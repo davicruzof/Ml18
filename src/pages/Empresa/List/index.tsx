@@ -3,18 +3,16 @@ import { getEnterprises } from "services/Enterprises/enterprises";
 import * as S from "./styles";
 import { useNavigate } from "react-router-dom";
 import { EnterPriseType } from "./types";
-import ButtonComponent from "components/Button";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import Button from "components/Button";
 import { useQuery } from "react-query";
-import Loading from "components/Loading/Loading";
 import { Chip, IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import Table from "components/Table";
 
 export default function ListEnterprise() {
   const navigation = useNavigate();
   const [rows, setRows] = useState<EnterPriseType[]>([]);
   const [pageSize, setPageSize] = useState<number>(10);
-  const height = window.innerHeight - 200;
 
   const { data: dataEnterprises, isLoading } = useQuery("getEnterprises", {
     queryFn: () => getEnterprises(),
@@ -85,14 +83,10 @@ export default function ListEnterprise() {
     }
   }, [dataEnterprises]);
 
-  if (isLoading) {
-    return <Loading />;
-  }
-
   return (
     <S.Container>
       <S.Wrapper>
-        <ButtonComponent
+        <Button
           onClick={() => navigation("/Admin/New", { replace: true })}
           loading={false}
           title="+ Adicionar nova empresa"
@@ -100,26 +94,13 @@ export default function ListEnterprise() {
         />
       </S.Wrapper>
 
-      {rows && !isLoading && (
-        <DataGrid
-          loading={isLoading}
-          columns={VISIBLE_FIELDS}
-          rows={rows}
-          components={{ Toolbar: GridToolbar }}
-          pageSize={pageSize}
-          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-          rowsPerPageOptions={[5, 10, 20, 50, 100]}
-          pagination
-          style={{
-            paddingLeft: 20,
-            justifyContent: "space-between",
-            display: "flex",
-            margin: 20,
-            height,
-          }}
-          disableSelectionOnClick
-        />
-      )}
+      <Table
+        loading={isLoading}
+        fields={VISIBLE_FIELDS}
+        rows={rows}
+        pageSize={pageSize}
+        setPageSize={setPageSize}
+      />
     </S.Container>
   );
 }
