@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   FormControl,
@@ -8,18 +8,8 @@ import {
 } from "@mui/material";
 
 import InputForm from "components/Input";
-import { ValueType } from "./types";
+import { DialogProps, ValueType } from "./types";
 import DialogComponent from "components/Dialog";
-
-interface DialogProps {
-  setOpen: (v: boolean) => void;
-  setStatus: (v: string) => void;
-  open: boolean;
-  status: string;
-  id_solicitacao: string | number;
-  updateStatusRequest: ({}) => void;
-  justificativa: string | undefined;
-}
 
 const Dialog = ({
   setOpen,

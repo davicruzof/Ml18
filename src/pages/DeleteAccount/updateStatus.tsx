@@ -3,12 +3,7 @@ import { deleteAccount } from "services/Employee/employee";
 
 import DialogComponent from "components/Dialog";
 import { useMutation } from "react-query";
-
-interface DialogProps {
-  setOpen: (v: boolean) => void;
-  open: boolean;
-  row: any;
-}
+import { DialogProps } from "./types";
 
 const Dialog = ({ setOpen, open, row }: DialogProps) => {
   const { mutate: removeAccount, isLoading } = useMutation({

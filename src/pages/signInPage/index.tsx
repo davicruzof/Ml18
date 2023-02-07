@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { LoginData, schemaValidation } from "./types";
 import InputPassword from "components/InputControl/inputPassword";
-import ButtonComponent from "components/Buttons/Button";
+import ButtonComponent from "components/Button";
 import * as S from "./styles";
 import BG from "../../assets/background-login.png";
 import LOGO from "../../assets/logo.png";

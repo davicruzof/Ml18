@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useMutation } from "react-query";
-import Loading from "components/Loading/Loading";
 import { Chip, IconButton } from "@mui/material";
 
 import EditIcon from "@mui/icons-material/RemoveRedEyeOutlined";
@@ -10,8 +8,8 @@ import { listRequestResponse } from "services/Solicitacoes/types";
 import { TypeListRequest } from "services/Solicitacoes/types";
 import { statusUtil } from "./util";
 import { returnTime } from "utils/format";
-import Empty from "components/Empty";
 import Dialog from "./updateStatus";
+import Table from "components/Table";
 
 const DeleteAccount = () => {
   const [requests, setRequests] = useState<listRequestResponse[]>([]);
@@ -95,8 +93,6 @@ const DeleteAccount = () => {
     },
   ];
 
-  const height = window.innerHeight - 100;
-
   const newRequest = () => {
     const sendData = {
       status: "",
@@ -113,36 +109,18 @@ const DeleteAccount = () => {
     !open && newRequest();
   }, [open]);
 
-  if (isLoadingRequests) {
-    return <Loading />;
-  }
-
-  if (requests.length === 0) {
-    return <Empty text="Nenhuma solicitação foi encontrada!" />;
-  }
-
   return (
-    <div>
-      <DataGrid
-        columns={VISIBLE_FIELDS}
+    <>
+      <Table
+        loading={isLoadingRequests}
+        fields={VISIBLE_FIELDS}
         rows={requests}
-        components={{ Toolbar: GridToolbar }}
         pageSize={pageSize}
-        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-        rowsPerPageOptions={[5, 10, 20, 50, 100]}
-        pagination
-        style={{
-          paddingLeft: 20,
-          justifyContent: "space-between",
-          display: "flex",
-          margin: 20,
-          height,
-        }}
-        disableSelectionOnClick
+        setPageSize={setPageSize}
       />
 
       <Dialog open={open} setOpen={setOpen} row={updateRow} />
-    </div>
+    </>
   );
 };
 

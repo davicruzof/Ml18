@@ -1,15 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import Grid from "@mui/material/Grid";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import Checkbox from "@mui/material/Checkbox";
 import { DptTypes } from "services/Solicitacoes/types";
 import { useMutation, useQuery } from "react-query";
 import { getDepartments } from "services/Solicitacoes";
 import { handleChecked, handleCheckedToggle, intersection, not } from "./utils";
-import DptButton from "./button";
 import Loading from "components/Loading/Loading";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
@@ -18,8 +12,9 @@ import {
 } from "services/Employee/employee";
 import { EmployeeAreasType } from "services/Employee/types";
 import * as S from "./style";
-import Button from "components/Buttons/Button";
+import Button from "components/Button";
 import Snack from "components/Snack";
+import listItems from "./components/listItems";
 
 export default function EditEmployee() {
   const {
@@ -70,8 +65,6 @@ export default function EditEmployee() {
     return emp && emp.data && emp.data[0];
   }, [emp]);
 
-  console.log(employee);
-
   const { isLoading: isLoadingDepartamentos, refetch: refetchDpts } = useQuery(
     "getDepartments",
     {
@@ -80,11 +73,6 @@ export default function EditEmployee() {
       keepPreviousData: false,
       onSuccess: (data: DptTypes[]) => {
         data.length > 0 && setDepartamentosLeft(data);
-      },
-      onError: () => {
-        // setSnackStatus(true);
-        // setSnackType("error");
-        // setSnackMessage("Ocorreu um erro ao tentar buscar dados!");
       },
     }
   );
@@ -130,46 +118,6 @@ export default function EditEmployee() {
     setChecked(not(checked, rightChecked));
   };
 
-  const listItens = (
-    items: DptTypes[],
-    checked: string[],
-    title: string,
-    handleToggle: (value: string) => () => void
-  ) => (
-    <div>
-      {items.length > 0 && (
-        <S.Title style={{ paddingLeft: 25 }}>{title}</S.Title>
-      )}
-      <List dense role="list">
-        {items.map((value: DptTypes) => {
-          const labelId = `transfer-list-item-${value.area}-label`;
-
-          return (
-            <ListItem
-              key={value.id_area}
-              role="listitem"
-              button
-              onClick={handleToggle(value.area)}
-            >
-              <ListItemIcon>
-                <Checkbox
-                  checked={checked.indexOf(value.area) !== -1}
-                  tabIndex={-1}
-                  disableRipple
-                  inputProps={{
-                    "aria-labelledby": labelId,
-                  }}
-                />
-              </ListItemIcon>
-              <ListItemText id={labelId} primary={`${value.area}`} />
-            </ListItem>
-          );
-        })}
-        <ListItem />
-      </List>
-    </div>
-  );
-
   useEffect(() => {
     refetchDpts();
   }, []);
@@ -203,18 +151,14 @@ export default function EditEmployee() {
     );
   }, [isLoadingDepartamentos, isLoadingEmployeeById, isLoadingUpdateEmployee]);
 
-  if (isLoading) {
-    Loader();
-  }
-
-  return isLoadingEmployeeById ? (
+  return isLoadingEmployeeById || isLoading ? (
     Loader()
   ) : (
     <S.Container>
       <S.WrapperInfo>
         <S.Title>Departamentos</S.Title>
         <S.SubTitle>
-          Selecione a quais departamentos esse funcionário está vinculado
+          Vincule esse funcionários ao(s) departamento(s) ao qual ele faz parte
         </S.SubTitle>
       </S.WrapperInfo>
       {employee && (
@@ -223,14 +167,18 @@ export default function EditEmployee() {
           <S.LabelHeader>Registro: {employee.registro}</S.LabelHeader>
           <S.LabelHeader>Nome: {employee.nome}</S.LabelHeader>
           <S.LabelHeader>Função: {employee.funcao}</S.LabelHeader>
-          <S.LabelHeader>Email: {employee.email}</S.LabelHeader>
-          <S.LabelHeader>Telefone: {employee.celular}</S.LabelHeader>
+          {employee.email && (
+            <S.LabelHeader>Email: {employee.email}</S.LabelHeader>
+          )}
+          {employee.celular && (
+            <S.LabelHeader>Telefone: {employee.celular}</S.LabelHeader>
+          )}
         </S.Header>
       )}
       <S.WrapperContent>
         <S.Wrapper>
           <Grid item>
-            {listItens(
+            {listItems(
               departamentosLeft,
               checkedLeft,
               "Selecione os departamentos",
@@ -239,30 +187,34 @@ export default function EditEmployee() {
           </Grid>
           <Grid item>
             <Grid container direction="column" alignItems="center">
-              <DptButton
-                handleAll={handleAllRight}
-                active={departamentosLeft.length === 0}
-                label="Adicionar todos"
+              <Button
+                onClick={handleAllRight}
+                active={departamentosLeft.length > 0}
+                disabled={departamentosLeft.length === 0}
+                title="Adicionar todos"
               />
-              <DptButton
-                handleAll={handleCheckedRight}
-                active={leftChecked.length === 0}
-                label="Adicionar selecionados"
+              <Button
+                onClick={handleCheckedRight}
+                active={leftChecked.length > 0}
+                disabled={leftChecked.length === 0}
+                title="Adicionar selecionados"
               />
-              <DptButton
-                handleAll={handleCheckedLeft}
-                active={rightChecked.length === 0}
-                label="Remover selecionados"
+              <Button
+                onClick={handleCheckedLeft}
+                active={rightChecked.length > 0}
+                disabled={rightChecked.length === 0}
+                title="Remover selecionados"
               />
-              <DptButton
-                handleAll={handleAllLeft}
-                active={departamentosRight.length === 0}
-                label="Remover todos"
+              <Button
+                onClick={handleAllLeft}
+                disabled={departamentosRight.length === 0}
+                active={departamentosRight.length > 0}
+                title="Remover todos"
               />
             </Grid>
           </Grid>
           <Grid item>
-            {listItens(
+            {listItems(
               departamentosRight,
               checked,
               "Departamentos selecionados",
@@ -270,11 +222,14 @@ export default function EditEmployee() {
             )}
           </Grid>
         </S.Wrapper>
-        <Button
-          title="Confirmar"
-          onClick={handleLinkDepartments}
-          active={departamentosRight.length === 0}
-        />
+        <S.WrapperButton>
+          <Button
+            title="Confirmar"
+            onClick={handleLinkDepartments}
+            active={departamentosRight.length > 0}
+            disabled={departamentosRight.length === 0}
+          />
+        </S.WrapperButton>
       </S.WrapperContent>
       <Snack
         handleClose={() => setSnackStatus(false)}

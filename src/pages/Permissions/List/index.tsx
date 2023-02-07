@@ -1,18 +1,15 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useQuery } from "react-query";
-import Loading from "components/Loading/Loading";
 import { IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { getAllEmployee } from "services/Employee/employee";
 import { EmployeeType } from "services/Employee/types";
-import Empty from "components/Empty";
+import Table from "components/Table";
 
 const List: React.FC = () => {
   const navigation = useNavigate();
-  const height = window.innerHeight - 100;
 
   const [employeePermission, setEmployeePermission] = useState<EmployeeType[]>(
     []
@@ -43,7 +40,7 @@ const List: React.FC = () => {
       headerName: "Editar",
       width: 100,
       cellClassName: "actions",
-      getActions: ({ id }: any) => {
+      getActions: ({ id }: { id: number }) => {
         return [
           <IconButton
             color="primary"
@@ -71,31 +68,13 @@ const List: React.FC = () => {
     }
   }, [Employees]);
 
-  if (isLoadingEmployee) {
-    return <Loading />;
-  }
-
-  if (employeePermission.length === 0) {
-    return <Empty text="Nenhum funcionário foi encontrada!" />;
-  }
-
   return (
-    <DataGrid
-      columns={VISIBLE_FIELDS}
+    <Table
+      loading={isLoadingEmployee}
+      fields={VISIBLE_FIELDS}
       rows={employeePermission}
       pageSize={pageSize}
-      components={{ Toolbar: GridToolbar }}
-      onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-      rowsPerPageOptions={[5, 10, 20, 50, 100]}
-      pagination
-      style={{
-        paddingLeft: 20,
-        justifyContent: "space-between",
-        display: "flex",
-        margin: 20,
-        height,
-      }}
-      disableSelectionOnClick
+      setPageSize={setPageSize}
     />
   );
 };

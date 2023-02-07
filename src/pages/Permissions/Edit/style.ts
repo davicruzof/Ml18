@@ -47,6 +47,12 @@ export const WrapperContent = styled(Grid).attrs({
   justify-content: center;
 `;
 
+export const WrapperButton = styled.div`
+  margin-top: 50px;
+  padding: 0 30%;
+  justify-content: center;
+`;
+
 export const Title = styled.span`
   font-size: 18px;
   margin-bottom: 16px;

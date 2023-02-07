@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import InputForm from "components/Input";
 import * as S from "./styles";
-import ButtonComponent from "components/Buttons/Button";
+import ButtonComponent from "components/Button";
 import {
   SelectChangeEvent,
   Button,

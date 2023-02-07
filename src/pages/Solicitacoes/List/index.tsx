@@ -1,25 +1,23 @@
-import { useEffect, useMemo, useState } from "react";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { useMutation, useQuery } from "react-query";
-import Loading from "components/Loading/Loading";
-import { Chip, IconButton } from "@mui/material";
-
 import EditIcon from "@mui/icons-material/Edit";
+import { Chip, IconButton } from "@mui/material";
+import Snack from "components/Snack";
+import { useEffect, useMemo, useState } from "react";
+import { useMutation, useQuery } from "react-query";
 import { getMe } from "services/Auth/auth";
+import { UserData } from "services/Auth/types";
 import { listRequests, updateRequest } from "services/Solicitacoes";
 import { listRequestResponse } from "services/Solicitacoes/types";
 import { TypeListRequest } from "services/Solicitacoes/types";
-import { UserData } from "services/Auth/types";
-import { statusUtil } from "../util";
 import { returnTime } from "utils/format";
-import Empty from "components/Empty";
+
+import { formatRequests, statusUtil } from "../util";
 import Dialog from "./updateStatus";
-import Snack from "components/Snack";
+import Table from "components/Table";
+import { RowType } from "./types";
 
 const ListRequests = () => {
   const [requests, setRequests] = useState<listRequestResponse[]>([]);
-  const [departamentos, setDepartamentos] = useState<number[]>([]);
-  const [updateRow, setUpdateRow] = useState<listRequestResponse>();
+  const [updateRow, setUpdateRow] = useState<RowType>();
   const [pageSize, setPageSize] = useState<number>(10);
 
   const [open, setOpen] = useState(false);
@@ -31,68 +29,54 @@ const ListRequests = () => {
   const [snackStatus, setSnackStatus] = useState(false);
   const [snackType, setSnackType] = useState<"error" | "success">("success");
 
-  const { isLoading: isLoadingUserData } = useQuery("getMe", {
+  const { data: UserData, isLoading: isLoadingUserData } = useQuery("getMe", {
     queryFn: () => getMe(),
     enabled: true,
     keepPreviousData: false,
-    onSuccess: (data: UserData) => {
-      if (data.departamentos && data.user) {
-        setIdFunc(data.user.id_funcionario);
-        const dpts = data.departamentos.map((item) => item.id_area);
-        setDepartamentos(dpts);
-      }
-    },
   });
 
   const { mutate: getRequests, isLoading: isLoadingRequests } = useMutation({
     mutationFn: (formData: TypeListRequest) => listRequests(formData),
     onSuccess: (data: listRequestResponse[]) => {
       if (data) {
-        const requestsFormatted = formatRequests(data);
+        const requestsFormatted = formatRequests(data, +idFunc);
         setRequests(requestsFormatted);
       }
     },
   });
 
-  const formatRequests = (data: listRequestResponse[]) => {
-    const send: listRequestResponse[] = [];
-    data.map((item) => {
-      if (
-        item.id_funcionario_analise === idFunc ||
-        (item.status !== "ATENDIDA" && item.modulo !== "Exclusão de conta")
-      ) {
-        send.push({
-          id: item.id_solicitacao,
-          ...item,
-        });
-      }
-    });
-    return send;
+  const handleDptsID = ({ departamentos }: UserData) => {
+    const departamentosIds = departamentos.map((item) => item.id_area);
+
+    return departamentosIds;
+  };
+
+  const handleSnack = (type: "error" | "success", text: string) => {
+    setSnackStatus(true);
+    setSnackType(type);
+    setSnackMessage(text);
   };
 
   const { mutate: updateStatusRequest, isLoading: isLoadingUpdateRequests } =
     useMutation({
       mutationFn: (formData: any) => updateRequest(formData),
       onSuccess: () => {
-        setSnackStatus(true);
-        setSnackType("success");
-        setSnackMessage("Solicitação atualizada com sucesso!");
-
-        const sendData = {
-          status: "",
-          departamento: departamentos,
-        };
-        getRequests(sendData);
-        setOpen(false);
+        handleSnack("success", "Solicitação atualizada com sucesso!");
+        if (UserData) {
+          const sendData = {
+            status: "",
+            departamento: handleDptsID(UserData),
+          };
+          getRequests(sendData);
+          setOpen(false);
+        }
       },
       onError: () => {
-        setSnackStatus(true);
-        setSnackType("error");
-        setSnackMessage("Ocorreu um erro, tente novamente!");
+        handleSnack("error", "Ocorreu um erro, tente novamente!");
       },
     });
 
-  const handleUpdate = (data: any) => {
+  const handleUpdate = (data: RowType) => {
     setOpen(!open);
     setUpdateRow(data);
     setStatus(data.status);
@@ -107,26 +91,26 @@ const ListRequests = () => {
       field: "status",
       headerName: "Status",
       width: 150,
-      renderCell: (data: any) => {
-        const { title, bg, color } = statusUtil[data.row.status];
-        const title2 = title === "Solicitado" ? "Pendente" : title;
-        return [<Chip label={title2} style={{ color, backgroundColor: bg }} />];
+      renderCell: ({ row }: { row: RowType }) => {
+        console.log(row);
+        const { bg, color, title } = statusUtil[row.status];
+        return [<Chip label={title} style={{ color, backgroundColor: bg }} />];
       },
     },
     {
       field: "cadastro",
       headerName: "Data",
       width: 100,
-      renderCell: (data: any) => {
-        return [<span>{data.row.dt_cadastro}</span>];
+      renderCell: ({ row }: { row: RowType }) => {
+        return [<span>{row.dt_cadastro}</span>];
       },
     },
     {
       field: "update",
       headerName: "Atualizado",
       width: 80,
-      renderCell: (data: any) => {
-        return [<span>{returnTime(data.row.atualizado_a)}</span>];
+      renderCell: ({ row }: { row: RowType }) => {
+        return [<span>{returnTime(row.atualizado_a)}</span>];
       },
     },
     {
@@ -135,13 +119,13 @@ const ListRequests = () => {
       headerName: "Atualizar",
       width: 100,
       cellClassName: "actions",
-      getActions: (data: any) => {
+      getActions: ({ row }: { row: RowType }) => {
         return [
           <IconButton
             color="primary"
             aria-label="edit request"
             component="label"
-            onClick={() => handleUpdate(data.row)}
+            onClick={() => handleUpdate(row)}
           >
             <EditIcon />
           </IconButton>,
@@ -150,48 +134,31 @@ const ListRequests = () => {
     },
   ];
 
-  const height = window.innerHeight - 100;
-
   useEffect(() => {
-    if (departamentos.length > 0) {
+    if (UserData) {
+      const { user } = UserData;
+      setIdFunc(user.id_funcionario);
+
       const sendData = {
         status: "",
-        departamento: departamentos,
+        departamento: handleDptsID(UserData),
       };
       getRequests(sendData);
     }
-  }, [departamentos]);
+  }, [UserData]);
 
   const loading = useMemo(() => {
     return isLoadingRequests || isLoadingUserData || isLoadingUpdateRequests;
   }, [isLoadingRequests, isLoadingUserData, isLoadingUpdateRequests]);
 
-  if (loading) {
-    return <Loading />;
-  }
-
-  if (requests.length === 0) {
-    return <Empty text="Nenhuma solicitação foi encontrada!" />;
-  }
-
   return (
-    <div>
-      <DataGrid
-        columns={VISIBLE_FIELDS}
+    <>
+      <Table
+        loading={loading}
+        fields={VISIBLE_FIELDS}
         rows={requests}
-        components={{ Toolbar: GridToolbar }}
         pageSize={pageSize}
-        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-        rowsPerPageOptions={[5, 10, 20, 50, 100]}
-        pagination
-        style={{
-          paddingLeft: 20,
-          justifyContent: "space-between",
-          display: "flex",
-          margin: 20,
-          height,
-        }}
-        disableSelectionOnClick
+        setPageSize={setPageSize}
       />
 
       <Dialog
@@ -210,7 +177,7 @@ const ListRequests = () => {
         open={snackStatus}
         type={snackType}
       />
-    </div>
+    </>
   );
 };
 

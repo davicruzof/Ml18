@@ -15,7 +15,7 @@ import { createUser } from "services/User/user";
 import { InputForm } from "components/InputControl";
 import { RegisterProps } from "services/User/types";
 import { yupResolver } from "@hookform/resolvers/yup";
-import ButtonComponent from "components/Buttons/Button";
+import ButtonComponent from "components/Button";
 import InputPassword from "components/InputControl/inputPassword";
 import { formatData, trim_cpf_cnpj } from "utils/format";
 
