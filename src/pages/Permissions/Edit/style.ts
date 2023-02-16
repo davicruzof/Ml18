@@ -1,3 +1,4 @@
+import { LoadingButton } from "@mui/lab";
 import { Grid } from "@mui/material";
 import styled from "styled-components";
 
@@ -11,10 +12,9 @@ export const Container = styled.div`
 `;
 
 export const LoadingContainer = styled.div`
-  display: flex;
-  flex: 1;
-  align-items: center;
-  justify-content: center;
+  position: absolute;
+  top: 50%;
+  left: 55%;
   background: rgba(242, 245, 249, 1);
 `;
 
@@ -34,7 +34,6 @@ export const Wrapper = styled(Grid).attrs({
   container: true,
 })`
   background: ${(props) => props.theme.colors.white};
-  justify-content: space-around;
 `;
 
 export const WrapperContent = styled(Grid).attrs({
@@ -47,10 +46,15 @@ export const WrapperContent = styled(Grid).attrs({
   justify-content: center;
 `;
 
-export const WrapperButton = styled.div`
-  margin-top: 50px;
-  padding: 0 30%;
-  justify-content: center;
+export const Button = styled(LoadingButton).attrs({
+  size: "large",
+  variant: "contained",
+  sx: {
+    mt: 3,
+    mr: 2,
+  },
+})<{ isActive: boolean }>`
+  background-color: ${(props) => (props.isActive ? "red" : "#cacaca")};
 `;
 
 export const Title = styled.span`

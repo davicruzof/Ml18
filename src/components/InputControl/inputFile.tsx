@@ -1,10 +1,10 @@
 import { ReactElement } from "react";
 
-function InputFile({ handleLogo }: any): ReactElement {
+function InputFile({ handleLogo, accept = "image/*" }: any): ReactElement {
   return (
     <input
       hidden
-      accept="image/*"
+      accept={accept}
       onChange={({ target: { files } }) => handleLogo(files![0])}
       type="file"
     />

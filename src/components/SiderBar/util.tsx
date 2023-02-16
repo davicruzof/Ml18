@@ -1,6 +1,6 @@
 import { GoRequestChanges } from "react-icons/go";
 import { HiOutlineDesktopComputer } from "react-icons/hi";
-import { BiBus } from "react-icons/bi";
+import { BiBus, BiUserVoice } from "react-icons/bi";
 
 export const MenuItens = [
   {
@@ -60,6 +60,17 @@ export const MenuItens = [
       {
         title: "Ficha Ponto",
         itemId: "/monitoramento/ficha_ponto",
+      },
+    ],
+  },
+  {
+    title: "RH",
+    itemId: "/rh/videos",
+    elemBefore: () => <BiUserVoice style={{ fontSize: 28 }} />,
+    subNav: [
+      {
+        title: "Videos",
+        itemId: "/rh/videos",
       },
     ],
   },

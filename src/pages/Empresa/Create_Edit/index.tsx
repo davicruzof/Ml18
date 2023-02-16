@@ -59,7 +59,6 @@ export default function Create_Edit() {
   const { mutate: getEnterprise } = useMutation("getEnterpriseById", {
     mutationFn: (idEnterprise: number) => getEnterpriseById(idEnterprise),
     onSuccess: ({ data }) => {
-      console.log(data);
       data.uf !== null && setUf(data.uf);
       data.cep !== null && setCep(data.cep);
       data.nomeempresarial !== null && setNomeEmpresarial(data.nomeempresarial);

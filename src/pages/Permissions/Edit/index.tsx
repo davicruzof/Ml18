@@ -15,143 +15,100 @@ import * as S from "./style";
 import Button from "components/Button";
 import Snack from "components/Snack";
 import listItems from "./components/listItems";
+import { getUser } from "services/User/user";
+
+const Loader = () => {
+  return (
+    <S.LoadingContainer>
+      <Loading />
+    </S.LoadingContainer>
+  );
+};
 
 export default function EditEmployee() {
   const {
     state: { id },
   } = useLocation();
   const navigate = useNavigate();
-  const [departamentosLeft, setDepartamentosLeft] = useState<DptTypes[]>([]);
-  const [departamentosRight, setDepartamentosRight] = useState<DptTypes[]>([]);
-  const [departamentosListLeft, setDepartamentosListLeft] = useState<string[]>(
-    []
-  );
-  const [departamentosListRight, setDepartamentosListRight] = useState<
-    string[]
-  >([]);
-  const [checked, setChecked] = useState<string[]>([]);
-  const [checkedLeft, setCheckedLeft] = useState<string[]>([]);
-
-  const leftChecked = intersection(checkedLeft, departamentosListLeft);
-  const rightChecked = intersection(checked, departamentosListRight);
+  const [departamentosActive, setDepartamentosActive] = useState<string[]>([]);
 
   const [snackMessage, setSnackMessage] = useState("");
   const [snackStatus, setSnackStatus] = useState(false);
   const [snackType, setSnackType] = useState<"error" | "success">("success");
 
+  const { data: Departamentos, isLoading: isLoadingDepartamentos } = useQuery(
+    "getDepartments",
+    {
+      queryFn: () => getDepartments(),
+      enabled: true,
+      keepPreviousData: true,
+    }
+  );
+
   const {
     mutate: getEmployeeByIdFunc,
     isLoading: isLoadingEmployeeById,
-    data: emp,
+    data: getEmployeeByIdResponse,
   } = useMutation({
     mutationFn: (formData: string) => getEmployeeById(formData),
   });
 
-  const { mutate: updateEmployee, isLoading: isLoadingUpdateEmployee } =
-    useMutation({
-      mutationFn: (formData: EmployeeAreasType) =>
-        updateEmployeeAreas(formData),
-      onSuccess: () => {
-        setSnackStatus(true);
-        setSnackType("success");
-        setSnackMessage("Departamentos vinculados com sucesso!");
-        setTimeout(() => {
-          navigate("/Funcionario/List", { replace: true });
-        }, 3000);
-      },
-    });
+  // const {
+  //   data: User,
+  //   isLoading: isLoadingUser,
+  //   refetch: refetchGetUser,
+  // } = useQuery("getUser", {
+  //   queryFn: () => getUser(),
+  //   enabled: true,
+  //   keepPreviousData: true,
+  // });
 
-  const employee = useMemo(() => {
-    return emp && emp.data && emp.data[0];
-  }, [emp]);
+  // const { mutate: updateEmployee, isLoading: isLoadingUpdateEmployee } =
+  //   useMutation({
+  //     mutationFn: (formData: EmployeeAreasType) =>
+  //       updateEmployeeAreas(formData),
+  //     onSuccess: () => {
+  //       setSnackStatus(true);
+  //       setSnackType("success");
+  //       setSnackMessage("Departamentos vinculados com sucesso!");
+  //       setTimeout(() => {
+  //         navigate("/Funcionario/List", { replace: true });
+  //       }, 3000);
+  //     },
+  //   });
 
-  const { isLoading: isLoadingDepartamentos, refetch: refetchDpts } = useQuery(
-    "getDepartments",
-    {
-      queryFn: () => getDepartments(),
-      enabled: false,
-      keepPreviousData: false,
-      onSuccess: (data: DptTypes[]) => {
-        data.length > 0 && setDepartamentosLeft(data);
-      },
-    }
-  );
+  // const employee = useMemo(() => {
+  //   return emp && emp.data && emp.data[0];
+  // }, [emp]);
 
-  const handleToggleLeft = (value: string) => () => {
-    setDepartamentosListLeft((old) => [...old, value]);
-    setCheckedLeft(handleCheckedToggle(value, checkedLeft));
-  };
+  // useEffect(() => {
+  //   const formatDepartamentos =
+  //     User &&
+  //     User.departamentos.map((item) => {
+  //       return item.area;
+  //     });
 
-  const handleToggleRight = (value: string) => () => {
-    setDepartamentosListRight((old) => [...old, value]);
-    setChecked(handleCheckedToggle(value, checked));
-  };
-
-  const handleAllLeft = () => {
-    setDepartamentosLeft(departamentosLeft.concat(departamentosRight));
-    setDepartamentosRight([]);
-  };
-
-  const handleAllRight = () => {
-    setDepartamentosRight(departamentosRight.concat(departamentosLeft));
-    setDepartamentosLeft([]);
-  };
-
-  const handleCheckedRight = () => {
-    const { sendItens, oldItens } = handleChecked(
-      leftChecked,
-      departamentosLeft
-    );
-    setDepartamentosRight((old) => [...old, ...sendItens]);
-    setDepartamentosLeft(oldItens);
-    setCheckedLeft(not(checkedLeft, leftChecked));
-  };
-
-  const handleCheckedLeft = () => {
-    const { sendItens, oldItens } = handleChecked(
-      rightChecked,
-      departamentosRight
-    );
-
-    setDepartamentosLeft((old) => [...old, ...sendItens]);
-    setDepartamentosRight(oldItens);
-    setChecked(not(checked, rightChecked));
-  };
-
-  useEffect(() => {
-    refetchDpts();
-  }, []);
+  //   setDepartamentosActive(formatDepartamentos as string[]);
+  // }, [User]);
 
   useEffect(() => {
     id && getEmployeeByIdFunc(id);
   }, [id]);
 
-  const Loader = () => {
-    return (
-      <S.LoadingContainer>
-        <Loading />
-      </S.LoadingContainer>
-    );
-  };
-
-  const handleLinkDepartments = () => {
-    if (!id) return;
-
-    const area = departamentosRight.map((item) => item.id_area);
-    const updateData = {
-      id_funcionario: id,
-      area,
-    };
-    updateEmployee(updateData);
-  };
-
   const isLoading = useMemo(() => {
     return (
-      isLoadingDepartamentos || isLoadingEmployeeById || isLoadingUpdateEmployee
+      isLoadingDepartamentos || isLoadingEmployeeById || isLoadingDepartamentos
     );
-  }, [isLoadingDepartamentos, isLoadingEmployeeById, isLoadingUpdateEmployee]);
+  }, [isLoadingDepartamentos, isLoadingEmployeeById, isLoadingDepartamentos]);
 
-  return isLoadingEmployeeById || isLoading ? (
+  console.log(
+    "departamentosActive:",
+    getEmployeeByIdResponse,
+    "Departamentos:",
+    Departamentos
+  );
+
+  return isLoading ? (
     Loader()
   ) : (
     <S.Container>
@@ -161,75 +118,53 @@ export default function EditEmployee() {
           Vincule esse funcionários ao(s) departamento(s) ao qual ele faz parte
         </S.SubTitle>
       </S.WrapperInfo>
-      {employee && (
+      {getEmployeeByIdResponse && getEmployeeByIdResponse.data && (
         <S.Header>
           <S.Title>Dados do Funcionário</S.Title>
-          <S.LabelHeader>Registro: {employee.registro}</S.LabelHeader>
-          <S.LabelHeader>Nome: {employee.nome}</S.LabelHeader>
-          <S.LabelHeader>Função: {employee.funcao}</S.LabelHeader>
-          {employee.email && (
-            <S.LabelHeader>Email: {employee.email}</S.LabelHeader>
+          <S.LabelHeader>
+            Registro: {getEmployeeByIdResponse.data[0].registro}
+          </S.LabelHeader>
+          <S.LabelHeader>
+            Nome: {getEmployeeByIdResponse?.data[0].nome}
+          </S.LabelHeader>
+          <S.LabelHeader>
+            Função: {getEmployeeByIdResponse?.data[0].funcao}
+          </S.LabelHeader>
+          {getEmployeeByIdResponse?.data[0].email && (
+            <S.LabelHeader>
+              Email: {getEmployeeByIdResponse?.data[0].email}
+            </S.LabelHeader>
           )}
-          {employee.celular && (
-            <S.LabelHeader>Telefone: {employee.celular}</S.LabelHeader>
+          {getEmployeeByIdResponse?.data[0].celular && (
+            <S.LabelHeader>
+              Telefone: {getEmployeeByIdResponse?.data[0].celular}
+            </S.LabelHeader>
           )}
         </S.Header>
       )}
       <S.WrapperContent>
-        <S.Wrapper>
-          <Grid item>
-            {listItems(
-              departamentosLeft,
-              checkedLeft,
-              "Selecione os departamentos",
-              handleToggleLeft
-            )}
-          </Grid>
-          <Grid item>
-            <Grid container direction="column" alignItems="center">
-              <Button
-                onClick={handleAllRight}
-                active={departamentosLeft.length > 0}
-                disabled={departamentosLeft.length === 0}
-                title="Adicionar todos"
-              />
-              <Button
-                onClick={handleCheckedRight}
-                active={leftChecked.length > 0}
-                disabled={leftChecked.length === 0}
-                title="Adicionar selecionados"
-              />
-              <Button
-                onClick={handleCheckedLeft}
-                active={rightChecked.length > 0}
-                disabled={rightChecked.length === 0}
-                title="Remover selecionados"
-              />
-              <Button
-                onClick={handleAllLeft}
-                disabled={departamentosRight.length === 0}
-                active={departamentosRight.length > 0}
-                title="Remover todos"
-              />
-            </Grid>
-          </Grid>
-          <Grid item>
-            {listItems(
-              departamentosRight,
-              checked,
-              "Departamentos selecionados",
-              handleToggleRight
-            )}
-          </Grid>
-        </S.Wrapper>
-        <S.WrapperButton>
-          <Button
-            title="Confirmar"
-            onClick={handleLinkDepartments}
-            active={departamentosRight.length > 0}
-            disabled={departamentosRight.length === 0}
-          />
-        </S.WrapperButton>
+        {Departamentos &&
+          Departamentos.map((item) => {
+            const active =
+              departamentosActive && departamentosActive.includes(item.area);
+
+            return (
+              <S.Button
+                key={item.id_usuario}
+                onClick={() => {}}
+                isActive={active}
+              >
+                {item.area}
+              </S.Button>
+            );
+          })}
+
+        <Button
+          title="Confirmar"
+          onClick={() => {}}
+          active={true}
+          disabled={false}
+        />
       </S.WrapperContent>
       <Snack
         handleClose={() => setSnackStatus(false)}

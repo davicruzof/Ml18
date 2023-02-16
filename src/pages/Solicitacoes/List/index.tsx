@@ -92,7 +92,6 @@ const ListRequests = () => {
       headerName: "Status",
       width: 150,
       renderCell: ({ row }: { row: RowType }) => {
-        console.log(row);
         const { bg, color, title } = statusUtil[row.status];
         return [<Chip label={title} style={{ color, backgroundColor: bg }} />];
       },

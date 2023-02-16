@@ -10,6 +10,8 @@ import DeleteAccount from "pages/DeleteAccount";
 import Frota from "pages/Frota/List";
 import Create_Edit from "pages/Frota/Create_Edit";
 import FichaPonto from "pages/FichaPonto/List";
+import Videos from "pages/Rh/Videos/List";
+import AddVideos from "pages/Rh/Videos/Create_Edit";
 
 export default function UserRoutes() {
   return (
@@ -35,6 +37,10 @@ export default function UserRoutes() {
       </Route>
       <Route path="monitoramento/">
         <Route path="ficha_ponto" element={<FichaPonto />} />
+      </Route>
+      <Route path="rh/">
+        <Route path="videos" element={<Videos />} />
+        <Route path="AddVideo" element={<AddVideos />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />
