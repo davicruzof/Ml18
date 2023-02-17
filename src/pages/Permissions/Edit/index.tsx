@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { SetStateAction, useEffect, useMemo, useState } from "react";
 import Grid from "@mui/material/Grid";
 import { DptTypes } from "services/Solicitacoes/types";
 import { useMutation, useQuery } from "react-query";
@@ -10,12 +10,23 @@ import {
   getEmployeeById,
   updateEmployeeAreas,
 } from "services/Employee/employee";
-import { EmployeeAreasType } from "services/Employee/types";
+import {
+  EmployeeAreasType,
+  EmployeeByIdType,
+  departamentosType,
+} from "services/Employee/types";
 import * as S from "./style";
 import Button from "components/Button";
 import Snack from "components/Snack";
 import listItems from "./components/listItems";
-import { getUser } from "services/User/user";
+import {
+  Checkbox,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+} from "@mui/material";
+// import { getUser } from "services/User/user";
 
 const Loader = () => {
   return (
@@ -25,25 +36,63 @@ const Loader = () => {
   );
 };
 
+const LDist = (
+  departamentos: DptTypes[],
+  departamentosActive: string[],
+  removeSelect: (val: string) => void
+) => {
+  console.log("departamentosActiveMethod:", departamentosActive);
+  return departamentos.map((item) => {
+    const active =
+      departamentosActive && departamentosActive.includes(item.area);
+
+    return (
+      <S.Button
+        key={item.id_usuario}
+        onClick={() => removeSelect(item.area)}
+        isActive={active}
+      >
+        {item.area}
+      </S.Button>
+    );
+  });
+};
+
 export default function EditEmployee() {
   const {
     state: { id },
   } = useLocation();
   const navigate = useNavigate();
   const [departamentosActive, setDepartamentosActive] = useState<string[]>([]);
+  const [departamentos, setDepartamentos] = useState<DptTypes[]>([]);
 
   const [snackMessage, setSnackMessage] = useState("");
   const [snackStatus, setSnackStatus] = useState(false);
   const [snackType, setSnackType] = useState<"error" | "success">("success");
+  const [checked, setChecked] = useState<string[]>([]);
 
-  const { data: Departamentos, isLoading: isLoadingDepartamentos } = useQuery(
-    "getDepartments",
-    {
-      queryFn: () => getDepartments(),
-      enabled: true,
-      keepPreviousData: true,
+  console.log(checked);
+  const handleToggle = (value: string) => () => {
+    const currentIndex = checked.indexOf(value);
+    const newChecked = [...checked];
+
+    if (currentIndex === -1) {
+      newChecked.push(value);
+    } else {
+      newChecked.splice(currentIndex, 1);
     }
-  );
+
+    setChecked(newChecked);
+  };
+
+  const { isLoading: isLoadingDepartamentos } = useQuery("getDepartments", {
+    queryFn: () => getDepartments(),
+    enabled: true,
+    keepPreviousData: true,
+    onSuccess: (data: DptTypes[]) => {
+      setDepartamentos(data);
+    },
+  });
 
   const {
     mutate: getEmployeeByIdFunc,
@@ -51,45 +100,39 @@ export default function EditEmployee() {
     data: getEmployeeByIdResponse,
   } = useMutation({
     mutationFn: (formData: string) => getEmployeeById(formData),
+    onSuccess: (data: any) => {
+      const { departamentos } = data[0];
+      if (departamentos) {
+        let auxArr: string[] = [];
+        departamentos.map((item: departamentosType) =>
+          auxArr.push(item.id_area)
+        );
+        setChecked(auxArr);
+      }
+    },
   });
 
-  // const {
-  //   data: User,
-  //   isLoading: isLoadingUser,
-  //   refetch: refetchGetUser,
-  // } = useQuery("getUser", {
-  //   queryFn: () => getUser(),
-  //   enabled: true,
-  //   keepPreviousData: true,
-  // });
+  const { mutate: updateEmployee, isLoading: isLoadingUpdateEmployee } =
+    useMutation({
+      mutationFn: (formData: EmployeeAreasType) =>
+        updateEmployeeAreas(formData),
+      onSuccess: () => {
+        setSnackStatus(true);
+        setSnackType("success");
+        setSnackMessage("Departamentos vinculados com sucesso!");
+        setTimeout(() => {
+          navigate("/Funcionario/List", { replace: true });
+        }, 3000);
+      },
+    });
 
-  // const { mutate: updateEmployee, isLoading: isLoadingUpdateEmployee } =
-  //   useMutation({
-  //     mutationFn: (formData: EmployeeAreasType) =>
-  //       updateEmployeeAreas(formData),
-  //     onSuccess: () => {
-  //       setSnackStatus(true);
-  //       setSnackType("success");
-  //       setSnackMessage("Departamentos vinculados com sucesso!");
-  //       setTimeout(() => {
-  //         navigate("/Funcionario/List", { replace: true });
-  //       }, 3000);
-  //     },
-  //   });
-
-  // const employee = useMemo(() => {
-  //   return emp && emp.data && emp.data[0];
-  // }, [emp]);
-
-  // useEffect(() => {
-  //   const formatDepartamentos =
-  //     User &&
-  //     User.departamentos.map((item) => {
-  //       return item.area;
-  //     });
-
-  //   setDepartamentosActive(formatDepartamentos as string[]);
-  // }, [User]);
+  const handleUpdate = () => {
+    const sendData: EmployeeAreasType = {
+      area: checked,
+      id_funcionario: id,
+    };
+    updateEmployee(sendData);
+  };
 
   useEffect(() => {
     id && getEmployeeByIdFunc(id);
@@ -97,16 +140,9 @@ export default function EditEmployee() {
 
   const isLoading = useMemo(() => {
     return (
-      isLoadingDepartamentos || isLoadingEmployeeById || isLoadingDepartamentos
+      isLoadingDepartamentos || isLoadingEmployeeById || isLoadingUpdateEmployee
     );
-  }, [isLoadingDepartamentos, isLoadingEmployeeById, isLoadingDepartamentos]);
-
-  console.log(
-    "departamentosActive:",
-    getEmployeeByIdResponse,
-    "Departamentos:",
-    Departamentos
-  );
+  }, [isLoadingDepartamentos, isLoadingEmployeeById, isLoadingUpdateEmployee]);
 
   return isLoading ? (
     Loader()
@@ -143,25 +179,38 @@ export default function EditEmployee() {
         </S.Header>
       )}
       <S.WrapperContent>
-        {Departamentos &&
-          Departamentos.map((item) => {
-            const active =
-              departamentosActive && departamentosActive.includes(item.area);
+        {/* {departamentos.length > 0 &&
+          List(departamentos, departamentosActive, removeSelect)} */}
 
+        <List
+          dense
+          sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
+        >
+          {departamentos.map((value) => {
+            const labelId = `checkbox-list-secondary-label-${value.area}`;
             return (
-              <S.Button
-                key={item.id_usuario}
-                onClick={() => {}}
-                isActive={active}
+              <ListItem
+                key={value.area}
+                secondaryAction={
+                  <Checkbox
+                    edge="end"
+                    onChange={handleToggle(value.id_area)}
+                    checked={checked.indexOf(value.id_area) !== -1}
+                    inputProps={{ "aria-labelledby": labelId }}
+                  />
+                }
+                disablePadding
               >
-                {item.area}
-              </S.Button>
+                <ListItemButton>
+                  <ListItemText id={labelId} primary={`${value.area}`} />
+                </ListItemButton>
+              </ListItem>
             );
           })}
-
+        </List>
         <Button
           title="Confirmar"
-          onClick={() => {}}
+          onClick={handleUpdate}
           active={true}
           disabled={false}
         />

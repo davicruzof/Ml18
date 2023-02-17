@@ -8,9 +8,9 @@ import Snack from "components/Snack";
 import { ValueType } from "./types";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
-import { updateEnterprise } from "services/Enterprises/enterprises";
 import { InputFile } from "components/InputControl/inputFile";
-import { createVehicle } from "services/Vehicle";
+import { createVideo } from "services/Telemetria";
+import { formatData } from "@utils/format";
 
 export default function Create_Edit() {
   const location = useLocation();
@@ -22,8 +22,8 @@ export default function Create_Edit() {
   const [descricao, setDescricao] = useState<string>("");
   const [expiracao, setExpiracao] = useState<string>("");
 
-  const [logo, setLogo] = useState<File | null>(null);
-  const [logoURl, setLogoURL] = useState<string>("");
+  const [video, setVideo] = useState<File | null>(null);
+  const [videoUrl, setVideoUrl] = useState<string>("");
 
   const [snackMessage, setSnackMessage] = useState("");
   const [snackStatus, setSnackStatus] = useState(false);
@@ -55,8 +55,9 @@ export default function Create_Edit() {
 
   const { mutate: registerVideo, isLoading: isLoadingRegisterVideo } =
     useMutation({
-      mutationFn: (formData: FormData) => createVehicle(formData),
+      mutationFn: (formData: FormData) => createVideo(formData),
       onSuccess: (data) => {
+        console.log(data);
         results(data, "Veículo cadastrado com sucesso!");
       },
       onError: () => {
@@ -64,27 +65,31 @@ export default function Create_Edit() {
       },
     });
 
-  const createObjVehicle = () => {
+  const createObjVideo = () => {
     const form = new FormData();
+    const values = localStorage.getItem("authValues");
+    const data = JSON.parse(values!);
 
+    form.append("id_empresa", data.id_empresa);
     form.append("descricao", descricao);
     form.append("titulo", titulo);
-    logo && form.append("foto", logo);
+    form.append("dt_expiracao", formatData(new Date(expiracao)));
+    video && form.append("video", video);
 
     return form;
   };
 
-  const handleEnterprise = async () => {
-    const dataSend = createObjVehicle();
+  // const handleEnterprise = async () => {
+  //   const dataSend = createObjVehicle();
 
-    registerVideo(dataSend);
-    handleError("Preencha os dados obrigatórios!");
-  };
+  //   registerVideo(dataSend);
+  //   handleError("Preencha os dados obrigatórios!");
+  // };
 
-  const handleUpdateEnterprise = async () => {
+  const handleRegisterVideo = async () => {
     // if (onCanSubmit()) {
-    //   const dataSend = createObjectEnterprise();
-    //   editEnterprise(dataSend);
+    const dataSend = createObjVideo();
+    registerVideo(dataSend);
     // } else {
     //   setSnackStatus(true);
     //   setSnackType("error");
@@ -93,8 +98,8 @@ export default function Create_Edit() {
   };
 
   const handleLogo = (arg0: File) => {
-    setLogo(arg0);
-    setLogoURL(URL.createObjectURL(arg0));
+    setVideo(arg0);
+    setVideoUrl(URL.createObjectURL(arg0));
   };
 
   const isLoading = useMemo(() => {
@@ -120,14 +125,14 @@ export default function Create_Edit() {
             value={descricao}
             required
             multiline
-            rows={logoURl.length > 0 ? 14 : 10}
+            rows={videoUrl.length > 0 ? 14 : 10}
           />
         </FormGroup>
         <FormGroup style={{ width: "25%" }}>
-          {logoURl.length > 0 ? (
+          {videoUrl.length > 0 ? (
             <video
               controls
-              src={logoURl}
+              src={videoUrl}
               style={{
                 maxWidth: 280,
                 borderRadius: 8,
@@ -165,7 +170,7 @@ export default function Create_Edit() {
           <Button
             variant="contained"
             component="label"
-            style={{ height: logoURl.length > 0 ? 42 : 52, marginTop: 20 }}
+            style={{ height: videoUrl.length > 0 ? 42 : 52, marginTop: 20 }}
           >
             Selecionar video
             <InputFile accept="video/*" name="logo" handleLogo={handleLogo} />
@@ -173,18 +178,18 @@ export default function Create_Edit() {
 
           <FormGroup sx={{ mt: 2 }} />
 
-          {logoURl.length > 0 && (
+          {videoUrl.length > 0 && (
             <Button
               variant="contained"
               component="label"
               style={{ height: 42 }}
-              onClick={() => setLogoURL("")}
+              onClick={() => setVideoUrl("")}
             >
               remover video
             </Button>
           )}
 
-          {logoURl.length > 0 && (
+          {videoUrl.length > 0 && (
             <>
               <span style={{ marginTop: 10 }}>Data de expiração</span>
               <InputForm
@@ -221,7 +226,7 @@ export default function Create_Edit() {
             disabled={false}
             title={id ? "Editar" : "Cadastrar"}
             loading={isLoading}
-            onClick={id ? handleUpdateEnterprise : handleEnterprise}
+            onClick={handleRegisterVideo}
           />
         </FormGroup>
       </FormGroup>

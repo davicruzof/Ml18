@@ -8,6 +8,11 @@ export interface EmployeeAreasType {
   area: string[];
 }
 
+export type departamentosType = {
+  area: string;
+  id_area: string;
+};
+
 export interface EmployeeByIdType {
   id_funcionario: string;
   id_grupo: number;
@@ -34,4 +39,5 @@ export interface EmployeeByIdType {
     id_situacao: number;
     situacao: string;
   };
+  departamentos: departamentosType[];
 }

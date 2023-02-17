@@ -14,11 +14,13 @@ export const getAllEmployee = (): Promise<
   }
 };
 
-export const getEmployeeById = (
+export const getEmployeeById = async (
   id: string
 ): Promise<AxiosResponse<EmployeeByIdType[] | undefined>> => {
   try {
-    const data = api.post("/employee/getById", { id_funcionario: id });
+    const { data } = await api.post("/employee/getById", {
+      id_funcionario: id,
+    });
     return data;
   } catch (err) {
     const { error } = (err as AxiosError<any, any>)?.response?.data;
