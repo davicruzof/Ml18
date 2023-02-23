@@ -8,7 +8,7 @@ export default {
       siderItemDisabled: "#94A0AE",
     },
     borderColor: "#c4c4c4",
-    bgSider: "#FBFCFC",
+    bgSider: "#1E222C",
   },
   border: {
     small: 1,

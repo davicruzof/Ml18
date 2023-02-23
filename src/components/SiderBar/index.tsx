@@ -6,10 +6,12 @@ import { getUser } from "services/User/user";
 import Loading from "components/Loading/Loading";
 
 import { Navigation } from "react-minimal-side-navigation";
-import "react-minimal-side-navigation/lib/ReactMinimalSideNavigation.css";
 import { useNavigate } from "react-router-dom";
 import { MenuItens } from "./util";
 import { LoadingButton } from "@mui/lab";
+import * as S from "./styles";
+import "react-minimal-side-navigation/lib/ReactMinimalSideNavigation.css";
+import theme from "utils/theme";
 
 export function SideBar({ children }: any) {
   const navigate = useNavigate();
@@ -49,82 +51,60 @@ export function SideBar({ children }: any) {
     location.reload();
   };
 
-  return (
+  const userName = dataUser?.user?.nome
+    .split(" ")
+    .slice(0, 1)
+    .join(" ")
+    .toLowerCase();
+
+  return isLoading ? (
+    <Loading />
+  ) : (
     <div>
-      <nav className="main-header navbar navbar-expand navbar-white navbar-light">
-        <ul
-          className="navbar-nav row"
-          style={{ justifyContent: "space-between", width: "100%" }}
-        >
-          <li className="nav-item">
-            <a
-              className="nav-link"
-              data-widget="pushmenu"
-              href="#"
-              role="button"
-            >
-              <i className="fas fa-bars"></i>
-            </a>
-          </li>
-          <li
-            className="nav-item"
-            style={{
-              flexDirection: "row",
-              display: "flex",
-              alignItems: "center",
-            }}
+      <S.HeaderNav className="main-header navbar navbar-expand">
+        <S.HeaderContainer>
+          <S.Link
+            className="nav-link"
+            data-widget="pushmenu"
+            href="#"
+            role="button"
           >
-            <a href="#" className="nav-link">
-              Olá, {dataUser?.user?.nome.split(" ").slice(0, 1).join(" ")}
-            </a>
-            <LoadingButton size="large" variant="contained" onClick={logout}>
+            <i className="fas fa-bars"></i>
+          </S.Link>
+
+          <S.UserInfo>
+            <S.Link href="#" className="nav-link">
+              Olá, {userName}
+            </S.Link>
+            <LoadingButton
+              sx={{
+                bgcolor: theme.colors.primary,
+                color: "#fff",
+                fontWeight: "bold",
+              }}
+              size="large"
+              variant="contained"
+              onClick={logout}
+            >
               Sair
             </LoadingButton>
-          </li>
-        </ul>
-      </nav>
-      <div className="content-wrapper" style={{ height: "auto" }}>
-        {children}
-      </div>
-      <aside className="main-sidebar sidebar-dark-primary elevation-4">
-        <a
-          className="brand-link"
-          style={{ flexDirection: "row", display: "flex" }}
-        >
-          {isLoading ? (
-            <Loading />
-          ) : (
-            <>
-              {logo && (
-                <img
-                  src={logo}
-                  alt="logo"
-                  className=" img-circle elevation-2"
-                  style={{
-                    height: 50,
-                    width: 50,
-                    marginRight: 15,
-                    padding: 1,
-                    objectFit: "contain",
-                  }}
-                />
-              )}
-              {nome && (
-                <div>
-                  <span style={{ whiteSpace: "break-spaces" }}>{nome}</span>
-                </div>
-              )}
-            </>
-          )}
-        </a>
-        <div className="sidebar">
-          <Navigation
-            activeItemId="/management/members"
-            onSelect={({ itemId }) => navigation(itemId)}
-            items={MenuItens}
-          />
-        </div>
-      </aside>
+          </S.UserInfo>
+        </S.HeaderContainer>
+      </S.HeaderNav>
+
+      <S.MainContainer className="content-wrapper">{children}</S.MainContainer>
+
+      <S.Container className="main-sidebar">
+        <S.EnterpriseInfos>
+          {logo && <S.Logo src={logo} alt="logo" className="img-circle" />}
+          <S.EnterpriseName>{nome}</S.EnterpriseName>
+        </S.EnterpriseInfos>
+        <Navigation
+          activeItemId="/management/members"
+          onSelect={({ itemId }) => navigation(itemId)}
+          items={MenuItens}
+        />
+      </S.Container>
     </div>
   );
 }

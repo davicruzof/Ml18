@@ -1,40 +1,60 @@
+import { height } from "./../../utils/constants";
 import styled from "styled-components";
-import { Button } from "@mui/material";
 
 export const Container = styled.div`
-  width: ${(props) => props.theme.spacing.medium}%;
-  height: ${(props) => props.theme.spacing.full}vh;
   background-color: ${(props) => props.theme.colors.bgSider};
-  display: flex;
-  flex-direction: column;
-
-  @media (max-width: 1000px) {
-    display: none;
-  }
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22) !important;
+  height: 100vh !important;
 `;
 
-export const AccordionContainer = styled.div`
-  width: ${(props) => props.theme.spacing.full}%;
+export const EnterpriseInfos = styled.aside`
   display: flex;
-  flex-direction: column;
-`;
-
-export const ActionButton = styled.a<{ active: boolean }>`
-  margin: ${(props) => props.theme.spacing.small}px;
-  margin-top: ${(props) => props.theme.spacing.xsmall}px;
-  border: 1px solid ${(props) => props.theme.colors.primary};
-  background: ${(props) =>
-    props.active ? props.theme.colors.primary : "transparent"};
-  color: ${(props) => (props.active ? "#fff" : props.theme.colors.primary)};
-  display: flex;
-  justify-content: center;
+  flex-direction: row;
+  min-height: 100px;
   align-items: center;
-  padding: 5px 15px;
-  border-radius: 4px;
-  cursor: pointer;
+  padding: 10px;
+`;
+
+export const HeaderContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  width: 100%;
+`;
+
+export const EnterpriseName = styled.span`
+  color: white;
+  font-weight: bold;
+`;
+
+export const HeaderNav = styled.nav`
+  background-color: ${(props) => props.theme.colors.bgSider};
+`;
+
+export const UserInfo = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
+export const Link = styled.a`
+  color: #fff;
 
   &:hover {
-    background: ${(props) => props.theme.colors.primary};
-    color: #fff;
+    color: #fff !important;
   }
+`;
+
+export const Logo = styled.img`
+  height: 100px;
+  max-width: 50px;
+  margin-right: 15px;
+  padding: 1px;
+  object-fit: contain;
+`;
+
+export const MainContainer = styled.div`
+  height: auto;
 `;

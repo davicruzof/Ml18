@@ -2,11 +2,11 @@ import { TextField } from "@mui/material";
 
 import * as S from "./styles";
 
-const Input = (props: any) => {
+const TextArea = (props: any) => {
   return (
     <S.Container>
       <label style={{ color: "black" }}>{props.label}</label>
-      <input
+      <textarea
         autoComplete="none"
         style={{
           borderRadius: 4,
@@ -14,7 +14,7 @@ const Input = (props: any) => {
           borderWidth: 1,
           background: "transparent",
           width: "100%",
-          height: 48,
+          minHeight: 48,
           paddingLeft: 15,
           color: "black",
         }}
@@ -24,4 +24,4 @@ const Input = (props: any) => {
   );
 };
 
-export default Input;
+export default TextArea;

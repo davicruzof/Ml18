@@ -1,67 +1,53 @@
 import { useEffect, useState } from "react";
-import { getEnterprises } from "services/Enterprises/enterprises";
 import * as S from "./styles";
 import { useNavigate } from "react-router-dom";
-import { EnterPriseType } from "./types";
 import ButtonComponent from "components/Button";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useQuery } from "react-query";
-// import Loading from "components/Loading/Loading";
-import { Chip, IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import { getVideos } from "services/Telemetria";
+import { videoType } from "services/Telemetria/type";
+import { formatData } from "utils/format";
 
 export default function Videos() {
   const navigation = useNavigate();
-  const [rows, setRows] = useState<EnterPriseType[]>([]);
-  // const [pageSize, setPageSize] = useState<number>(10);
-  // const height = window.innerHeight - 200;
+  const [rows, setRows] = useState<videoType[]>([]);
+  const [pageSize, setPageSize] = useState<number>(10);
+  const height = window.innerHeight - 200;
 
-  const { data: dataEnterprises, isLoading } = useQuery("getEnterprises", {
-    queryFn: () => getEnterprises(),
+  const { data: dataVideos, isLoading } = useQuery("getEnterprises", {
+    queryFn: () => getVideos(),
     enabled: true,
     keepPreviousData: false,
   });
 
-  const handleEditClick = (id: number) => {
-    navigation(`/Admin/Empresa/Edit`, {
+  const handleEditClick = (item: videoType) => {
+    navigation(`/rh/AddVideo`, {
       replace: true,
       state: {
-        idEnterprise: id,
+        video: item,
       },
     });
   };
 
   const VISIBLE_FIELDS = [
-    { field: "nomeempresarial", headerName: "Nome da Empresa", width: 350 },
-    { field: "cnpj", headerName: "CNPJ", width: 200 },
-    {
-      field: "status",
-      type: "actions",
-      headerName: "Status",
-      width: 200,
-      cellClassName: "actions",
-      getActions: (data: any) => {
-        return [
-          <Chip
-            label={data.row.status ? "Ativo" : "Desativado"}
-            color={data.row.status ? "success" : "error"}
-          />,
-        ];
-      },
-    },
+    { field: "titulo", headerName: "Título", width: 350 },
+    { field: "descricao", headerName: "Descricao", width: 500 },
+    { field: "expiracao", headerName: "Data de expiração", width: 150 },
     {
       field: "actions",
       type: "actions",
       headerName: "Actions",
       width: 100,
       cellClassName: "actions",
-      getActions: ({ id, ...rest }: any) => {
+      getActions: ({ row }: any) => {
         return [
           <IconButton
             color="primary"
             aria-label="upload picture"
             component="label"
-            onClick={() => handleEditClick(id)}
+            onClick={() => handleEditClick(row)}
           >
             <EditIcon />
           </IconButton>,
@@ -71,17 +57,18 @@ export default function Videos() {
   ];
 
   useEffect(() => {
-    if (dataEnterprises?.data) {
-      let data: EnterPriseType[] = [];
-      dataEnterprises.data.map((item: any) =>
+    if (dataVideos) {
+      let data: videoType[] = [];
+      dataVideos.map((item: any) =>
         data.push({
-          id: item.id_empresa,
+          id: item.dt_criacao,
+          expiracao: formatData(new Date(item.dt_expiracao)),
           ...item,
         })
       );
       setRows(data);
     }
-  }, [dataEnterprises]);
+  }, [dataVideos]);
 
   return (
     <S.Container>
@@ -94,7 +81,7 @@ export default function Videos() {
         />
       </S.Wrapper>
 
-      {/* {rows && !isLoading && (
+      {rows && (
         <DataGrid
           loading={isLoading}
           columns={VISIBLE_FIELDS}
@@ -113,7 +100,7 @@ export default function Videos() {
           }}
           disableSelectionOnClick
         />
-      )} */}
+      )}
     </S.Container>
   );
 }

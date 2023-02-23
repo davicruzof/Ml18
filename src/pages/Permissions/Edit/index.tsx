@@ -41,7 +41,6 @@ const LDist = (
   departamentosActive: string[],
   removeSelect: (val: string) => void
 ) => {
-  console.log("departamentosActiveMethod:", departamentosActive);
   return departamentos.map((item) => {
     const active =
       departamentosActive && departamentosActive.includes(item.area);
@@ -121,7 +120,7 @@ export default function EditEmployee() {
         setSnackType("success");
         setSnackMessage("Departamentos vinculados com sucesso!");
         setTimeout(() => {
-          navigate("/Funcionario/List", { replace: true });
+          navigate("/ti/permissoes", { replace: true });
         }, 3000);
       },
     });

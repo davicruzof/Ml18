@@ -6,7 +6,6 @@ export interface ButtonProp {
   active?: boolean;
   disabled?: boolean;
   loading?: boolean;
-  children?: any;
 }
 
 export interface typeButton extends LoadingButtonProps {

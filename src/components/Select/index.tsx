@@ -1,6 +1,5 @@
 import {
   FormControl,
-  InputLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -21,7 +20,7 @@ export default function SelectComponent({
 }) {
   return (
     <FormControl style={{ flex: 1 }}>
-      <InputLabel id="simple-select-label">{label}</InputLabel>
+      <label id="simple-select-label">{label}</label>
       <Select
         labelId="simple-select-label"
         id="simple-select"
@@ -29,6 +28,10 @@ export default function SelectComponent({
         disabled={disable}
         label={label}
         onChange={handleChange}
+        sx={{
+          height: 48,
+          borderColor: "#000",
+        }}
       >
         {itens &&
           itens.map((item, index) => (
