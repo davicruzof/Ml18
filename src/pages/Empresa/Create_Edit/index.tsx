@@ -171,7 +171,6 @@ export default function Create_Edit() {
   const handleUpdateEnterprise = async () => {
     if (onCanSubmit()) {
       const dataSend = createObjectEnterprise();
-      console.log(situacaoCadastral);
       editEnterprise(dataSend);
     } else {
       handleError("Preencha os dados obrigatórios!");

@@ -51,7 +51,6 @@ export default function ListEnterprise() {
       width: 200,
       cellClassName: "actions",
       getActions: ({ row }: any) => {
-        console.log(row);
         return [
           <Chip
             label={row.situacaocadastral}
