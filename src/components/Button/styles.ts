@@ -3,7 +3,7 @@ import { typeButton } from "./type";
 import theme from "utils/theme";
 
 export const ButtonCustom = styled.button<typeButton>`
-  width: auto;
+  width: fit-content;
   display: flex;
   justify-content: center;
   position: relative;

@@ -11,13 +11,6 @@ export const Container = styled.div`
   background: rgba(242, 245, 249, 1);
 `;
 
-export const LoadingContainer = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 55%;
-  background: rgba(242, 245, 249, 1);
-`;
-
 export const Header = styled(Grid).attrs({
   container: true,
 })`
@@ -42,8 +35,10 @@ export const WrapperContent = styled(Grid).attrs({
   background: ${(props) => props.theme.colors.white};
   border-radius: 8px;
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
-  padding: 50px 0;
+  padding: 40px;
   justify-content: center;
+  display: flex;
+  flex-direction: column !important;
 `;
 
 export const Button = styled(LoadingButton).attrs({

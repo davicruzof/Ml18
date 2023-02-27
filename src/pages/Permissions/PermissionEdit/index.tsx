@@ -1,85 +1,56 @@
-import { SetStateAction, useEffect, useMemo, useState } from "react";
-import Grid from "@mui/material/Grid";
+import { useEffect, useMemo, useState } from "react";
 import { DptTypes } from "services/Solicitacoes/types";
 import { useMutation, useQuery } from "react-query";
 import { getDepartments } from "services/Solicitacoes";
-import { handleChecked, handleCheckedToggle, intersection, not } from "./utils";
 import Loading from "components/Loading/Loading";
 import { useLocation, useNavigate } from "react-router-dom";
+
 import {
   getEmployeeById,
   updateEmployeeAreas,
 } from "services/Employee/employee";
+
 import {
   EmployeeAreasType,
   EmployeeByIdType,
   departamentosType,
 } from "services/Employee/types";
 import * as S from "./style";
-import Button from "components/Button";
+
 import Snack from "components/Snack";
-import listItems from "./components/listItems";
+
 import {
   Checkbox,
+  FormGroup,
   List,
   ListItem,
   ListItemButton,
   ListItemText,
 } from "@mui/material";
-// import { getUser } from "services/User/user";
+import { ButtonsForm } from "components/ButtonsForm";
 
-const Loader = () => {
-  return (
-    <S.LoadingContainer>
-      <Loading />
-    </S.LoadingContainer>
-  );
-};
-
-const LDist = (
-  departamentos: DptTypes[],
-  departamentosActive: string[],
-  removeSelect: (val: string) => void
-) => {
-  return departamentos.map((item) => {
-    const active =
-      departamentosActive && departamentosActive.includes(item.area);
-
-    return (
-      <S.Button
-        key={item.id_usuario}
-        onClick={() => removeSelect(item.area)}
-        isActive={active}
-      >
-        {item.area}
-      </S.Button>
-    );
-  });
-};
-
-export default function EditEmployee() {
+export default function PermissionEdit() {
   const {
     state: { id },
   } = useLocation();
+
   const navigate = useNavigate();
-  const [departamentosActive, setDepartamentosActive] = useState<string[]>([]);
   const [departamentos, setDepartamentos] = useState<DptTypes[]>([]);
+  const [employeeByIdResponse, setEmployeeByIdResponse] =
+    useState<EmployeeByIdType | null>(null);
 
   const [snackMessage, setSnackMessage] = useState("");
   const [snackStatus, setSnackStatus] = useState(false);
   const [snackType, setSnackType] = useState<"error" | "success">("success");
   const [checked, setChecked] = useState<string[]>([]);
 
-  console.log(checked);
   const handleToggle = (value: string) => () => {
     const currentIndex = checked.indexOf(value);
     const newChecked = [...checked];
 
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
+    currentIndex === -1
+      ? newChecked.push(value)
+      : newChecked.splice(currentIndex, 1);
 
     setChecked(newChecked);
   };
@@ -93,23 +64,24 @@ export default function EditEmployee() {
     },
   });
 
-  const {
-    mutate: getEmployeeByIdFunc,
-    isLoading: isLoadingEmployeeById,
-    data: getEmployeeByIdResponse,
-  } = useMutation({
-    mutationFn: (formData: string) => getEmployeeById(formData),
-    onSuccess: (data: any) => {
-      const { departamentos } = data[0];
-      if (departamentos) {
-        let auxArr: string[] = [];
-        departamentos.map((item: departamentosType) =>
-          auxArr.push(item.id_area)
-        );
-        setChecked(auxArr);
-      }
-    },
-  });
+  const { mutate: getEmployeeByIdFunc, isLoading: isLoadingEmployeeById } =
+    useMutation({
+      mutationFn: (formData: string) => getEmployeeById(formData),
+      onSuccess: (data: any) => {
+        if (data) {
+          const user = data[0];
+          setEmployeeByIdResponse(user);
+          const { departamentos } = user;
+          if (departamentos) {
+            let auxArr: string[] = [];
+            departamentos.map((item: departamentosType) =>
+              auxArr.push(item.id_area)
+            );
+            setChecked(auxArr);
+          }
+        }
+      },
+    });
 
   const { mutate: updateEmployee, isLoading: isLoadingUpdateEmployee } =
     useMutation({
@@ -121,7 +93,7 @@ export default function EditEmployee() {
         setSnackMessage("Departamentos vinculados com sucesso!");
         setTimeout(() => {
           navigate("/ti/permissoes", { replace: true });
-        }, 3000);
+        }, 1000);
       },
     });
 
@@ -144,7 +116,7 @@ export default function EditEmployee() {
   }, [isLoadingDepartamentos, isLoadingEmployeeById, isLoadingUpdateEmployee]);
 
   return isLoading ? (
-    Loader()
+    <Loading />
   ) : (
     <S.Container>
       <S.WrapperInfo>
@@ -153,34 +125,31 @@ export default function EditEmployee() {
           Vincule esse funcionários ao(s) departamento(s) ao qual ele faz parte
         </S.SubTitle>
       </S.WrapperInfo>
-      {getEmployeeByIdResponse && getEmployeeByIdResponse.data && (
+      {employeeByIdResponse && (
         <S.Header>
           <S.Title>Dados do Funcionário</S.Title>
-          <S.LabelHeader>
-            Registro: {getEmployeeByIdResponse.data[0].registro}
-          </S.LabelHeader>
-          <S.LabelHeader>
-            Nome: {getEmployeeByIdResponse?.data[0].nome}
-          </S.LabelHeader>
-          <S.LabelHeader>
-            Função: {getEmployeeByIdResponse?.data[0].funcao}
-          </S.LabelHeader>
-          {getEmployeeByIdResponse?.data[0].email && (
-            <S.LabelHeader>
-              Email: {getEmployeeByIdResponse?.data[0].email}
-            </S.LabelHeader>
+          <S.LabelHeader>Nome: {employeeByIdResponse.nome}</S.LabelHeader>
+          {employeeByIdResponse.email && (
+            <S.LabelHeader>Email: {employeeByIdResponse.email}</S.LabelHeader>
           )}
-          {getEmployeeByIdResponse?.data[0].celular && (
+          <FormGroup row>
+            {employeeByIdResponse.funcao && (
+              <S.LabelHeader>
+                Função: {employeeByIdResponse.funcao}
+              </S.LabelHeader>
+            )}
             <S.LabelHeader>
-              Telefone: {getEmployeeByIdResponse?.data[0].celular}
+              Registro: {employeeByIdResponse.registro}
             </S.LabelHeader>
-          )}
+            {employeeByIdResponse.celular && (
+              <S.LabelHeader>
+                Telefone: {employeeByIdResponse.celular}
+              </S.LabelHeader>
+            )}
+          </FormGroup>
         </S.Header>
       )}
       <S.WrapperContent>
-        {/* {departamentos.length > 0 &&
-          List(departamentos, departamentosActive, removeSelect)} */}
-
         <List
           dense
           sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
@@ -207,11 +176,10 @@ export default function EditEmployee() {
             );
           })}
         </List>
-        <Button
-          title="Confirmar"
-          onClick={handleUpdate}
-          active={true}
-          disabled={false}
+        <ButtonsForm
+          rotaBack="/ti/permissoes"
+          title="Confirme"
+          handleButton={handleUpdate}
         />
       </S.WrapperContent>
       <Snack

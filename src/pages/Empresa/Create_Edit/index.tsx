@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from "react";
 import InputForm from "components/Input";
 import * as S from "./styles";
-import ButtonComponent from "components/Button";
-import {
-  SelectChangeEvent,
-  Button,
-  FormGroup,
-  InputAdornment,
-} from "@mui/material";
+import { SelectChangeEvent, Button, FormGroup } from "@mui/material";
 import { IMAGEM_DEFAULT } from "utils/constants";
 import SelectComponent from "components/Select";
 import Snack from "components/Snack";
@@ -21,7 +15,7 @@ import {
   updateEnterprise,
 } from "services/Enterprises/enterprises";
 import { InputFile } from "components/InputControl/inputFile";
-import theme from "utils/theme";
+import { ButtonsForm } from "components/ButtonsForm";
 
 export default function Create_Edit() {
   const location = useLocation();
@@ -177,7 +171,7 @@ export default function Create_Edit() {
   const handleUpdateEnterprise = async () => {
     if (onCanSubmit()) {
       const dataSend = createObjectEnterprise();
-
+      console.log(situacaoCadastral);
       editEnterprise(dataSend);
     } else {
       handleError("Preencha os dados obrigatórios!");
@@ -195,9 +189,9 @@ export default function Create_Edit() {
 
   return (
     <S.Container>
-      <h3>Cadastro de Empresa</h3>
+      <S.Title>Cadastro de Empresa</S.Title>
 
-      <FormGroup row sx={{ justifyContent: "space-between" }}>
+      <FormGroup row sx={{ justifyContent: "space-between", mt: 3 }}>
         <InputForm
           label="Razão social"
           onChange={(e: ValueType) => setNomeEmpresarial(e.target.value)}
@@ -282,114 +276,68 @@ export default function Create_Edit() {
         />
       </FormGroup>
 
-      <FormGroup row>
-        <SelectComponent
-          itens={["Ativo", "Inativo", "Suspenso"]}
-          handleChange={handleChange}
-          value={situacaoCadastral}
-          label="Status"
-        />
-
+      <FormGroup
+        row
+        sx={{ justifyContent: "space-between", alignItems: "center" }}
+      >
+        <FormGroup sx={{ flex: 1 }}>
+          <SelectComponent
+            itens={["Ativo", "Inativo", "Suspenso"]}
+            handleChange={handleChange}
+            value={situacaoCadastral}
+            label="Status"
+          />
+        </FormGroup>
         <FormGroup sx={{ mr: 2 }} />
 
         <InputForm
           label="Cor"
-          InputProps={{
-            startAdornment: <InputAdornment position="start">#</InputAdornment>,
-          }}
           onChange={(e: ValueType) => setCor(e.target.value)}
           value={cor}
         />
 
-        <div
-          style={{
-            backgroundColor: cor ? `#${cor}` : "#fff",
-            height: 52,
-            width: 80,
-            borderRadius: 4,
-            borderWidth: 1,
-            borderStyle: "solid",
-            borderColor: theme.colors.text.disabled,
-            marginLeft: 14,
-          }}
-        />
+        <S.colorPreview cor={cor} />
 
         <FormGroup sx={{ mr: 3 }} />
 
-        <img
-          src={logoURl.length > 0 ? logoURl : IMAGEM_DEFAULT}
-          height={logoURl.length > 0 ? 100 : 52}
-          width={logoURl.length > 0 ? 100 : 52}
-          style={{
-            marginRight: 20,
-            backgroundColor: theme.colors.primary,
-            height: 50,
-            width: 50,
-            padding: 1,
-            objectFit: "cover",
-            borderRadius: "50%",
-            boxShadow: "0 3px 6px rgba(0,0,0,.16),0 3px 6px rgba(0,0,0,.23)",
-          }}
-        />
+        <FormGroup row sx={{ flex: 1, marginBottom: -4 }}>
+          <S.Logo
+            src={logoURl.length > 0 ? logoURl : IMAGEM_DEFAULT}
+            height={logoURl.length > 0 ? 100 : 52}
+            width={logoURl.length > 0 ? 100 : 52}
+          />
 
-        <FormGroup>
-          <Button
-            variant="contained"
-            component="label"
-            style={{ height: logoURl.length > 0 ? 42 : 52 }}
-          >
-            Selecione o logo
-            <InputFile name="logo" handleLogo={handleLogo} />
-          </Button>
-
-          <FormGroup sx={{ mt: 2 }} />
-
-          {logoURl.length > 0 && (
+          <FormGroup>
             <Button
               variant="contained"
               component="label"
-              style={{ height: 42 }}
-              onClick={() => setLogoURL("")}
+              style={{ height: logoURl.length > 0 ? 42 : 52 }}
             >
-              remover
+              Selecione o logo
+              <InputFile name="logo" handleLogo={handleLogo} />
             </Button>
-          )}
+
+            <FormGroup sx={{ mt: 2 }} />
+
+            {logoURl.length > 0 && (
+              <Button
+                variant="contained"
+                component="label"
+                style={{ height: 42 }}
+                onClick={() => setLogoURL("")}
+              >
+                remover
+              </Button>
+            )}
+          </FormGroup>
         </FormGroup>
       </FormGroup>
 
-      <FormGroup
-        row
-        sx={{
-          justifyContent: "center",
-          alignItems: "center",
-          mb: 5,
-          flexDirection: "row",
-          flex: 1,
-          flexWrap: "nowrap",
-        }}
-      >
-        <Button
-          variant="text"
-          onClick={() => navigate("/Admin/Empresas", { replace: true })}
-          sx={{ mt: 3 }}
-        >
-          Voltar
-        </Button>
-        <FormGroup sx={{ mr: 4 }} />
-        <FormGroup
-          row
-          sx={{
-            width: "fit-content",
-          }}
-        >
-          <ButtonComponent
-            disabled={false}
-            title={id ? "Editar" : "Cadastrar"}
-            loading={isLoading || isLoadingEditEnterprise}
-            onClick={id ? handleUpdateEnterprise : handleEnterprise}
-          />
-        </FormGroup>
-      </FormGroup>
+      <ButtonsForm
+        rotaBack="/Admin/Empresas"
+        title={id ? "Editar" : "Cadastrar"}
+        handleButton={id ? handleUpdateEnterprise : handleEnterprise}
+      />
 
       <Snack
         handleClose={() => setSnackStatus(false)}

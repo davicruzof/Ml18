@@ -33,13 +33,13 @@ const Dialog = ({
       status,
       parecer,
     };
-    updateStatusRequest(sendData);
+    status === "ATENDIDA" ? setOpen(false) : updateStatusRequest(sendData);
   };
 
   return (
     <DialogComponent
       open={open}
-      title="Atualizar solicitação"
+      title="Solicitação"
       setOpen={setOpen}
       buttonConfirmText="Atualizar"
       handleButtonConfirm={handleUpdateStatus}
@@ -51,7 +51,13 @@ const Dialog = ({
         </FormControl>
         <FormControl sx={{ mb: 1, minWidth: 250, width: "100%" }}>
           <InputLabel htmlFor="demo-dialog-native">Status</InputLabel>
-          <Select native value={status} onChange={handleChange} label="Status">
+          <Select
+            native
+            value={status}
+            onChange={handleChange}
+            disabled={status === "ATENDIDA"}
+            label="Status"
+          >
             <option value="SOLICITADO">Solicitado</option>
             <option value="ANDAMENTO">Em andamento</option>
             <option value="ATENDIDA">Finalizada</option>
@@ -61,6 +67,7 @@ const Dialog = ({
           <InputForm
             label="Parecer da solicitacao"
             multiline
+            disabled={status === "ATENDIDA"}
             maxRows={8}
             onChange={(e: ValueType) => setParecer(e.target.value)}
             value={parecer}

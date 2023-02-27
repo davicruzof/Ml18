@@ -11,23 +11,24 @@ const Table = ({ pageSize, fields, rows, setPageSize, loading }: any) => {
     return <Empty text="Nenhuma informação foi encontrada!" />;
 
   return (
-    <DataGrid
-      columns={fields}
-      rows={rows}
-      components={{ Toolbar: GridToolbar }}
-      pageSize={pageSize}
-      onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-      rowsPerPageOptions={[5, 10, 20, 50, 100]}
-      pagination
-      style={{
-        paddingLeft: 20,
-        justifyContent: "space-between",
-        display: "flex",
-        margin: 20,
-        height,
-      }}
-      disableSelectionOnClick
-    />
+    <div style={{ padding: 20, paddingTop: 30 }}>
+      <DataGrid
+        columns={fields}
+        rows={rows}
+        components={{ Toolbar: GridToolbar }}
+        pageSize={pageSize}
+        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+        rowsPerPageOptions={[5, 10, 20, 50, 100]}
+        pagination
+        style={{
+          paddingLeft: 20,
+          justifyContent: "space-between",
+          display: "flex",
+          height,
+        }}
+        disableSelectionOnClick
+      />
+    </div>
   );
 };
 

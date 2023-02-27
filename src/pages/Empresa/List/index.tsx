@@ -29,6 +29,18 @@ export default function ListEnterprise() {
     });
   };
 
+  const colorStatus = (status: string) => {
+    if (status === "Ativo") {
+      return "success";
+    }
+
+    if (status === "Supenso") {
+      return "warning";
+    }
+
+    return "error";
+  };
+
   const VISIBLE_FIELDS = [
     { field: "nomeempresarial", headerName: "Nome da Empresa", width: 350 },
     { field: "cnpj", headerName: "CNPJ", width: 200 },
@@ -38,13 +50,12 @@ export default function ListEnterprise() {
       headerName: "Status",
       width: 200,
       cellClassName: "actions",
-      getActions: (data: any) => {
+      getActions: ({ row }: any) => {
+        console.log(row);
         return [
           <Chip
-            label={
-              data.row.situacaoCadastral === "Ativo" ? "Ativo" : "Desativado"
-            }
-            color={data.row.situacaoCadastral === "Ativo" ? "success" : "error"}
+            label={row.situacaocadastral}
+            color={colorStatus(row.situacaocadastral)}
           />,
         ];
       },

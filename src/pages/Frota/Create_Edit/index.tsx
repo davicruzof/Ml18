@@ -1,18 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
 import InputForm from "components/Input";
 import * as S from "./styles";
-import ButtonComponent from "components/Button";
 import { SelectChangeEvent, Button, FormGroup } from "@mui/material";
 import { IMAGEM_DEFAULT } from "utils/constants";
 import Snack from "components/Snack";
 import { ValueType } from "./types";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
-import { updateEnterprise } from "services/Enterprises/enterprises";
 import { InputFile } from "components/InputControl/inputFile";
 import theme from "utils/theme";
 import SelectComponent from "components/Select";
 import { createVehicle } from "services/Vehicle";
+import { ButtonsForm } from "components/ButtonsForm";
 
 export default function Create_Edit() {
   const location = useLocation();
@@ -56,25 +55,6 @@ export default function Create_Edit() {
     setSnackMessage(text);
   };
 
-  // const { mutate: getEnterprise, isLoading: isLoadingEdit } = useMutation(
-  //   "getEnterpriseById",
-  //   {
-  //     mutationFn: (idEnterprise: number) => getEnterpriseById(idEnterprise),
-  //     onSuccess: ({ data }) => {},
-  //     onError: () => {
-  //       setSnackStatus(true);
-  //       setSnackType("error");
-  //       setSnackMessage("Ocorreu um erro ao tentar buscar dados!");
-  //     },
-  //   }
-  // );
-
-  // useEffect(() => {
-  //   if (id) {
-  //     getEnterprise(parseInt(id));
-  //   }
-  // }, []);
-
   const results = (data: any, text: string) => {
     if (data.status === 200) {
       if (data.data.sucess) {
@@ -103,34 +83,6 @@ export default function Create_Edit() {
       },
     });
 
-  const { mutate: editEnterprise, isLoading: isLoadingEditEnterprise } =
-    useMutation({
-      mutationFn: (formData: FormData) => updateEnterprise(formData),
-      onSuccess: (data) => {
-        if (data.status === 200) {
-          if (data.data.sucess) {
-            setSnackStatus(true);
-            setSnackType("success");
-            setSnackMessage("Cadastrado com sucesso!");
-            setTimeout(() => {
-              navigate("/Empresa/List", { replace: true });
-            }, 3000);
-          }
-
-          if (data.data.error) {
-            setSnackStatus(true);
-            setSnackType("error");
-            setSnackMessage(data.data.error);
-          }
-        }
-      },
-      onError: () => {
-        setSnackStatus(true);
-        setSnackType("error");
-        setSnackMessage("Ocorreu um erro ao tentar cadastrar!");
-      },
-    });
-
   const onCanSubmit = () => {
     return Boolean(
       chassis &&
@@ -153,12 +105,14 @@ export default function Create_Edit() {
     form.append("modelo", modelo);
     form.append("prefixo", prefixo);
     form.append("media_consumo", media);
-    logo && form.append("foto", logo);
+    form.append("id_grupo", "1");
+    form.append("id_empresa", "2");
+    logo && form.append("foto", logo, "foto.jpg");
 
     return form;
   };
 
-  const handleEnterprise = async () => {
+  const handleCreateVehicle = async () => {
     if (onCanSubmit()) {
       const dataSend = createObjVehicle();
 
@@ -168,16 +122,7 @@ export default function Create_Edit() {
     }
   };
 
-  const handleUpdateEnterprise = async () => {
-    // if (onCanSubmit()) {
-    //   const dataSend = createObjectEnterprise();
-    //   editEnterprise(dataSend);
-    // } else {
-    //   setSnackStatus(true);
-    //   setSnackType("error");
-    //   setSnackMessage("Preencha os dados obrigatórios!");
-    // }
-  };
+  const handleUpdateVehicle = async () => {};
 
   const handleChangeAnoModelo = (event: SelectChangeEvent) => {
     setAnoModelo(event.target.value as string);
@@ -311,25 +256,11 @@ export default function Create_Edit() {
         </FormGroup>
       </FormGroup>
 
-      <FormGroup
-        row
-        sx={{ justifyContent: "center", alignItems: "center", mb: 4 }}
-      >
-        <Button
-          variant="text"
-          onClick={() => navigate("/frota/Listagem", { replace: true })}
-          sx={{ mt: 3 }}
-        >
-          Voltar
-        </Button>
-        <FormGroup sx={{ mr: 4 }} />
-        <ButtonComponent
-          disabled={false}
-          title={id ? "Editar" : "Cadastrar"}
-          loading={isLoading || isLoadingEditEnterprise}
-          onClick={id ? handleUpdateEnterprise : handleEnterprise}
-        />
-      </FormGroup>
+      <ButtonsForm
+        rotaBack="/frota/Listagem"
+        title={id ? "Editar" : "Cadastrar"}
+        handleButton={id ? handleUpdateVehicle : handleCreateVehicle}
+      />
 
       <Snack
         handleClose={() => setSnackStatus(false)}

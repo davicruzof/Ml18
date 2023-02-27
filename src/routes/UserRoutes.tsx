@@ -4,7 +4,7 @@ import Solicitacoes from "pages/Solicitacoes/Create";
 import { Routes, Route } from "react-router-dom";
 import ListRequests from "pages/Solicitacoes/List";
 import EmployeePermissionList from "pages/Permissions/List";
-import EmployeePermissionEdit from "pages/Permissions/Edit";
+import EmployeePermissionEdit from "pages/Permissions/PermissionEdit";
 import { NotFound } from "pages/NotFound";
 import DeleteAccount from "pages/DeleteAccount";
 import Frota from "pages/Frota/List";

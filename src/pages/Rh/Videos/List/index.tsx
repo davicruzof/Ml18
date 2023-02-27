@@ -2,19 +2,19 @@ import { useEffect, useState } from "react";
 import * as S from "./styles";
 import { useNavigate } from "react-router-dom";
 import ButtonComponent from "components/Button";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useQuery } from "react-query";
 import { IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { getVideos } from "services/Telemetria";
 import { videoType } from "services/Telemetria/type";
 import { formatData } from "utils/format";
+import Loading from "components/Loading/Loading";
+import Table from "components/Table";
 
 export default function Videos() {
   const navigation = useNavigate();
   const [rows, setRows] = useState<videoType[]>([]);
   const [pageSize, setPageSize] = useState<number>(10);
-  const height = window.innerHeight - 200;
 
   const { data: dataVideos, isLoading } = useQuery("getEnterprises", {
     queryFn: () => getVideos(),
@@ -57,7 +57,7 @@ export default function Videos() {
   ];
 
   useEffect(() => {
-    if (dataVideos) {
+    if (dataVideos && dataVideos.length > 0) {
       let data: videoType[] = [];
       dataVideos.map((item: any) =>
         data.push({
@@ -70,7 +70,9 @@ export default function Videos() {
     }
   }, [dataVideos]);
 
-  return (
+  return isLoading ? (
+    <Loading />
+  ) : (
     <S.Container>
       <S.Wrapper>
         <ButtonComponent
@@ -81,26 +83,13 @@ export default function Videos() {
         />
       </S.Wrapper>
 
-      {rows && (
-        <DataGrid
-          loading={isLoading}
-          columns={VISIBLE_FIELDS}
-          rows={rows}
-          components={{ Toolbar: GridToolbar }}
-          pageSize={pageSize}
-          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-          rowsPerPageOptions={[5, 10, 20, 50, 100]}
-          pagination
-          style={{
-            paddingLeft: 20,
-            justifyContent: "space-between",
-            display: "flex",
-            margin: 20,
-            height,
-          }}
-          disableSelectionOnClick
-        />
-      )}
+      <Table
+        loading={isLoading}
+        fields={VISIBLE_FIELDS}
+        rows={rows}
+        pageSize={pageSize}
+        setPageSize={setPageSize}
+      />
     </S.Container>
   );
 }
