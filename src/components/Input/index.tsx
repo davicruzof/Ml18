@@ -1,5 +1,3 @@
-import { TextField } from "@mui/material";
-
 import * as S from "./styles";
 
 const Input = (props: any) => {
@@ -7,7 +5,7 @@ const Input = (props: any) => {
     <S.Container>
       <label style={{ color: "black" }}>{props.label}</label>
       <input
-        autoComplete="none"
+        autocomplete="off"
         style={{
           borderRadius: 4,
           borderColor: "black",

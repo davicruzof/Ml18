@@ -1,26 +1,26 @@
-import React, { useEffect, useState } from "react";
+import { Button, FormGroup, SelectChangeEvent } from "@mui/material";
+import cep from "cep-promise";
+import { ButtonsForm } from "components/ButtonsForm";
 import InputForm from "components/Input";
-import * as S from "./styles";
-import { SelectChangeEvent, Button, FormGroup } from "@mui/material";
-import { IMAGEM_DEFAULT } from "utils/constants";
+import { InputFile } from "components/InputControl/inputFile";
 import SelectComponent from "components/Select";
 import Snack from "components/Snack";
-import cep from "cep-promise";
-import { ValueType } from "./types";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useMutation } from "react-query";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   createEnterprise,
   getEnterpriseById,
   updateEnterprise,
 } from "services/Enterprises/enterprises";
-import { InputFile } from "components/InputControl/inputFile";
-import { ButtonsForm } from "components/ButtonsForm";
+import { IMAGEM_DEFAULT } from "utils/constants";
+import * as S from "./styles";
+import { ValueType } from "./types";
 
-export default function Create_Edit() {
-  const location = useLocation();
+export default function EditEnterprise() {
+  const { state } = useLocation();
 
-  const id = location.state?.idEnterprise;
+  const id = state?.idEnterprise;
 
   const [cor, setCor] = useState<string>("");
   const [logo, setLogo] = useState<File | null>(null);
@@ -54,8 +54,8 @@ export default function Create_Edit() {
     mutationFn: (idEnterprise: number) => getEnterpriseById(idEnterprise),
     onSuccess: ({ data }) => {
       data.uf !== null && setUf(data.uf);
-      data.cep !== null && setCep(data.cep);
       data.nomeempresarial !== null && setNomeEmpresarial(data.nomeempresarial);
+      data.cep !== null && setCep(data.cep);
       data.municipio !== null && setCidade(data.municipio);
       data.logo !== null && setLogoURL(data.logo);
       data.cnpj !== null && setCnpj(data.cnpj);
@@ -141,6 +141,7 @@ export default function Create_Edit() {
 
   const createObjectEnterprise = () => {
     const form = new FormData();
+
     logo && form.append("logo", logo, "logo.jpg");
     id && form.append("id_empresa", id);
     form.append("nomeempresarial", nomeEmpresarial);
@@ -318,7 +319,7 @@ export default function Create_Edit() {
 
             <FormGroup sx={{ mt: 2 }} />
 
-            {logoURl.length > 0 && (
+            {logoURl && (
               <Button
                 variant="contained"
                 component="label"

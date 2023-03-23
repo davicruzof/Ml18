@@ -1,4 +1,4 @@
-import Enterprise from "pages/Empresa/Create_Edit";
+import Enterprise from "pages/Empresa/Create";
 import ListEnterprise from "pages/Empresa/List";
 import Solicitacoes from "pages/Solicitacoes/Create";
 import { Routes, Route } from "react-router-dom";
