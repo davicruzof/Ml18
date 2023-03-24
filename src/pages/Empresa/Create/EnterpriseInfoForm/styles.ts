@@ -14,12 +14,6 @@ export const Form = styled.div`
   margin-top: 3px;
 `;
 
-export const Title = styled.span`
-  font-size: 16px;
-  font-weight: 500;
-  margin-top: 24px;
-`;
-
 export const Divider = styled(FormGroup)`
   margin-right: 20px;
 `;

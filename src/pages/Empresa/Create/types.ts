@@ -16,4 +16,6 @@ export type FormType = {
   bairro?: string;
   complemento?: string;
   logradouro?: string;
+  cor?: string;
+  logo?: File;
 };
