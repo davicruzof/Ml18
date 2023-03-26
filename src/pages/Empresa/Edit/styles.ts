@@ -4,12 +4,43 @@ import theme from "utils/theme";
 export const Container = styled.div`
   padding: 30px 40px;
   height: fit-content;
-  min-height: 100vh;
+`;
+
+export const Header = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const Title = styled.span`
-  font-size: 24px;
+  font-size: 32px;
+  text-align: center;
   font-weight: bold;
+`;
+export const SubTitle = styled.span`
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 8px;
+  margin-bottom: 32px;
+`;
+
+export const ContainerSteps = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 32px 0;
+`;
+
+export const StepWrapper = styled.div`
+  width: 32%;
+`;
+
+export const StepProgress = styled.div<{ active?: boolean }>`
+  background-color: ${({ active }) =>
+    active ? theme.colors.primary : theme.colors.text.siderItemDisabled};
+  height: 10px;
 `;
 
 export const Logo = styled.img`

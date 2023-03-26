@@ -2,17 +2,17 @@ import Button from "components/Button";
 import InputForm from "components/Input";
 import Snack from "components/Snack";
 import { useState } from "react";
-import { FormType } from "../types";
 import * as S from "./styles";
 import { cnpj } from "cpf-cnpj-validator";
+import { EnterpriseResponse } from "services/Enterprises/types";
 
 const EnterpriseInfoForm = ({
   setValues,
   values,
   setCurrent,
 }: {
-  setValues: (val: FormType) => void;
-  values: FormType | undefined;
+  setValues: (val: EnterpriseResponse) => void;
+  values: EnterpriseResponse | undefined;
   setCurrent: (current: number) => void;
 }) => {
   const [snackMessage, setSnackMessage] = useState("");

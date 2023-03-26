@@ -1,25 +1,24 @@
 import { useEffect, useState } from "react";
-import { getEnterprises } from "services/Enterprises/enterprises";
 import * as S from "./styles";
 import { useNavigate } from "react-router-dom";
-import { EnterPriseType } from "./types";
 import ButtonComponent from "components/Button";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useQuery } from "react-query";
-// import Loading from "components/Loading/Loading";
-import { Chip, IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import { getVehicles } from "services/Vehicle";
+import { VehicleResponse } from "services/Vehicle/type";
+import Table from "components/Table";
+import { formatDate } from "@utils/format";
 
 export default function Frota() {
   const navigation = useNavigate();
-  const [rows, setRows] = useState<EnterPriseType[]>([]);
-  // const [pageSize, setPageSize] = useState<number>(10);
-  // const height = window.innerHeight - 200;
+  const [rows, setRows] = useState<VehicleResponse[]>([]);
+  const [pageSize, setPageSize] = useState<number>(10);
 
-  const { data: dataEnterprises, isLoading } = useQuery("getEnterprises", {
-    queryFn: () => getEnterprises(),
+  const { data: dataVehicles, isLoading } = useQuery("getVehicles", {
+    queryFn: () => getVehicles(),
     enabled: true,
-    keepPreviousData: false,
+    keepPreviousData: true,
   });
 
   const handleEditClick = (id: number) => {
@@ -32,23 +31,10 @@ export default function Frota() {
   };
 
   const VISIBLE_FIELDS = [
-    { field: "nomeempresarial", headerName: "Nome da Empresa", width: 350 },
-    { field: "cnpj", headerName: "CNPJ", width: 200 },
-    {
-      field: "status",
-      type: "actions",
-      headerName: "Status",
-      width: 200,
-      cellClassName: "actions",
-      getActions: (data: any) => {
-        return [
-          <Chip
-            label={data.row.status ? "Ativo" : "Desativado"}
-            color={data.row.status ? "success" : "error"}
-          />,
-        ];
-      },
-    },
+    { field: "prefixo", headerName: "Prefixo", width: 150 },
+    { field: "placa", headerName: "Placa", width: 150 },
+    { field: "ano_model", headerName: "Ano Modelo", width: 100 },
+    { field: "ano_fabric", headerName: "Ano Fabricação", width: 120 },
     {
       field: "actions",
       type: "actions",
@@ -71,17 +57,19 @@ export default function Frota() {
   ];
 
   useEffect(() => {
-    if (dataEnterprises?.data) {
-      let data: EnterPriseType[] = [];
-      dataEnterprises.data.map((item: any) =>
+    if (dataVehicles) {
+      let data: VehicleResponse[] = [];
+      dataVehicles.map((item: any) =>
         data.push({
-          id: item.id_empresa,
+          id: item.id_veiculo,
+          ano_model: formatDate(item.ano_modelo),
+          ano_fabric: formatDate(item.ano_fabricacao),
           ...item,
         })
       );
       setRows(data);
     }
-  }, [dataEnterprises]);
+  }, [dataVehicles]);
 
   return (
     <S.Container>
@@ -94,26 +82,13 @@ export default function Frota() {
         />
       </S.Wrapper>
 
-      {/* {rows && !isLoading && (
-        <DataGrid
-          loading={isLoading}
-          columns={VISIBLE_FIELDS}
-          rows={rows}
-          components={{ Toolbar: GridToolbar }}
-          pageSize={pageSize}
-          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-          rowsPerPageOptions={[5, 10, 20, 50, 100]}
-          pagination
-          style={{
-            paddingLeft: 20,
-            justifyContent: "space-between",
-            display: "flex",
-            margin: 20,
-            height,
-          }}
-          disableSelectionOnClick
-        />
-      )} */}
+      <Table
+        loading={isLoading}
+        fields={VISIBLE_FIELDS}
+        rows={rows}
+        pageSize={pageSize}
+        setPageSize={setPageSize}
+      />
     </S.Container>
   );
 }

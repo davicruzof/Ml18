@@ -3,7 +3,7 @@ import EnterpriseInfoForm from "./EnterpriseInfoForm/EnterpriseInfoForm";
 
 import * as S from "./styles";
 import EnterpriseAddressForm from "./EnterpriseAddressForm/EnterpriseAddressForm";
-import { FormType } from "./types";
+import { type FormType } from "./types";
 import EnterpriseBrandForm from "./EnterpriseBrandForm/EnterpriseBrandForm";
 
 export default function Create() {
@@ -24,14 +24,12 @@ export default function Create() {
       </S.Header>
 
       <S.ContainerSteps>
-        {steps.map((step, index) => {
-          return (
-            <S.StepWrapper key={step}>
-              <span>{step}</span>
-              <S.StepProgress active={index <= current} />
-            </S.StepWrapper>
-          );
-        })}
+        {steps.map((step, index) => (
+          <S.StepWrapper key={step}>
+            <span>{step}</span>
+            <S.StepProgress active={index <= current} />
+          </S.StepWrapper>
+        ))}
       </S.ContainerSteps>
 
       {current === 0 && (

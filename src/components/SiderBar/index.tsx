@@ -48,7 +48,7 @@ export function SideBar({ children }: any) {
   const logout = () => {
     localStorage.clear();
     navigation("/");
-    location.reload();
+    window.location.reload();
   };
 
   const userName = dataUser?.user?.nome

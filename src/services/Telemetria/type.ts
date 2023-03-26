@@ -7,3 +7,10 @@ export type videoType = {
   link: string;
   titulo: string;
 };
+
+export type videoTypeEdit = {
+  id_video: string;
+  descricao: string;
+  titulo: string;
+  dt_expiracao: string;
+};

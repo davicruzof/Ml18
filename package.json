@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@chakra-ui/react": "^2.2.4",
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
     "@fortawesome/fontawesome-svg-core": "^6.2.0",
@@ -52,6 +51,7 @@
     ]
   },
   "devDependencies": {
+    "@mui/x-data-grid-generator": "^5.15.3",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
@@ -59,36 +59,18 @@
     "@types/node": "^16.11.47",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
-    "@mui/x-data-grid-generator": "^5.15.3",
-    "@storybook/addon-actions": "^6.5.16",
-    "@storybook/addon-essentials": "^6.5.16",
-    "@storybook/addon-interactions": "^6.5.16",
-    "@storybook/addon-links": "^6.5.16",
-    "@storybook/builder-webpack5": "^6.5.16",
-    "@storybook/manager-webpack5": "^6.5.16",
-    "@storybook/node-logger": "^6.5.16",
-    "@storybook/preset-create-react-app": "^4.1.2",
-    "@storybook/react": "^6.5.16",
-    "@storybook/testing-library": "^0.0.13",
     "@types/styled-components": "^5.1.25",
-    "@typescript-eslint/eslint-plugin": "^5.51.0",
     "babel-plugin-named-exports-order": "^0.0.2",
     "prop-types": "^15.8.1",
     "react-app-rewire-alias": "^1.1.7",
     "react-app-rewired": "^2.2.1",
-    "typescript": "^4.9.5",
+    "typescript": "^5.0.2",
     "webpack": "^5.75.0"
   },
   "eslintConfig": {
-    "overrides": [
-      {
-        "files": [
-          "**/*.stories.*"
-        ],
-        "rules": {
-          "import/no-anonymous-default-export": "off"
-        }
-      }
+    "extends": [
+      "react-app",
+      "react-app/jest"
     ]
   }
 }

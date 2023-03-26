@@ -18,7 +18,7 @@ export interface EnterpriseResponse {
   dt_cadastro: string;
   dt_situacaocadastral: string;
   email: string | null;
-  id_empresa: number;
+  id_empresa: string;
   id_grupo: number;
   id_usuario: string;
   logo: string;

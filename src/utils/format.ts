@@ -4,6 +4,11 @@ export const trim_cpf_cnpj = (value: string) => {
   return value.replaceAll(".", "").replace("-", "");
 };
 
+export const formatDate = (date: Date) => {
+  const data = new Date(date);
+
+  return `${data.getUTCFullYear()}`;
+};
 export const formatData = (date: Date) => {
   const data = new Date(date);
 

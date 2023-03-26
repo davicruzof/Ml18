@@ -4,12 +4,12 @@ import InputForm from "components/Input";
 import { InputFile } from "components/InputControl/inputFile";
 import { useState } from "react";
 import { IMAGEM_DEFAULT } from "utils/constants";
-import { FormType } from "../types";
 import * as S from "./styles";
 import { useMutation } from "react-query";
-import { createEnterprise } from "services/Enterprises/enterprises";
+import { updateEnterprise } from "@services/Enterprises/enterprises";
 import Snack from "components/Snack";
 import { useNavigate } from "react-router-dom";
+import { EnterpriseResponse } from "services/Enterprises/types";
 import Loading from "components/Loading/Loading";
 
 const EnterpriseBrandForm = ({
@@ -17,12 +17,12 @@ const EnterpriseBrandForm = ({
   values,
   setCurrent,
 }: {
-  setValues: (val: FormType) => void;
-  values: FormType | undefined;
+  setValues: (val: EnterpriseResponse) => void;
+  values: EnterpriseResponse | undefined;
   setCurrent: (current: number) => void;
 }) => {
   const navigate = useNavigate();
-  const [logoURl, setLogoURL] = useState<string>("");
+  const [logoURl, setLogoURL] = useState<string>(values?.logo || "");
 
   const [snackMessage, setSnackMessage] = useState("");
   const [snackStatus, setSnackStatus] = useState(false);
@@ -50,14 +50,20 @@ const EnterpriseBrandForm = ({
   const createObjectEnterprise = () => {
     const form = new FormData();
 
-    values?.logo && form.append("logo", values.logo, "logo.jpg");
+    values?.logo &&
+      !values.logo.includes("https://") &&
+      form.append("logo", values.logo, "logo.jpg");
     form.append("nomeempresarial", values!.nomeempresarial!);
     form.append("cnpj", values!.cnpj!);
     form.append("logradouro", values!.logradouro!);
     form.append("numero", values!.numero!);
     values?.complemento && form.append("complemento", values.complemento);
+    values?.background && form.append("background", values.background);
+    values?.email && form.append("background", values.email);
+    values?.telefone && form.append("telefone", values.telefone);
     form.append("cep", values!.cep!);
     form.append("bairro", values!.bairro!);
+    form.append("id_empresa", values!.id_empresa!);
     form.append("municipio", values!.municipio!);
     form.append("uf", values!.uf!);
     form.append("situacaocadastral", "Ativo");
@@ -65,6 +71,8 @@ const EnterpriseBrandForm = ({
 
     return form;
   };
+
+  console.log(values);
 
   const results = (data: any, text: string) => {
     if (data.status === 200) {
@@ -84,16 +92,16 @@ const EnterpriseBrandForm = ({
   };
 
   const { mutate: registerEnterprise, isLoading } = useMutation({
-    mutationFn: (formData: FormData) => createEnterprise(formData),
+    mutationFn: (formData: FormData) => updateEnterprise(formData),
     onSuccess: (data) => {
-      results(data, "Cadastrado com sucesso!");
+      results(data, "Editado com sucesso!");
     },
     onError: () => {
       handleError("Ocorreu um erro ao tentar cadastrar!");
     },
   });
 
-  const handleRegisterEnterprise = async () => {
+  const handleEditEnterprise = async () => {
     const dataSend = createObjectEnterprise();
 
     registerEnterprise(dataSend);
@@ -108,9 +116,11 @@ const EnterpriseBrandForm = ({
       <FormGroup>
         <InputForm
           type="color"
+          name="background"
           label="Cor Principal da marca"
           style={{ width: 200, height: 40 }}
           onChange={handleChange}
+          value={values!.background || "#fff"}
         />
 
         <label>LogoMarca</label>
@@ -155,8 +165,8 @@ const EnterpriseBrandForm = ({
         </Button>
 
         <ButtonComponent
-          title="Finalizar cadastro"
-          onClick={handleRegisterEnterprise}
+          title="Finalizar edição"
+          onClick={handleEditEnterprise}
         />
       </FormGroup>
 

@@ -12,6 +12,8 @@ import Create_Edit from "pages/Frota/Create_Edit";
 import FichaPonto from "pages/FichaPonto/List";
 import Videos from "pages/Rh/Videos/List";
 import AddVideos from "pages/Rh/Videos/Create_Edit";
+import EditVideos from "pages/Rh/Videos/Edit";
+import EditEnterprise from "pages/Empresa/Edit";
 
 export default function UserRoutes() {
   return (
@@ -20,7 +22,7 @@ export default function UserRoutes() {
       <Route path="Admin/">
         <Route path="Empresas" element={<ListEnterprise />} />
         <Route path="New" element={<Enterprise />} />
-        <Route path="Empresa/Edit" element={<Enterprise />} />
+        <Route path="Empresa/Edit" element={<EditEnterprise />} />
       </Route>
       <Route path="solicitacoes/">
         <Route path="monitoramento" element={<ListRequests />} />
@@ -41,6 +43,7 @@ export default function UserRoutes() {
       <Route path="rh/">
         <Route path="videos" element={<Videos />} />
         <Route path="AddVideo" element={<AddVideos />} />
+        <Route path="videos/edit" element={<EditVideos />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />

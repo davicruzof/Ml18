@@ -6,7 +6,7 @@ import { useQuery } from "react-query";
 import { IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { getVideos } from "services/Telemetria";
-import { videoType } from "services/Telemetria/type";
+import { type videoType } from "services/Telemetria/type";
 import { formatData } from "utils/format";
 import Loading from "components/Loading/Loading";
 import Table from "components/Table";
@@ -17,13 +17,13 @@ export default function Videos() {
   const [pageSize, setPageSize] = useState<number>(10);
 
   const { data: dataVideos, isLoading } = useQuery("getEnterprises", {
-    queryFn: () => getVideos(),
+    queryFn: async () => getVideos(),
     enabled: true,
     keepPreviousData: false,
   });
 
   const handleEditClick = (item: videoType) => {
-    navigation(`/rh/AddVideo`, {
+    navigation("/rh/videos/edit", {
       replace: true,
       state: {
         video: item,
@@ -47,7 +47,9 @@ export default function Videos() {
             color="primary"
             aria-label="upload picture"
             component="label"
-            onClick={() => handleEditClick(row)}
+            onClick={() => {
+              handleEditClick(row);
+            }}
           >
             <EditIcon />
           </IconButton>,
@@ -58,7 +60,7 @@ export default function Videos() {
 
   useEffect(() => {
     if (dataVideos && dataVideos.length > 0) {
-      let data: videoType[] = [];
+      const data: videoType[] = [];
       dataVideos.map((item: any) =>
         data.push({
           id: item.dt_criacao,
@@ -76,7 +78,9 @@ export default function Videos() {
     <S.Container>
       <S.Wrapper>
         <ButtonComponent
-          onClick={() => navigation("/rh/AddVideo", { replace: true })}
+          onClick={() => {
+            navigation("/rh/AddVideo", { replace: true });
+          }}
           loading={false}
           title="+ Adicionar novo video"
           active={false}

@@ -1,0 +1,22 @@
+export type VehicleResponse = {
+  ano_fabricacao: string;
+  ano_modelo: string;
+  chassi: string;
+  dt_alteracao: string;
+  dt_cadastro: string;
+  foto: string;
+  garagem: string;
+  id_destinacao: string;
+  id_empresa: string;
+  id_erp: string;
+  id_funcionario_alteracao: string;
+  id_funcionario_cadastro: string;
+  id_garagem: string;
+  id_grupo: string;
+  id_status: string;
+  id_veiculo: string;
+  media_consumo: string;
+  modelo: string;
+  placa: string;
+  prefixo: string;
+};
