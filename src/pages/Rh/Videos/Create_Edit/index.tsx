@@ -10,10 +10,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import { InputFile } from "components/InputControl/inputFile";
 import { createVideo } from "services/Telemetria";
-import { formatData } from "@utils/format";
+import { formatData } from "utils/format";
 import ButtonLight from "components/ButtonLight";
 import TextArea from "components/TextArea";
-import Button from "components/Button";
 
 export default function Create_Edit() {
   const location = useLocation();

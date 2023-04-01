@@ -6,7 +6,7 @@ import { useState } from "react";
 import { IMAGEM_DEFAULT } from "utils/constants";
 import * as S from "./styles";
 import { useMutation } from "react-query";
-import { updateEnterprise } from "@services/Enterprises/enterprises";
+import { updateEnterprise } from "services/Enterprises/enterprises";
 import Snack from "components/Snack";
 import { useNavigate } from "react-router-dom";
 import { EnterpriseResponse } from "services/Enterprises/types";

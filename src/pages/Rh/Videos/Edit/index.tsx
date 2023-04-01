@@ -1,5 +1,5 @@
 import { FormGroup } from "@mui/material";
-import { formatData } from "@utils/format";
+import { formatData } from "utils/format";
 import ButtonComponent from "components/Button";
 import ButtonLight from "components/ButtonLight";
 import InputForm from "components/Input";
