@@ -51,36 +51,6 @@ export default function SendEmployee() {
   const [snackType, setSnackType] = useState<"error" | "success">("success");
   const [checked, setChecked] = useState<string[]>([]);
 
-  const handleToggle = (value: string, name: string) => () => {
-    const currentIndex = checked.indexOf(value);
-    const currentIndexSelected = employeesSelected.indexOf(name);
-    const newChecked = [...checked];
-    const newSelecteds = [...employeesSelected];
-
-    currentIndex === -1
-      ? newChecked.push(value)
-      : newChecked.splice(currentIndex, 1);
-
-    currentIndexSelected === -1
-      ? newSelecteds.push(name)
-      : newSelecteds.splice(currentIndexSelected, 1);
-
-    setChecked(newChecked);
-    setEmployeesSelected(newSelecteds);
-  };
-
-  const handleRemoveSelected = (name: string) => () => {
-    const currentIndexSelected = employeesSelected.indexOf(name);
-
-    const newSelecteds = [...employeesSelected];
-
-    console.log(newSelecteds);
-
-    newSelecteds.splice(currentIndexSelected, 1);
-
-    setEmployeesSelected(newSelecteds);
-  };
-
   const { isLoading: isLoadingGetAllEmployee } = useQuery("getAllEmployee", {
     queryFn: () => getAllEmployee(),
     enabled: true,
@@ -93,10 +63,58 @@ export default function SendEmployee() {
     },
   });
 
+  const handleToggle = (value: string, name: string) => () => {
+    const currentIndex = checked.indexOf(value);
+    const newChecked = [...checked];
+    const newSelecteds = [...employeesSelected];
+
+    if (currentIndex === -1) {
+      newChecked.push(value);
+      newSelecteds.push(name);
+    } else {
+      setAllEmployees([]);
+      newChecked.splice(currentIndex, 1);
+      newSelecteds.splice(currentIndex, 1);
+    }
+
+    setChecked(newChecked);
+    setEmployeesSelected(newSelecteds);
+  };
+
+  const handleRemoveSelected = (name: string) => () => {
+    const currentIndex = employeesSelected.indexOf(name);
+    const newChecked = [...checked];
+    const newSelecteds = [...employeesSelected];
+
+    newChecked.splice(currentIndex, 1);
+
+    newSelecteds.splice(currentIndex, 1);
+
+    setChecked(newChecked);
+    setEmployeesSelected(newSelecteds);
+  };
+
   const handleSelectAll = () => {
     const all: SetStateAction<string[]> = [];
-    listEmployeesBackup.map((item) => all.push(item.id_funcionario));
+    const newChecked = [...checked];
+    // eslint-disable-next-line array-callback-return
+    listEmployeesBackup.map((item) => {
+      const currentIndex = checked.indexOf(item.id_funcionario);
+
+      if (currentIndex === -1) {
+        newChecked.push(item.id_funcionario);
+      }
+
+      all.push(item.id_funcionario);
+    });
+    setChecked(newChecked);
     setAllEmployees(all);
+  };
+
+  const handleCancelSelectAll = () => {
+    setChecked([]);
+    setAllEmployees([]);
+    setEmployeesSelected([]);
   };
 
   useEffect(() => {
@@ -114,42 +132,71 @@ export default function SendEmployee() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
 
-  const isLoading = useMemo(() => {
-    return isLoadingGetAllEmployee;
-  }, [isLoadingGetAllEmployee]);
+  if (isLoadingGetAllEmployee) {
+    return <Loading />;
+  }
 
-  return isLoading ? (
-    <Loading />
-  ) : (
+  return (
     <S.Container>
       <S.WrapperInfo>
-        <S.Title>Departamentos</S.Title>
+        <S.Title>Funcionario(s)</S.Title>
         <S.SubTitle>
-          Vincule esse funcionários ao(s) departamento(s) ao qual ele faz parte
+          Selecione o(s) funcionario(s) que irão receber esse video
         </S.SubTitle>
       </S.WrapperInfo>
 
       <S.WrapperContent>
-        <FormGroup row sx={{ alignItems: "center" }}>
-          <InputForm
-            label="Buscar funcionário"
-            onChange={(e: ValueType) => setSearch(e.target.value)}
-            value={search}
-          />
+        <FormGroup row sx={{ alignItems: "flex-end", mb: 5 }}>
+          <FormGroup sx={{ width: "50%" }}>
+            <label style={{ color: "black" }}>
+              Buscar funcionário pelo nome
+            </label>
+            <input
+              autoComplete="off"
+              style={{
+                borderRadius: 4,
+                borderColor: "black",
+                borderWidth: 1,
+                background: "transparent",
+                width: "100%",
+                height: 42,
+                paddingLeft: 15,
+                color: "black",
+              }}
+              onChange={(e: ValueType) => setSearch(e.target.value)}
+              value={search}
+            />
+          </FormGroup>
           <FormGroup sx={{ ml: 3 }}>
-            <Button title="Selecionar todos" onClick={handleSelectAll} />
+            <Button
+              title={
+                allEmployees.length > 0
+                  ? "Cancelar seleção"
+                  : "Selecionar todos"
+              }
+              onClick={
+                allEmployees.length > 0
+                  ? handleCancelSelectAll
+                  : handleSelectAll
+              }
+            />
           </FormGroup>
         </FormGroup>
 
         <FormGroup row sx={{ justifyContent: "space-between" }}>
-          <List dense sx={{ width: "50%", bgcolor: "background.paper" }}>
+          <List
+            dense
+            sx={{ width: "50%", bgcolor: "background.paper", height: 350 }}
+          >
             {listEmployees.map((value, index) => {
               const labelId = `checkbox-list-secondary-label-${value.nome}`;
               return (
                 index < 10 && (
                   <ListItem
-                    onClick={() =>
-                      handleToggle(value.id_funcionario, value.nome)
+                    onClick={
+                      allEmployees.length > 0
+                        ? () => {}
+                        : handleToggle(value.id_funcionario, value.nome)
                     }
                     key={value.id_funcionario}
                     secondaryAction={
@@ -159,6 +206,7 @@ export default function SendEmployee() {
                           value.id_funcionario,
                           value.nome
                         )}
+                        disabled={allEmployees.length > 0}
                         checked={checked.indexOf(value.id_funcionario) !== -1}
                         inputProps={{ "aria-labelledby": labelId }}
                       />
@@ -173,7 +221,7 @@ export default function SendEmployee() {
               );
             })}
           </List>
-          {employeesSelected.length > 0 && (
+          {allEmployees.length === 0 && employeesSelected.length > 0 && (
             <List dense sx={{ width: "50%", bgcolor: "background.paper" }}>
               <Typography fontWeight="bold" variant="body1">
                 Lista de Selecionados
@@ -187,7 +235,7 @@ export default function SendEmployee() {
                         color="error"
                         aria-label="remove"
                         component="label"
-                        onClick={() => handleRemoveSelected(value)}
+                        onClick={handleRemoveSelected(value)}
                       >
                         <RemoveCircle />
                       </IconButton>
