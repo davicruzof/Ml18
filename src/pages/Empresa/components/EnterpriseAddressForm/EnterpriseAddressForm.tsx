@@ -1,19 +1,19 @@
 import InputForm from "components/Input";
 import * as S from "./styles";
 import ButtonComponent from "components/Button";
-import { useEffect, useState } from "react";
-import { FormType, ValueType } from "../types";
-import cep from "cep-promise";
+import { useState } from "react";
+import { FormType, ValueType } from "../../types";
 import { Button, FormGroup } from "@mui/material";
 import Snack from "components/Snack";
+import { EnterpriseResponse } from "services/Enterprises/types";
 
 const EnterpriseAddressForm = ({
   setValues,
   values,
   setCurrent,
 }: {
-  setValues: (val: FormType) => void;
-  values: FormType | undefined;
+  setValues: (val: any) => void;
+  values: FormType | EnterpriseResponse | undefined;
   setCurrent: (current: number) => void;
 }) => {
   const [cepValue, setCep] = useState(values?.cep);
@@ -33,34 +33,6 @@ const EnterpriseAddressForm = ({
     setSnackType("error");
     setSnackMessage(text);
   };
-
-  useEffect(() => {
-    const auxValues = { ...values } as any;
-
-    if (cepValue?.length === 8) {
-      cep(cepValue).then(
-        (val: { neighborhood: any; city: any; state: any; street: any }) => {
-          auxValues.bairro = val.neighborhood;
-          auxValues.municipio = val.city;
-          auxValues.uf = val.state;
-          auxValues.logradouro = val.street;
-          auxValues.cep = cepValue;
-          setValues(auxValues);
-        }
-      );
-    } else {
-      clearAddress();
-    }
-  }, [cepValue]);
-
-  function clearAddress() {
-    const auxValues = { ...values } as any;
-    auxValues.bairro = "";
-    auxValues.municipio = "";
-    auxValues.uf = "";
-    auxValues.logradouro = "";
-    setValues(auxValues);
-  }
 
   const canSubmit =
     values?.cep &&

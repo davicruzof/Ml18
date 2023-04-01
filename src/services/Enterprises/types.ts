@@ -33,3 +33,19 @@ export interface EnterpriseResponse {
   uf: string;
   updatedat: string;
 }
+
+export type cnpjType = {
+  uf: string;
+  cep: string;
+  pais: string;
+  email: string;
+  bairro: string;
+  numero: string;
+  municipio: string;
+  logradouro: string;
+  complemento: string;
+  razao_social: string;
+  nome_fantasia: string;
+  ddd_telefone_1: string;
+  cnpj: string;
+};

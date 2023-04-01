@@ -53,26 +53,25 @@ const EnterpriseBrandForm = ({
     values?.logo &&
       !values.logo.includes("https://") &&
       form.append("logo", values.logo, "logo.jpg");
+    form.append("id_empresa", values!.id_empresa!);
     form.append("nomeempresarial", values!.nomeempresarial!);
     form.append("cnpj", values!.cnpj!);
     form.append("logradouro", values!.logradouro!);
     form.append("numero", values!.numero!);
     values?.complemento && form.append("complemento", values.complemento);
-    values?.background && form.append("background", values.background);
-    values?.email && form.append("background", values.email);
-    values?.telefone && form.append("telefone", values.telefone);
     form.append("cep", values!.cep!);
     form.append("bairro", values!.bairro!);
-    form.append("id_empresa", values!.id_empresa!);
     form.append("municipio", values!.municipio!);
     form.append("uf", values!.uf!);
     form.append("situacaocadastral", "Ativo");
+    values?.primary_color &&
+      form.append("primary_color", values!.primary_color);
+    values?.telefone && form.append("telefone", values!.telefone);
+    values?.email && form.append("email", values!.email);
     form.append("id_grupo", "1");
 
     return form;
   };
-
-  console.log(values);
 
   const results = (data: any, text: string) => {
     if (data.status === 200) {
@@ -82,7 +81,7 @@ const EnterpriseBrandForm = ({
         setSnackMessage(text);
         setTimeout(() => {
           navigate("/Admin/Empresas", { replace: true });
-        }, 2000);
+        }, 1000);
       }
 
       if (data.data.error) {
@@ -96,8 +95,8 @@ const EnterpriseBrandForm = ({
     onSuccess: (data) => {
       results(data, "Editado com sucesso!");
     },
-    onError: () => {
-      handleError("Ocorreu um erro ao tentar cadastrar!");
+    onError: (err) => {
+      handleError("Ocorreu um erro ao tentar editar!");
     },
   });
 
@@ -116,11 +115,11 @@ const EnterpriseBrandForm = ({
       <FormGroup>
         <InputForm
           type="color"
-          name="background"
+          name="primary_color"
           label="Cor Principal da marca"
           style={{ width: 200, height: 40 }}
           onChange={handleChange}
-          value={values!.background || "#fff"}
+          value={values!.primary_color || "#fff"}
         />
 
         <label>LogoMarca</label>

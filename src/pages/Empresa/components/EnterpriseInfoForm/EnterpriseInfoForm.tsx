@@ -1,9 +1,12 @@
-import Button from "components/Button";
+import ButtonComponent from "components/Button";
 import InputForm from "components/Input";
 import Snack from "components/Snack";
 import { useState } from "react";
+import { FormType } from "../../types";
 import * as S from "./styles";
 import { cnpj } from "cpf-cnpj-validator";
+import { Button, FormGroup } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { EnterpriseResponse } from "services/Enterprises/types";
 
 const EnterpriseInfoForm = ({
@@ -11,10 +14,11 @@ const EnterpriseInfoForm = ({
   values,
   setCurrent,
 }: {
-  setValues: (val: EnterpriseResponse) => void;
-  values: EnterpriseResponse | undefined;
+  setValues: (val: any) => void;
+  values: FormType | EnterpriseResponse | undefined;
   setCurrent: (current: number) => void;
 }) => {
+  const navigate = useNavigate();
   const [snackMessage, setSnackMessage] = useState("");
   const [snackStatus, setSnackStatus] = useState(false);
   const [snackType, setSnackType] = useState<"error" | "success">("success");
@@ -34,6 +38,7 @@ const EnterpriseInfoForm = ({
   const canSubmit = values?.cnpj && values.nomeempresarial;
 
   const nextStep = () => {
+    console.log(values);
     if (canSubmit) {
       if (!cnpj.isValid(values.cnpj!)) {
         return handleError("Informe um cnpj valido para prosseguir!");
@@ -48,18 +53,20 @@ const EnterpriseInfoForm = ({
     <S.Container>
       <S.Form>
         <InputForm
-          name="nomeempresarial"
-          label="Razão social *"
-          onChange={handleChange}
-          value={values?.nomeempresarial}
-          required
-        />
-        <S.Divider />
-        <InputForm
           name="cnpj"
           label="CNPJ *"
           value={values?.cnpj}
           onChange={handleChange}
+          required
+        />
+
+        <S.Divider />
+
+        <InputForm
+          name="nomeempresarial"
+          label="Razão social *"
+          onChange={handleChange}
+          value={values?.nomeempresarial}
           required
         />
       </S.Form>
@@ -78,7 +85,18 @@ const EnterpriseInfoForm = ({
           onChange={handleChange}
         />
       </S.Form>
-      <Button title="Próximo passo" onClick={nextStep} />
+
+      <FormGroup row sx={{ mt: 5 }}>
+        <Button
+          variant="outlined"
+          onClick={() => navigate("/Admin/Empresas", { replace: true })}
+          sx={{ mt: 3, mr: 3 }}
+        >
+          Cancelar
+        </Button>
+
+        <ButtonComponent title="Próximo passo" onClick={nextStep} />
+      </FormGroup>
 
       <Snack
         handleClose={() => setSnackStatus(false)}

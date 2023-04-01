@@ -61,6 +61,10 @@ const EnterpriseBrandForm = ({
     form.append("municipio", values!.municipio!);
     form.append("uf", values!.uf!);
     form.append("situacaocadastral", "Ativo");
+    values?.primary_color &&
+      form.append("primary_color", values!.primary_color);
+    values?.telefone && form.append("telefone", values!.telefone);
+    values?.email && form.append("email", values!.email);
     form.append("id_grupo", "1");
 
     return form;
@@ -108,6 +112,7 @@ const EnterpriseBrandForm = ({
       <FormGroup>
         <InputForm
           type="color"
+          name="primary_color"
           label="Cor Principal da marca"
           style={{ width: 200, height: 40 }}
           onChange={handleChange}

@@ -1,12 +1,22 @@
-import { AxiosError, AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import api from "../api";
-import { EnterpriseResponse, EnterPriseType } from "./types";
+import { cnpjType, EnterpriseResponse, EnterPriseType } from "./types";
 
 export const getEnterprises = (): Promise<
   AxiosResponse<EnterPriseType[] | undefined>
 > => {
   try {
     const data = api.get("/enterprises");
+    return data;
+  } catch (err) {
+    const { error } = (err as AxiosError<any, any>)?.response?.data;
+    throw new Error(error);
+  }
+};
+
+export const getCNPJ = (cnpj: string): Promise<AxiosResponse<cnpjType>> => {
+  try {
+    const data = axios.get(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`);
     return data;
   } catch (err) {
     const { error } = (err as AxiosError<any, any>)?.response?.data;
