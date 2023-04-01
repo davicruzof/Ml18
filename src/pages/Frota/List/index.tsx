@@ -8,7 +8,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { getVehicles } from "services/Vehicle";
 import { VehicleResponse } from "services/Vehicle/type";
 import Table from "components/Table";
-import { formatDate } from "@utils/format";
+import { formatDate } from "utils/format";
 
 export default function Frota() {
   const navigation = useNavigate();
