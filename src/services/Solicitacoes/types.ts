@@ -55,4 +55,5 @@ export type listRequestResponse = {
   area: string;
   modulo: string;
   cadastrado_a: Time;
+  atualizado_a: Time;
 };

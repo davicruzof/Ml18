@@ -1,4 +1,5 @@
-import { listRequestResponse } from "./../../services/FichaPonto/types";
+import { listRequestResponse } from "services/Solicitacoes/types";
+
 export const statusUtil: any = {
   PENDENTE: {
     title: "Pendente",

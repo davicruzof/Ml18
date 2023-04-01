@@ -2,7 +2,6 @@ import {
   FormControl,
   IconButton,
   InputAdornment,
-  InputLabel,
   OutlinedInput,
 } from "@mui/material";
 import { ReactElement } from "react";
@@ -31,12 +30,11 @@ function InputPassword({
         control={control}
         render={({ field }) => (
           <FormControl sx={{ mb: 1 }} fullWidth variant="outlined">
-            <InputLabel htmlFor="outlined-adornment-password">Senha</InputLabel>
+            <label>Senha</label>
             <OutlinedInput
               fullWidth
               name="senha"
               id="outlined-adornment-password"
-              label="Senha"
               autoComplete="off"
               required
               onChange={field.onChange}

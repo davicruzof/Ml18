@@ -2,25 +2,54 @@ import { useEffect, useState } from "react";
 import * as S from "./styles";
 import { useNavigate } from "react-router-dom";
 import ButtonComponent from "components/Button";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import { getVideos } from "services/Telemetria";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { deleteVideo, getVideos } from "services/Telemetria";
 import { type videoType } from "services/Telemetria/type";
-import { formatData } from "utils/format";
+import { formatDataHuman } from "utils/format";
 import Loading from "components/Loading/Loading";
 import Table from "components/Table";
+import Snack from "components/Snack";
 
 export default function Videos() {
   const navigation = useNavigate();
   const [rows, setRows] = useState<videoType[]>([]);
   const [pageSize, setPageSize] = useState<number>(10);
 
-  const { data: dataVideos, isLoading } = useQuery("getEnterprises", {
+  const [snackMessage, setSnackMessage] = useState("");
+  const [snackStatus, setSnackStatus] = useState(false);
+
+  const [snackType, setSnackType] = useState<"error" | "success">("success");
+
+  const handleResult = (text: string, type: "error" | "success") => {
+    setSnackStatus(true);
+    setSnackType(type);
+    setSnackMessage(text);
+  };
+
+  const {
+    data: dataVideos,
+    isLoading,
+    refetch: refetchGetVideos,
+  } = useQuery("getEnterprises", {
     queryFn: async () => getVideos(),
     enabled: true,
     keepPreviousData: false,
   });
+
+  const { mutate: mutateDeleteVideo, isLoading: isLoadingDeleteVideo } =
+    useMutation({
+      mutationFn: (formData: number) => deleteVideo(formData),
+      onSuccess: () => {
+        refetchGetVideos();
+        handleResult("Video excluído com sucesso!", "success");
+      },
+      onError: () => {
+        handleResult("Ocorreu um erro ao tentar cadastrar!", "error");
+      },
+    });
 
   const handleEditClick = (item: videoType) => {
     navigation("/rh/videos/edit", {
@@ -29,6 +58,9 @@ export default function Videos() {
         video: item,
       },
     });
+  };
+  const handleDeleteVideo = (id: number) => {
+    mutateDeleteVideo(id);
   };
 
   const VISIBLE_FIELDS = [
@@ -41,7 +73,7 @@ export default function Videos() {
       headerName: "Actions",
       width: 100,
       cellClassName: "actions",
-      getActions: ({ row }: any) => {
+      getActions: ({ row }: { row: videoType }) => {
         return [
           <IconButton
             color="primary"
@@ -52,6 +84,16 @@ export default function Videos() {
             }}
           >
             <EditIcon />
+          </IconButton>,
+          <IconButton
+            color="error"
+            aria-label="upload picture"
+            component="label"
+            onClick={() => {
+              handleDeleteVideo(row.id_video);
+            }}
+          >
+            <DeleteIcon />
           </IconButton>,
         ];
       },
@@ -64,7 +106,7 @@ export default function Videos() {
       dataVideos.map((item: any) =>
         data.push({
           id: item.dt_criacao,
-          expiracao: formatData(new Date(item.dt_expiracao)),
+          expiracao: formatDataHuman(new Date(item.dt_expiracao)),
           ...item,
         })
       );
@@ -72,9 +114,10 @@ export default function Videos() {
     }
   }, [dataVideos]);
 
-  return isLoading ? (
-    <Loading />
-  ) : (
+  if (isLoadingDeleteVideo || isLoading) {
+    return <Loading />;
+  }
+  return (
     <S.Container>
       <S.Wrapper>
         <ButtonComponent
@@ -93,6 +136,13 @@ export default function Videos() {
         rows={rows}
         pageSize={pageSize}
         setPageSize={setPageSize}
+      />
+
+      <Snack
+        handleClose={() => setSnackStatus(false)}
+        message={snackMessage}
+        open={snackStatus}
+        type={snackType}
       />
     </S.Container>
   );

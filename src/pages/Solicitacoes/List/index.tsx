@@ -13,16 +13,14 @@ import { returnTime } from "utils/format";
 import { formatRequests, statusUtil } from "../util";
 import Dialog from "./updateStatus";
 import Table from "components/Table";
-import { RowType } from "./types";
 
 const ListRequests = () => {
   const [requests, setRequests] = useState<listRequestResponse[]>([]);
-  const [updateRow, setUpdateRow] = useState<RowType>();
+  const [updateRow, setUpdateRow] = useState<listRequestResponse>();
   const [pageSize, setPageSize] = useState<number>(10);
 
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState<string>("");
-  const [idRequest, setIdRequest] = useState<number | string>("");
   const [idFunc, setIdFunc] = useState<number | string>("");
 
   const [snackMessage, setSnackMessage] = useState("");
@@ -76,11 +74,11 @@ const ListRequests = () => {
       },
     });
 
-  const handleUpdate = (data: RowType) => {
+  const handleUpdate = (data: listRequestResponse) => {
+    console.log(data);
     setOpen(!open);
     setUpdateRow(data);
     setStatus(data.status);
-    setIdRequest(data.id_solicitacao);
   };
 
   const VISIBLE_FIELDS = [
@@ -91,7 +89,7 @@ const ListRequests = () => {
       field: "status",
       headerName: "Status",
       width: 150,
-      renderCell: ({ row }: { row: RowType }) => {
+      renderCell: ({ row }: { row: listRequestResponse }) => {
         const { bg, color, title } = statusUtil[row.status];
         return [<Chip label={title} style={{ color, backgroundColor: bg }} />];
       },
@@ -100,7 +98,7 @@ const ListRequests = () => {
       field: "cadastro",
       headerName: "Data",
       width: 100,
-      renderCell: ({ row }: { row: RowType }) => {
+      renderCell: ({ row }: { row: listRequestResponse }) => {
         return [<span>{row.dt_cadastro}</span>];
       },
     },
@@ -108,7 +106,7 @@ const ListRequests = () => {
       field: "update",
       headerName: "Atualizado",
       width: 80,
-      renderCell: ({ row }: { row: RowType }) => {
+      renderCell: ({ row }: { row: listRequestResponse }) => {
         return [<span>{returnTime(row.atualizado_a)}</span>];
       },
     },
@@ -118,7 +116,7 @@ const ListRequests = () => {
       headerName: "Atualizar",
       width: 100,
       cellClassName: "actions",
-      getActions: ({ row }: { row: RowType }) => {
+      getActions: ({ row }: { row: listRequestResponse }) => {
         return [
           <IconButton
             color="primary"
@@ -163,11 +161,10 @@ const ListRequests = () => {
       <Dialog
         setStatus={setStatus}
         status={status}
-        open={open}
-        setOpen={setOpen}
-        id_solicitacao={idRequest}
+        openDialog={open}
+        setOpenDialog={setOpen}
         updateStatusRequest={updateStatusRequest}
-        justificativa={updateRow?.justificativa}
+        request={updateRow!}
       />
 
       <Snack

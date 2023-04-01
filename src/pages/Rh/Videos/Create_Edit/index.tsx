@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import InputForm from "components/Input";
 import * as S from "./styles";
 import ButtonComponent from "components/Button";
-import { FormGroup } from "@mui/material";
+import { Box, FormGroup, LinearProgress, Typography } from "@mui/material";
 import { VIDEO_DEFAULT } from "utils/constants";
 import Snack from "components/Snack";
 import { ValueType } from "./types";
@@ -23,6 +23,7 @@ export default function Create_Edit() {
   const [titulo, setTitulo] = useState<string>("");
   const [descricao, setDescricao] = useState<string>("");
   const [expiracao, setExpiracao] = useState<string>("");
+  const [progress, setProgress] = useState<number>(0);
 
   const [video, setVideo] = useState<File | null>(null);
   const [videoUrl, setVideoUrl] = useState<string>("");
@@ -45,6 +46,7 @@ export default function Create_Edit() {
         setSnackType("success");
         setSnackMessage(text);
         setTimeout(() => {
+          setProgress(0);
           navigate("/rh/videos", { replace: true });
         }, 2000);
       }
@@ -57,9 +59,10 @@ export default function Create_Edit() {
 
   const { mutate: registerVideo, isLoading: isLoadingRegisterVideo } =
     useMutation({
-      mutationFn: (formData: FormData) => createVideo(formData),
+      mutationFn: (dataSendCreateVideo: any) =>
+        createVideo(dataSendCreateVideo),
       onSuccess: (data) => {
-        results(data, "Veículo cadastrado com sucesso!");
+        results(data, "Video cadastrado com sucesso!");
       },
       onError: () => {
         handleError("Ocorreu um erro ao tentar cadastrar!");
@@ -70,11 +73,10 @@ export default function Create_Edit() {
     const form = new FormData();
     const values = localStorage.getItem("authValues");
     const data = JSON.parse(values!);
-
     form.append("id_empresa", data.id_empresa);
     form.append("descricao", descricao);
     form.append("titulo", titulo);
-    form.append("dt_expiracao", formatData(new Date(expiracao)));
+    expiracao && form.append("dt_expiracao", formatData(new Date(expiracao)));
     video && form.append("video", video);
 
     return form;
@@ -83,8 +85,8 @@ export default function Create_Edit() {
   const handleEditVideo = () => {};
 
   const handleRegisterVideo = async () => {
-    const dataSend = createObjVideo();
-    registerVideo(dataSend);
+    const dataSendVideo = createObjVideo();
+    registerVideo({ credentials: dataSendVideo, setProgress });
   };
 
   const handleLogo = (arg0: File) => {
@@ -109,107 +111,129 @@ export default function Create_Edit() {
     <S.Container>
       <S.Title>Cadastro de Videos</S.Title>
 
-      <FormGroup row style={{ flex: 1, marginTop: 30 }}>
-        <FormGroup style={{ width: "70%" }} sx={{ mr: 2 }}>
-          <InputForm
-            label="Título"
-            onChange={(e: ValueType) => setTitulo(e.target.value)}
-            value={titulo}
-            required
-          />
-
-          <TextArea
-            label="Descricao"
-            onChange={(e: ValueType) => setDescricao(e.target.value)}
-            value={descricao}
-            required
-            multiline
-            rows={videoUrl.length > 0 ? 13 : 8}
-          />
-        </FormGroup>
-        <FormGroup style={{ width: "25%" }}>
-          {videoUrl.length > 0 ? (
-            <video
-              controls
-              src={videoUrl}
-              style={{
-                maxWidth: 280,
-                borderRadius: 8,
-                border: "none",
-                objectFit: "cover",
-                boxShadow:
-                  "0 3px 6px rgba(0,0,0,.16),0 3px 6px rgba(0,0,0,.23)",
-              }}
-            />
-          ) : (
-            <div
-              style={{
-                flex: 1,
-                maxWidth: 280,
-                padding: 1,
-                borderRadius: 8,
-                display: "flex",
-                alignItems: "center",
-                boxShadow:
-                  "0 3px 6px rgba(0,0,0,.16),0 3px 6px rgba(0,0,0,.23)",
-              }}
-            >
-              <img
-                src={VIDEO_DEFAULT}
-                style={{
-                  flex: 1,
-                  maxWidth: 280,
-                  objectFit: "cover",
-                }}
-                alt="imagem default"
-              />
-            </div>
-          )}
-
-          <S.ButtonCustom>
-            Selecione video
-            <InputFile accept="video/*" name="logo" handleLogo={handleLogo} />
-          </S.ButtonCustom>
-
-          {videoUrl.length > 0 && (
-            <S.ButtonRemove onClick={() => setVideoUrl("")}>
-              remover video
-            </S.ButtonRemove>
-          )}
-
-          {videoUrl.length > 0 && (
-            <>
-              <label style={{ marginTop: 10 }}>Data de expiração</label>
+      {progress !== 0 ? (
+        <S.LoadingContainer>
+          <LinearProgress variant="determinate" value={progress} />
+          <Box sx={{ minWidth: 35 }}>
+            <Typography variant="body2" color="text.secondary">{`${Math.round(
+              progress
+            )}%`}</Typography>
+          </Box>
+          <Box sx={{ mt: 5 }}>
+            <Typography variant="h5" color="text.error">
+              Aguarde enquanto estamos enviado o seu video
+            </Typography>
+          </Box>
+        </S.LoadingContainer>
+      ) : (
+        <>
+          <FormGroup row style={{ flex: 1, marginTop: 30 }}>
+            <FormGroup style={{ width: "70%" }} sx={{ mr: 2 }}>
               <InputForm
-                label=""
-                onChange={(e: ValueType) => setExpiracao(e.target.value)}
-                value={expiracao}
-                placeholder="aaaa/mm/dd"
-                type="date"
+                label="Título"
+                onChange={(e: ValueType) => setTitulo(e.target.value)}
+                value={titulo}
+                required
               />
-            </>
-          )}
-        </FormGroup>
-      </FormGroup>
 
-      <FormGroup
-        row
-        sx={{ justifyContent: "center", alignItems: "center", mb: 4 }}
-      >
-        <ButtonLight
-          title="Voltar"
-          onClick={() => navigate("/rh/Videos", { replace: true })}
-        />
+              <TextArea
+                label="Descricao"
+                onChange={(e: ValueType) => setDescricao(e.target.value)}
+                value={descricao}
+                required
+                multiline
+                rows={videoUrl.length > 0 ? 13 : 8}
+              />
+            </FormGroup>
+            <FormGroup style={{ width: "25%" }}>
+              {videoUrl.length > 0 ? (
+                <video
+                  controls
+                  src={videoUrl}
+                  style={{
+                    maxWidth: 280,
+                    borderRadius: 8,
+                    border: "none",
+                    objectFit: "cover",
+                    boxShadow:
+                      "0 3px 6px rgba(0,0,0,.16),0 3px 6px rgba(0,0,0,.23)",
+                  }}
+                />
+              ) : (
+                <div
+                  style={{
+                    flex: 1,
+                    maxWidth: 280,
+                    padding: 1,
+                    borderRadius: 8,
+                    display: "flex",
+                    alignItems: "center",
+                    boxShadow:
+                      "0 3px 6px rgba(0,0,0,.16),0 3px 6px rgba(0,0,0,.23)",
+                  }}
+                >
+                  <img
+                    src={VIDEO_DEFAULT}
+                    style={{
+                      flex: 1,
+                      maxWidth: 280,
+                      objectFit: "cover",
+                    }}
+                    alt="imagem default"
+                  />
+                </div>
+              )}
 
-        <FormGroup sx={{ mr: 4 }} />
+              <S.ButtonCustom>
+                Selecione video
+                <InputFile
+                  accept="video/*"
+                  name="logo"
+                  handleLogo={handleLogo}
+                />
+              </S.ButtonCustom>
 
-        <ButtonComponent
-          disabled={false}
-          title={editVideo ? "Editar" : "Cadastrar"}
-          loading={isLoading}
-          onClick={editVideo ? handleEditVideo : handleRegisterVideo}
-        />
-      </FormGroup>
+              {videoUrl.length > 0 && (
+                <S.ButtonRemove onClick={() => setVideoUrl("")}>
+                  remover video
+                </S.ButtonRemove>
+              )}
+
+              {videoUrl.length > 0 && (
+                <>
+                  <label style={{ marginTop: 10 }}>Data de expiração</label>
+                  <InputForm
+                    label=""
+                    onChange={(e: ValueType) => setExpiracao(e.target.value)}
+                    value={expiracao}
+                    placeholder="aaaa/mm/dd"
+                    type="date"
+                  />
+                </>
+              )}
+            </FormGroup>
+          </FormGroup>
+
+          <FormGroup
+            row
+            sx={{ justifyContent: "center", alignItems: "center", mb: 4 }}
+          >
+            <ButtonLight
+              title="Voltar"
+              onClick={() => navigate("/rh/Videos", { replace: true })}
+            />
+
+            <FormGroup sx={{ mr: 4 }} />
+
+            <ButtonComponent
+              disabled={false}
+              title={editVideo ? "Editar" : "Cadastrar"}
+              loading={isLoading}
+              onClick={editVideo ? handleEditVideo : handleRegisterVideo}
+            />
+          </FormGroup>
+        </>
+      )}
 
       <Snack
         handleClose={() => setSnackStatus(false)}
