@@ -6,6 +6,7 @@ import { useMutation, useQuery } from "react-query";
 import { IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import SendIcon from "@mui/icons-material/Telegram";
 import { deleteVideo, getVideos } from "services/Telemetria";
 import { type videoType } from "services/Telemetria/type";
 import { formatDataHuman } from "utils/format";
@@ -63,15 +64,24 @@ export default function Videos() {
     mutateDeleteVideo(id);
   };
 
+  const handleSendVideo = (id: number) => {
+    navigation("/rh/videos/send", {
+      replace: true,
+      state: {
+        id_video: id,
+      },
+    });
+  };
+
   const VISIBLE_FIELDS = [
     { field: "titulo", headerName: "Título", width: 350 },
-    { field: "descricao", headerName: "Descricao", width: 500 },
+    { field: "descricao", headerName: "Descricao", width: 400 },
     { field: "expiracao", headerName: "Data de expiração", width: 150 },
     {
       field: "actions",
       type: "actions",
       headerName: "Actions",
-      width: 100,
+      width: 200,
       cellClassName: "actions",
       getActions: ({ row }: { row: videoType }) => {
         return [
@@ -84,6 +94,16 @@ export default function Videos() {
             }}
           >
             <EditIcon />
+          </IconButton>,
+          <IconButton
+            color="success"
+            aria-label="send video"
+            component="label"
+            onClick={() => {
+              handleSendVideo(row.id_video);
+            }}
+          >
+            <SendIcon />
           </IconButton>,
           <IconButton
             color="error"

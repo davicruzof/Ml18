@@ -37,6 +37,7 @@ export default function Create_Edit() {
     setSnackStatus(true);
     setSnackType("error");
     setSnackMessage(text);
+    setProgress(0);
   };
 
   const results = (data: any, text: string) => {

@@ -14,6 +14,7 @@ import Videos from "pages/Rh/Videos/List";
 import AddVideos from "pages/Rh/Videos/Create_Edit";
 import EditVideos from "pages/Rh/Videos/Edit";
 import EditEnterprise from "pages/Empresa/Edit";
+import SendEmployee from "pages/Rh/Videos/SendEmployee";
 
 export default function UserRoutes() {
   return (
@@ -44,6 +45,7 @@ export default function UserRoutes() {
         <Route path="videos" element={<Videos />} />
         <Route path="AddVideo" element={<AddVideos />} />
         <Route path="videos/edit" element={<EditVideos />} />
+        <Route path="videos/send" element={<SendEmployee />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />

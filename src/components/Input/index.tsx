@@ -5,7 +5,7 @@ const Input = (props: any) => {
     <S.Container>
       <label style={{ color: "black" }}>{props.label}</label>
       <input
-        autocomplete="off"
+        autoComplete="off"
         style={{
           borderRadius: 4,
           borderColor: "black",
