@@ -61,7 +61,11 @@ export default function Videos() {
     });
   };
   const handleDeleteVideo = (id: number) => {
-    mutateDeleteVideo(id);
+    // eslint-disable-next-line no-restricted-globals
+    const resposta = confirm("Deseja apagar o video realmente?");
+    if (resposta) {
+      mutateDeleteVideo(id);
+    }
   };
 
   const handleSendVideo = (id: number) => {

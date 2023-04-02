@@ -23,7 +23,7 @@ export const createVideo = async (dataSend: any) => {
 
 export const updateVideo = async (credentials: videoTypeEdit) => {
   try {
-    const { data } = await api.post("/video/update", credentials);
+    const { data } = await api.put("/video/update", credentials);
     return data;
   } catch (err) {
     const { error } = (err as AxiosError<any, any>)?.response?.data;

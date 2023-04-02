@@ -8,10 +8,10 @@ import EmployeePermissionEdit from "pages/Permissions/PermissionEdit";
 import { NotFound } from "pages/NotFound";
 import DeleteAccount from "pages/DeleteAccount";
 import Frota from "pages/Frota/List";
-import Create_Edit from "pages/Frota/Create_Edit";
+import AddVeiculo from "pages/Frota/Create_Edit";
 import FichaPonto from "pages/FichaPonto/List";
 import Videos from "pages/Rh/Videos/List";
-import AddVideos from "pages/Rh/Videos/Create_Edit";
+import AddVideos from "pages/Rh/Videos/Create";
 import EditVideos from "pages/Rh/Videos/Edit";
 import EditEnterprise from "pages/Empresa/Edit";
 import SendEmployee from "pages/Rh/Videos/SendEmployee";
@@ -31,7 +31,7 @@ export default function UserRoutes() {
       </Route>
       <Route path="frota/">
         <Route path="Listagem" element={<Frota />} />
-        <Route path="AddVeiculo" element={<Create_Edit />} />
+        <Route path="AddVeiculo" element={<AddVeiculo />} />
       </Route>
       <Route path="ti/">
         <Route path="permissoes" element={<EmployeePermissionList />} />

@@ -14,7 +14,7 @@ import { formatData } from "utils/format";
 import ButtonLight from "components/ButtonLight";
 import TextArea from "components/TextArea";
 
-export default function Create_Edit() {
+export default function AddVeiculo() {
   const location = useLocation();
 
   const editVideo = location.state?.video;

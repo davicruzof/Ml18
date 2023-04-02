@@ -13,6 +13,7 @@ import { videoType, videoTypeEdit } from "services/Telemetria/type";
 import * as S from "./styles";
 import { ValueType } from "./types";
 import VideoComponent from "../components/video";
+import Loading from "components/Loading/Loading";
 
 export default function Edit() {
   const location = useLocation();
@@ -38,19 +39,17 @@ export default function Edit() {
   };
 
   const results = (data: any, text: string) => {
-    if (data.status === 200) {
-      if (data.data.sucess) {
-        setSnackStatus(true);
-        setSnackType("success");
-        setSnackMessage(text);
-        setTimeout(() => {
-          navigate("/rh/videos", { replace: true });
-        }, 2000);
-      }
+    if (data.sucess) {
+      setSnackStatus(true);
+      setSnackType("success");
+      setSnackMessage(text);
+      setTimeout(() => {
+        navigate("/rh/videos", { replace: true });
+      }, 1000);
+    }
 
-      if (data.data.error) {
-        handleError(data.data.error);
-      }
+    if (data.error) {
+      handleError(data.data.error);
     }
   };
 
@@ -58,10 +57,10 @@ export default function Edit() {
     useMutation({
       mutationFn: (formData: videoTypeEdit) => updateVideo(formData),
       onSuccess: (data) => {
-        results(data, "Veículo cadastrado com sucesso!");
+        results(data, "Video atualizado com sucesso!");
       },
       onError: () => {
-        handleError("Ocorreu um erro ao tentar cadastrar!");
+        handleError("Ocorreu um erro ao tentar atualizar video!");
       },
     });
 
@@ -91,6 +90,10 @@ export default function Edit() {
   const isLoading = useMemo(() => {
     return isLoadingRegisterVideo;
   }, [isLoadingRegisterVideo]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <S.Container>
