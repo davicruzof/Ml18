@@ -13,9 +13,11 @@ import * as S from "./styles";
 import Snack from "components/Snack";
 
 import {
+  Box,
   Checkbox,
   FormGroup,
   IconButton,
+  LinearProgress,
   List,
   ListItem,
   ListItemButton,
@@ -27,8 +29,9 @@ import RemoveCircle from "@mui/icons-material/RemoveCircle";
 
 import { ButtonsForm } from "components/ButtonsForm";
 import { ValueType } from "./types";
-import InputForm from "components/Input";
 import Button from "components/Button";
+import { sendVideoToEmployee } from "@services/Telemetria";
+import { ProgressLoading } from "components/ProgressLoading";
 
 export default function SendEmployee() {
   const {
@@ -37,6 +40,7 @@ export default function SendEmployee() {
 
   const navigate = useNavigate();
 
+  const [progress, setProgress] = useState<number>(0);
   const [listEmployees, setListEmployees] = useState<EmployeeType[]>([]);
   const [listEmployeesBackup, setListEmployeesBackUp] = useState<
     EmployeeType[]
@@ -60,6 +64,39 @@ export default function SendEmployee() {
         setListEmployees(employees.data);
         setListEmployeesBackUp(employees.data);
       }
+    },
+  });
+
+  const handleError = (text: string) => {
+    setSnackStatus(true);
+    setSnackType("error");
+    setSnackMessage(text);
+    setProgress(0);
+  };
+
+  const results = (data: any, text: string) => {
+    if (data.sucess) {
+      setSnackStatus(true);
+      setSnackType("success");
+      setSnackMessage(text);
+      setProgress(0);
+      setTimeout(() => {
+        navigate("/rh/videos", { replace: true });
+      }, 1000);
+    }
+
+    if (data.error) {
+      handleError(data.data.error);
+    }
+  };
+
+  const { mutate: sendVideoEmployee, isLoading } = useMutation({
+    mutationFn: (formData: any) => sendVideoToEmployee(formData),
+    onSuccess: (data: any) => {
+      results(data, "Video enviado com sucesso");
+    },
+    onError: () => {
+      handleError("Ocorreu um erro ao tentar enviar o video!");
     },
   });
 
@@ -117,6 +154,14 @@ export default function SendEmployee() {
     setEmployeesSelected([]);
   };
 
+  const handleSendEmployeeVideo = () => {
+    const dataSend = {
+      id_video,
+      ids_funcionario: checked,
+    };
+    sendVideoEmployee({ credentials: dataSend, setProgress: setProgress });
+  };
+
   useEffect(() => {
     setListEmployees(listEmployeesBackup);
 
@@ -132,7 +177,7 @@ export default function SendEmployee() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
 
-  if (isLoadingGetAllEmployee) {
+  if (isLoadingGetAllEmployee || isLoading) {
     return <Loading />;
   }
 
@@ -145,120 +190,127 @@ export default function SendEmployee() {
         </S.SubTitle>
       </S.WrapperInfo>
 
-      <S.WrapperContent>
-        <FormGroup row sx={{ alignItems: "flex-end", mb: 5 }}>
-          <FormGroup sx={{ width: "50%" }}>
-            <label style={{ color: "black" }}>
-              Buscar funcionário pelo nome
-            </label>
-            <input
-              autoComplete="off"
-              style={{
-                borderRadius: 4,
-                borderColor: "black",
-                borderWidth: 1,
-                background: "transparent",
-                width: "100%",
-                height: 42,
-                paddingLeft: 15,
-                color: "black",
-              }}
-              onChange={(e: ValueType) => setSearch(e.target.value)}
-              value={search}
-            />
+      {progress !== 0 ? (
+        <ProgressLoading
+          text="Aguarde enquanto estamos enviado o video"
+          progress={progress}
+        />
+      ) : (
+        <S.WrapperContent>
+          <FormGroup row sx={{ alignItems: "flex-end", mb: 5 }}>
+            <FormGroup sx={{ width: "50%" }}>
+              <label style={{ color: "black" }}>
+                Buscar funcionário pelo nome
+              </label>
+              <input
+                autoComplete="off"
+                style={{
+                  borderRadius: 4,
+                  borderColor: "black",
+                  borderWidth: 1,
+                  background: "transparent",
+                  width: "100%",
+                  height: 42,
+                  paddingLeft: 15,
+                  color: "black",
+                }}
+                onChange={(e: ValueType) => setSearch(e.target.value)}
+                value={search}
+              />
+            </FormGroup>
+            <FormGroup sx={{ ml: 3 }}>
+              <Button
+                title={
+                  allEmployees.length > 0
+                    ? "Cancelar seleção"
+                    : "Selecionar todos"
+                }
+                onClick={
+                  allEmployees.length > 0
+                    ? handleCancelSelectAll
+                    : handleSelectAll
+                }
+              />
+            </FormGroup>
           </FormGroup>
-          <FormGroup sx={{ ml: 3 }}>
-            <Button
-              title={
-                allEmployees.length > 0
-                  ? "Cancelar seleção"
-                  : "Selecionar todos"
-              }
-              onClick={
-                allEmployees.length > 0
-                  ? handleCancelSelectAll
-                  : handleSelectAll
-              }
-            />
-          </FormGroup>
-        </FormGroup>
 
-        <FormGroup row sx={{ justifyContent: "space-between" }}>
-          <List
-            dense
-            sx={{ width: "50%", bgcolor: "background.paper", height: 350 }}
-          >
-            {listEmployees.map((value, index) => {
-              const labelId = `checkbox-list-secondary-label-${value.nome}`;
-              return (
-                index < 10 && (
-                  <ListItem
-                    onClick={
-                      allEmployees.length > 0
-                        ? () => {}
-                        : handleToggle(value.id_funcionario, value.nome)
-                    }
-                    key={value.id_funcionario}
-                    secondaryAction={
-                      <Checkbox
-                        edge="end"
-                        onChange={handleToggle(
-                          value.id_funcionario,
-                          value.nome
-                        )}
-                        disabled={allEmployees.length > 0}
-                        checked={checked.indexOf(value.id_funcionario) !== -1}
-                        inputProps={{ "aria-labelledby": labelId }}
-                      />
-                    }
-                    disablePadding
-                  >
-                    <ListItemButton>
-                      <ListItemText id={labelId} primary={`${value.nome}`} />
-                    </ListItemButton>
-                  </ListItem>
-                )
-              );
-            })}
-          </List>
-          {allEmployees.length === 0 && employeesSelected.length > 0 && (
-            <List dense sx={{ width: "50%", bgcolor: "background.paper" }}>
-              <Typography fontWeight="bold" variant="body1">
-                Lista de Selecionados
-              </Typography>
-              {employeesSelected.map((value) => {
-                const labelId = `checkbox-list-secondary-label-${value}`;
+          <FormGroup row sx={{ justifyContent: "space-between" }}>
+            <List
+              dense
+              sx={{ width: "50%", bgcolor: "background.paper", height: 350 }}
+            >
+              {listEmployees.map((value, index) => {
+                const labelId = `checkbox-list-secondary-label-${value.nome}`;
                 return (
-                  <ListItem
-                    secondaryAction={
-                      <IconButton
-                        color="error"
-                        aria-label="remove"
-                        component="label"
-                        onClick={handleRemoveSelected(value)}
-                      >
-                        <RemoveCircle />
-                      </IconButton>
-                    }
-                    key={value}
-                    disablePadding
-                  >
-                    <ListItemButton>
-                      <ListItemText id={labelId} primary={`- ${value}`} />
-                    </ListItemButton>
-                  </ListItem>
+                  index < 10 && (
+                    <ListItem
+                      onClick={
+                        allEmployees.length > 0
+                          ? () => {}
+                          : handleToggle(value.id_funcionario, value.nome)
+                      }
+                      key={value.id_funcionario}
+                      secondaryAction={
+                        <Checkbox
+                          edge="end"
+                          onChange={handleToggle(
+                            value.id_funcionario,
+                            value.nome
+                          )}
+                          disabled={allEmployees.length > 0}
+                          checked={checked.indexOf(value.id_funcionario) !== -1}
+                          inputProps={{ "aria-labelledby": labelId }}
+                        />
+                      }
+                      disablePadding
+                    >
+                      <ListItemButton>
+                        <ListItemText id={labelId} primary={`${value.nome}`} />
+                      </ListItemButton>
+                    </ListItem>
+                  )
                 );
               })}
             </List>
-          )}
-        </FormGroup>
+            {allEmployees.length === 0 && employeesSelected.length > 0 && (
+              <List dense sx={{ width: "50%", bgcolor: "background.paper" }}>
+                <Typography fontWeight="bold" variant="body1">
+                  Lista de Selecionados
+                </Typography>
+                {employeesSelected.map((value) => {
+                  const labelId = `checkbox-list-secondary-label-${value}`;
+                  return (
+                    <ListItem
+                      secondaryAction={
+                        <IconButton
+                          color="error"
+                          aria-label="remove"
+                          component="label"
+                          onClick={handleRemoveSelected(value)}
+                        >
+                          <RemoveCircle />
+                        </IconButton>
+                      }
+                      key={value}
+                      disablePadding
+                    >
+                      <ListItemButton>
+                        <ListItemText id={labelId} primary={`- ${value}`} />
+                      </ListItemButton>
+                    </ListItem>
+                  );
+                })}
+              </List>
+            )}
+          </FormGroup>
 
-        <ButtonsForm
-          rotaBack="/ti/permissoes"
-          title="Confirme"
-          handleButton={() => {}}
-        />
-      </S.WrapperContent>
+          <ButtonsForm
+            rotaBack="/ti/permissoes"
+            title="Confirme"
+            handleButton={handleSendEmployeeVideo}
+          />
+        </S.WrapperContent>
+      )}
       <Snack
         handleClose={() => setSnackStatus(false)}
         message={snackMessage}

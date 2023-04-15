@@ -75,7 +75,6 @@ const ListRequests = () => {
     });
 
   const handleUpdate = (data: listRequestResponse) => {
-    console.log(data);
     setOpen(!open);
     setUpdateRow(data);
     setStatus(data.status);

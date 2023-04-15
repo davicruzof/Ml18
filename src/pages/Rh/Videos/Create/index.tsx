@@ -13,6 +13,7 @@ import { createVideo } from "services/Telemetria";
 import { formatData } from "utils/format";
 import ButtonLight from "components/ButtonLight";
 import TextArea from "components/TextArea";
+import { ProgressLoading } from "components/ProgressLoading";
 
 export default function AddVeiculo() {
   const location = useLocation();
@@ -113,23 +114,14 @@ export default function AddVeiculo() {
       <S.Title>Cadastro de Videos</S.Title>
 
       {progress !== 0 ? (
-        <S.LoadingContainer>
-          <LinearProgress variant="determinate" value={progress} />
-          <Box sx={{ minWidth: 35 }}>
-            <Typography variant="body2" color="text.secondary">{`${Math.round(
-              progress
-            )}%`}</Typography>
-          </Box>
-          <Box sx={{ mt: 5 }}>
-            <Typography variant="h5" color="text.error">
-              Aguarde enquanto estamos enviado o seu video
-            </Typography>
-          </Box>
-        </S.LoadingContainer>
+        <ProgressLoading
+          text="Aguarde enquanto estamos enviado o seu video"
+          progress={progress}
+        />
       ) : (
         <>
           <FormGroup row style={{ flex: 1, marginTop: 30 }}>
-            <FormGroup style={{ width: "70%" }} sx={{ mr: 2 }}>
+            <FormGroup style={{ width: "60%" }} sx={{ mr: 2 }}>
               <InputForm
                 label="Título"
                 onChange={(e: ValueType) => setTitulo(e.target.value)}
@@ -143,7 +135,7 @@ export default function AddVeiculo() {
                 value={descricao}
                 required
                 multiline
-                rows={videoUrl.length > 0 ? 13 : 8}
+                rows={videoUrl.length > 0 ? 10 : 8}
               />
             </FormGroup>
             <FormGroup style={{ width: "25%" }}>
@@ -152,10 +144,11 @@ export default function AddVeiculo() {
                   controls
                   src={videoUrl}
                   style={{
-                    maxWidth: 280,
+                    maxWidth: 350,
+                    height: 250,
+                    objectFit: "cover",
                     borderRadius: 8,
                     border: "none",
-                    objectFit: "cover",
                     boxShadow:
                       "0 3px 6px rgba(0,0,0,.16),0 3px 6px rgba(0,0,0,.23)",
                   }}
@@ -200,7 +193,7 @@ export default function AddVeiculo() {
                 </S.ButtonRemove>
               )}
 
-              {videoUrl.length > 0 && (
+              {/* {videoUrl.length > 0 && (
                 <>
                   <label style={{ marginTop: 10 }}>Data de expiração</label>
                   <InputForm
@@ -211,7 +204,7 @@ export default function AddVeiculo() {
                     type="date"
                   />
                 </>
-              )}
+              )} */}
             </FormGroup>
           </FormGroup>
 

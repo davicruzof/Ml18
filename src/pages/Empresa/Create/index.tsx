@@ -30,9 +30,6 @@ export default function Create() {
         setValues(enterprise);
       }
     },
-    onError: (err) => {
-      console.log(err);
-    },
   });
 
   useEffect(() => {

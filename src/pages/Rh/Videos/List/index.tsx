@@ -80,7 +80,7 @@ export default function Videos() {
   const VISIBLE_FIELDS = [
     { field: "titulo", headerName: "Título", width: 350 },
     { field: "descricao", headerName: "Descricao", width: 400 },
-    { field: "expiracao", headerName: "Data de expiração", width: 150 },
+    // { field: "expiracao", headerName: "Data de expiração", width: 150 },
     {
       field: "actions",
       type: "actions",

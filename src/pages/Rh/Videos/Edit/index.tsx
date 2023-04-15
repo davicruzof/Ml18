@@ -65,12 +65,16 @@ export default function Edit() {
     });
 
   const createObjVideo = () => {
-    return {
+    const data: any = {
       id_video: editVideo.id_video.toString(),
       descricao: descricao,
       titulo: titulo,
-      dt_expiracao: formatData(new Date(expiracao)),
     };
+
+    if (expiracao) {
+      data.dt_expiracao = formatData(new Date(expiracao));
+    }
+    return data;
   };
 
   const handleEditVideo = () => {
@@ -120,14 +124,14 @@ export default function Edit() {
         <FormGroup style={{ width: "25%" }}>
           <VideoComponent videoUrl={videoUrl} />
 
-          <label style={{ marginTop: 10 }}>Data de expiração</label>
+          {/* <label style={{ marginTop: 10 }}>Data de expiração</label>
           <InputForm
             label=""
             onChange={(e: ValueType) => setExpiracao(e.target.value)}
             value={expiracao}
             placeholder="aaaa/mm/dd"
             type="date"
-          />
+          /> */}
         </FormGroup>
       </FormGroup>
 

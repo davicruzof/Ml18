@@ -54,7 +54,6 @@ const Dialog = ({
   };
 
   useEffect(() => {
-    console.log(request?.status);
     if (
       request?.status === "PENDENTE" ||
       (!request?.id_funcionario_analise && !request?.id_funcionario_finalizada)

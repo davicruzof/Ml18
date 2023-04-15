@@ -62,11 +62,3 @@ export const ButtonRemove = styled.label`
   cursor: pointer;
   border: 0;
 `;
-
-export const LoadingContainer = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 30%;
-  width: 50%;
-  background: rgba(242, 245, 249, 1);
-`;

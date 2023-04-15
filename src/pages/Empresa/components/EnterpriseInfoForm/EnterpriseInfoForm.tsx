@@ -38,7 +38,6 @@ const EnterpriseInfoForm = ({
   const canSubmit = values?.cnpj && values.nomeempresarial;
 
   const nextStep = () => {
-    console.log(values);
     if (canSubmit) {
       if (!cnpj.isValid(values.cnpj!)) {
         return handleError("Informe um cnpj valido para prosseguir!");
