@@ -1,34 +1,46 @@
-import { Accordion, AccordionSummary } from "@mui/material";
 import styled from "styled-components";
 
-export const Container = styled.div``;
+const sizeWidth = window.innerWidth - 250;
 
-export const Header = styled(Accordion)`
+export const Container = styled.div`
+  height: 100vh;
+`;
+
+export const Header = styled.div`
+  height: 80px;
   position: fixed;
-  background: ${(props) => props.theme.colors.bgSider}!important;
-`;
-
-export const HeaderTitle = styled(AccordionSummary)`
-  color: #000;
-  justify-content: space-between;
-`;
-
-export const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  width: ${sizeWidth}px;
   padding: 20px;
-  padding-bottom: 0px;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
+  background: ${(props) => props.theme.colors.bgSider};
 `;
 
 export const WrapperHeader = styled.div`
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  flex-direction: row;
+  gap: 16px;
 `;
 
-export const Info = styled.span`
-  color: #fff;
-  font-size: 14px;
+export const TitleContainer = styled.div`
+  height: 40px;
+  width: 40px;
+  border-radius: 50px;
+  background: #fff;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+`;
+
+export const WrapperMessages = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 100px 20px;
+  background: #f1f1f1f1;
 `;
 
 export const BoldText = styled.span`
@@ -42,7 +54,20 @@ export const Input = styled.input`
   padding: 8px;
   padding-left: 16px;
   border-radius: 8px;
-  width: 78%;
+  width: inherit;
   font-size: 16px;
   background-color: #fff;
+`;
+
+export const Footer = styled.div`
+  position: fixed;
+  height: 80px;
+  width: ${sizeWidth}px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  background: #fff;
+  gap: 8px;
+  bottom: 0;
 `;

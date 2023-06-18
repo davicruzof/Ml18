@@ -61,7 +61,7 @@ export function SideBar({ children }: any) {
     <Loading />
   ) : (
     <div>
-      <S.HeaderNav className="main-header navbar navbar-expand">
+      {/* <S.HeaderNav className="main-header navbar navbar-expand">
         <S.HeaderContainer>
           <S.Link
             className="nav-link"
@@ -90,7 +90,7 @@ export function SideBar({ children }: any) {
             </LoadingButton>
           </S.UserInfo>
         </S.HeaderContainer>
-      </S.HeaderNav>
+      </S.HeaderNav> */}
 
       <S.MainContainer className="content-wrapper">{children}</S.MainContainer>
 

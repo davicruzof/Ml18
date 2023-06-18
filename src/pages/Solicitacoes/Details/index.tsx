@@ -2,42 +2,44 @@ import { useEffect, useRef, useState } from "react";
 
 import * as S from "./styles";
 import { useLocation } from "react-router-dom";
-import { returnTime } from "utils/format";
-import Dialog from "../List/updateStatus";
 import { useMutation } from "react-query";
-import { getMessages, sendMessage, updateRequest } from "services/Solicitacoes";
+import { getMessages, sendMessage } from "services/Solicitacoes";
 import Snack from "components/Snack";
-import Button from "components/Button";
-import { AccordionDetails, Fab } from "@mui/material";
+import { Alert, IconButton, Menu, MenuItem } from "@mui/material";
 
-import DropDown from "@mui/icons-material/ArrowDropDownOutlined";
-import DropUp from "@mui/icons-material/ArrowDropUpOutlined";
 import { CardChat } from "./CardChat";
 import { DateTime } from "luxon";
-import { ArrowUpward } from "@mui/icons-material";
 import SendIcon from "@mui/icons-material/Send";
 
-import ButtonMuiu from "@mui/material/Button";
-import EmptyMessages from "./EmptyMessages/EmptyRequest";
+import Button from "@mui/material/Button";
 import Empty from "components/Empty";
 import Loading from "components/Loading/Loading";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { DialogUpdateStatus } from "../DialogUpdateStatus";
+import { DialogInfos } from "../DialogInfos";
 
 export default function Details() {
   const { state } = useLocation();
 
   const request = state.request;
 
-  const messagesEndRef = useRef(null);
-  const topRef = useRef(null);
+  const messagesEndRef = useRef<any>(null);
   const [msg, setMsg] = useState("");
   const [msgList, setMsgList] = useState<any>([]);
   const [snackMessage, setSnackMessage] = useState("");
-  const [status, setStatus] = useState(request.status);
   const [snackStatus, setSnackStatus] = useState(false);
-  const [openDialog, setOpenDialog] = useState(false);
+  const [openDialogUpdateStatus, setOpenDialogUpdateStatus] = useState(false);
+  const [openDialogInfo, setOpenDialogInfo] = useState(false);
   const [snackType, setSnackType] = useState<"error" | "success">("success");
 
-  const [expanded, setExpanded] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleSnack = (type: "error" | "success", text: string) => {
     setSnackStatus(true);
@@ -72,97 +74,68 @@ export default function Details() {
     sendMessagesMutation(dataSend);
   };
 
-  const { mutate: updateStatusRequest } =
-    useMutation({
-      mutationFn: (formData: any) => updateRequest(formData),
-      onSuccess: () => {
-        handleSnack("success", "Solicitação atualizada com sucesso!");
-
-        setOpenDialog(false);
-      },
-      onError: () => {
-        handleSnack("error", "Ocorreu um erro, tente novamente!");
-      },
-    });
-
-  const handleUpdateStatus = () => {
-    updateStatusRequest({ status, id_solicitacao: request.id_solicitacao });
-  };
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
   useEffect(() => {
-    scrollToBottom();
+    messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
   }, [msgList]);
 
   useEffect(() => {
     getMessagesMutation(request.id_solicitacao);
   }, []);
 
-  if (mutationGetMessagesLoading || ) return <Loading />;
+  if (mutationGetMessagesLoading) return <Loading />;
 
   return (
     <>
       <S.Container>
-        <S.Header
-          ref={topRef}
-          expanded={expanded}
-          onChange={() => setExpanded(!expanded)}
-        >
-          <S.HeaderTitle aria-controls="panel1d-content" id="panel1d-header">
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                width: "100%",
-              }}
-            >
-              <S.BoldText>Solicitação</S.BoldText>
-              {expanded ? (
-                <DropUp style={{ color: "#fff" }} />
-              ) : (
-                <DropDown style={{ color: "#fff" }} />
-              )}
-            </div>
-          </S.HeaderTitle>
-          <AccordionDetails>
-            <div
-              style={{
-                flexDirection: "row",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "flex-start",
-              }}
-            >
-              <S.WrapperHeader>
-                <S.Info>
-                  Solicitante: <S.BoldText>{request.nome}</S.BoldText>
-                </S.Info>
-                <S.Info>
-                  Departamento: <S.BoldText>{request.area}</S.BoldText>
-                </S.Info>
-                <S.Info>
-                  Justificativa:{" "}
-                  <S.BoldText>{request.justificativa}</S.BoldText>
-                </S.Info>
-                <S.Info>
-                  Atualizado há {returnTime(request?.atualizado_a)}
-                </S.Info>
-              </S.WrapperHeader>
-              {request.status !== "ATENDIDA" && (
+        <S.Header>
+          <S.WrapperHeader>
+            <S.TitleContainer>
+              <span>{request.nome.charAt(0)}</span>
+            </S.TitleContainer>
+            <S.BoldText>{request.nome}</S.BoldText>
+          </S.WrapperHeader>
+          <S.WrapperHeader>
+            {request.status === "ATENDIDA" ? (
+              <Alert severity="success">Solicitação finalizada</Alert>
+            ) : (
+              <>
                 <Button
-                  title="Atualizar Status"
-                  onClick={() => setOpenDialog(!openDialog)}
-                />
-              )}
-            </div>
-          </AccordionDetails>
+                  variant="outlined"
+                  onClick={() =>
+                    setOpenDialogUpdateStatus(!openDialogUpdateStatus)
+                  }
+                >
+                  Atualizar Status
+                </Button>
+                <IconButton
+                  id="basic-button"
+                  aria-controls={open ? "basic-menu" : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={open ? "true" : undefined}
+                  onClick={handleClick}
+                >
+                  <MoreVertIcon style={{ color: "#fff" }} />
+                </IconButton>
+              </>
+            )}
+
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              MenuListProps={{
+                "aria-labelledby": "basic-button",
+              }}
+            >
+              <MenuItem onClick={() => setOpenDialogInfo(!openDialogInfo)}>
+                Solicitação
+              </MenuItem>
+            </Menu>
+          </S.WrapperHeader>
         </S.Header>
 
-        <S.Wrapper>
+        <S.WrapperMessages>
           {msgList && msgList.length > 0 ? (
             msgList.map((item: any) => {
               const dt = DateTime.fromISO(item.dt_resposta);
@@ -182,61 +155,37 @@ export default function Details() {
             <Empty text="Não há nenhuma mensagem" />
           )}
           <div ref={messagesEndRef} />
-          {msgList.length > 3 && (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                marginBottom: 100,
-              }}
-            >
-              <Fab
-                color="primary"
-                onClick={() =>
-                  topRef.current?.scrollIntoView({ behavior: "smooth" })
-                }
-              >
-                <ArrowUpward />
-              </Fab>
-            </div>
-          )}
-        </S.Wrapper>
+        </S.WrapperMessages>
         {request.status !== "ATENDIDA" && (
-          <div
-            style={{
-              position: "fixed",
-              bottom: 0,
-              padding: 20,
-              zIndex: 9999,
-              width: "100%",
-              background: "#fff",
-              display: "flex",
-              flexDirection: "row",
-              gap: 8,
-            }}
-          >
+          <S.Footer>
             <S.Input
               placeholder="Digite uma mensagem"
               onChange={(event) => setMsg(event.target.value)}
               value={msg}
             />
-            <ButtonMuiu
+            <Button
               disabled={msg.length === 0}
               onClick={sendNewMessage}
               variant="contained"
               endIcon={<SendIcon />}
               style={{ borderRadius: 30, justifyContent: "flex-start" }}
             />
-          </div>
+          </S.Footer>
         )}
       </S.Container>
 
-      <Dialog
-        setStatus={setStatus}
-        status={status}
-        openDialog={openDialog}
-        setOpenDialog={setOpenDialog}
-        handleChange={handleUpdateStatus}
+      <DialogUpdateStatus
+        statusData={request.status}
+        openDialog={openDialogUpdateStatus}
+        setOpenDialog={setOpenDialogUpdateStatus}
+        id_solicitacao={request.id_solicitacao}
+        handleSnack={handleSnack}
+      />
+
+      <DialogInfos
+        openDialog={openDialogInfo}
+        setOpenDialog={setOpenDialogInfo}
+        request={request}
       />
 
       <Snack
