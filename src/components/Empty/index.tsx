@@ -11,6 +11,7 @@ const Empty: React.FC<{ text: string }> = ({ text }) => {
         paddingTop: 50,
         flexDirection: "column",
         alignItems: "center",
+        height: window.innerHeight - 200,
       }}
     >
       <img src={EMPTY} style={{ width: "fit-content", marginBottom: 48 }} />
