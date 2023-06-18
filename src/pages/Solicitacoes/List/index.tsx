@@ -22,7 +22,7 @@ const ListRequests = () => {
   const navigation = useNavigate();
   const [requests, setRequests] = useState<listRequestResponse[]>([]);
   const [request, setRequest] = useState<listRequestResponse | null>(null);
-  const [pageSize, setPageSize] = useState<number>(8);
+  const [pageSize, setPageSize] = useState<number>(10);
   const [snackMessage, setSnackMessage] = useState("");
   const [snackStatus, setSnackStatus] = useState(false);
   const [openDialogUpdateStatus, setOpenDialogUpdateStatus] = useState(false);

@@ -16,37 +16,129 @@ import EditVideos from "pages/Rh/Videos/Edit";
 import EditEnterprise from "pages/Empresa/Edit";
 import SendEmployee from "pages/Rh/Videos/SendEmployee";
 import Details from "pages/Solicitacoes/Details";
+import { SideBar } from "components/SiderBar";
 
 export default function UserRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<ListRequests />} />
+      <Route
+        path="/"
+        element={
+          <SideBar>
+            <ListRequests />
+          </SideBar>
+        }
+      />
       <Route path="Admin/">
-        <Route path="Empresas" element={<ListEnterprise />} />
-        <Route path="New" element={<Enterprise />} />
-        <Route path="Empresa/Edit" element={<EditEnterprise />} />
+        <Route
+          path="Empresas"
+          element={
+            <SideBar>
+              <ListEnterprise />
+            </SideBar>
+          }
+        />
+
+        <Route
+          path="New"
+          element={
+            <SideBar>
+              <Enterprise />
+            </SideBar>
+          }
+        />
+
+        <Route
+          path="Empresa/Edit"
+          element={
+            <SideBar>
+              <EditEnterprise />
+            </SideBar>
+          }
+        />
       </Route>
+
       <Route path="solicitacoes/">
-        <Route path="monitoramento" element={<ListRequests />} />
-        <Route path="New" element={<Solicitacoes />} />
-        <Route path="Details" element={<Details />} />
+        <Route
+          path="monitoramento"
+          element={
+            <SideBar>
+              <ListRequests />
+            </SideBar>
+          }
+        />
+
+        <Route
+          path="New"
+          element={
+            <SideBar>
+              <Solicitacoes />
+            </SideBar>
+          }
+        />
+
+        <Route
+          path="Details"
+          element={
+            <SideBar hideNav>
+              <Details />
+            </SideBar>
+          }
+        />
       </Route>
+
       <Route path="frota/">
         <Route path="Listagem" element={<Frota />} />
+
         <Route path="AddVeiculo" element={<AddVeiculo />} />
       </Route>
+
       <Route path="ti/">
-        <Route path="permissoes" element={<EmployeePermissionList />} />
-        <Route path="permission/edit" element={<EmployeePermissionEdit />} />
-        <Route path="delete_account" element={<DeleteAccount />} />
+        <Route
+          path="permissoes"
+          element={
+            <SideBar>
+              <EmployeePermissionList />
+            </SideBar>
+          }
+        />
+
+        <Route
+          path="permission/edit"
+          element={
+            <SideBar>
+              <EmployeePermissionEdit />
+            </SideBar>
+          }
+        />
+
+        <Route
+          path="delete_account"
+          element={
+            <SideBar>
+              <DeleteAccount />
+            </SideBar>
+          }
+        />
       </Route>
       <Route path="monitoramento/">
-        <Route path="ficha_ponto" element={<FichaPonto />} />
+        <Route
+          path="ficha_ponto"
+          element={
+            <SideBar>
+              <FichaPonto />
+            </SideBar>
+          }
+        />
       </Route>
+
       <Route path="rh/">
         <Route path="videos" element={<Videos />} />
+
         <Route path="AddVideo" element={<AddVideos />} />
+
         <Route path="videos/edit" element={<EditVideos />} />
+
         <Route path="videos/send" element={<SendEmployee />} />
       </Route>
 

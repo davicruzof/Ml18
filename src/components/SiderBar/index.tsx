@@ -13,7 +13,7 @@ import * as S from "./styles";
 import "react-minimal-side-navigation/lib/ReactMinimalSideNavigation.css";
 import theme from "utils/theme";
 
-export function SideBar({ children }: any) {
+export function SideBar({ children, hideNav = false }: any) {
   const navigate = useNavigate();
   const { authValues } = useContext(AuthContext);
   const [nome, setNome] = useState("");
@@ -61,36 +61,38 @@ export function SideBar({ children }: any) {
     <Loading />
   ) : (
     <div>
-      {/* <S.HeaderNav className="main-header navbar navbar-expand">
-        <S.HeaderContainer>
-          <S.Link
-            className="nav-link"
-            data-widget="pushmenu"
-            href="#"
-            role="button"
-          >
-            <i className="fas fa-bars"></i>
-          </S.Link>
-
-          <S.UserInfo>
-            <S.Link href="#" className="nav-link">
-              Olá, {userName}
-            </S.Link>
-            <LoadingButton
-              sx={{
-                bgcolor: theme.colors.primary,
-                color: "#fff",
-                fontWeight: "bold",
-              }}
-              size="large"
-              variant="contained"
-              onClick={logout}
+      {!hideNav && (
+        <S.HeaderNav className="main-header navbar navbar-expand">
+          <S.HeaderContainer>
+            <S.Link
+              className="nav-link"
+              data-widget="pushmenu"
+              href="#"
+              role="button"
             >
-              Sair
-            </LoadingButton>
-          </S.UserInfo>
-        </S.HeaderContainer>
-      </S.HeaderNav> */}
+              <i className="fas fa-bars"></i>
+            </S.Link>
+
+            <S.UserInfo>
+              <S.Link href="#" className="nav-link">
+                Olá, {userName}
+              </S.Link>
+              <LoadingButton
+                sx={{
+                  bgcolor: theme.colors.primary,
+                  color: "#fff",
+                  fontWeight: "bold",
+                }}
+                size="large"
+                variant="contained"
+                onClick={logout}
+              >
+                Sair
+              </LoadingButton>
+            </S.UserInfo>
+          </S.HeaderContainer>
+        </S.HeaderNav>
+      )}
 
       <S.MainContainer className="content-wrapper">{children}</S.MainContainer>
 
