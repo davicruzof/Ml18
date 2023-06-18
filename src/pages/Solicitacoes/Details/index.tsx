@@ -20,6 +20,7 @@ import SendIcon from "@mui/icons-material/Send";
 import ButtonMuiu from "@mui/material/Button";
 import EmptyMessages from "./EmptyMessages/EmptyRequest";
 import Empty from "components/Empty";
+import Loading from "components/Loading/Loading";
 
 export default function Details() {
   const { state } = useLocation();
@@ -71,7 +72,7 @@ export default function Details() {
     sendMessagesMutation(dataSend);
   };
 
-  const { mutate: updateStatusRequest, isLoading: isLoadingUpdateRequests } =
+  const { mutate: updateStatusRequest } =
     useMutation({
       mutationFn: (formData: any) => updateRequest(formData),
       onSuccess: () => {
@@ -99,6 +100,8 @@ export default function Details() {
   useEffect(() => {
     getMessagesMutation(request.id_solicitacao);
   }, []);
+
+  if (mutationGetMessagesLoading || ) return <Loading />;
 
   return (
     <>
