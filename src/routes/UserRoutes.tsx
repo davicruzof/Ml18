@@ -15,6 +15,7 @@ import AddVideos from "pages/Rh/Videos/Create";
 import EditVideos from "pages/Rh/Videos/Edit";
 import EditEnterprise from "pages/Empresa/Edit";
 import SendEmployee from "pages/Rh/Videos/SendEmployee";
+import Details from "pages/Solicitacoes/Details";
 
 export default function UserRoutes() {
   return (
@@ -28,6 +29,7 @@ export default function UserRoutes() {
       <Route path="solicitacoes/">
         <Route path="monitoramento" element={<ListRequests />} />
         <Route path="New" element={<Solicitacoes />} />
+        <Route path="Details" element={<Details />} />
       </Route>
       <Route path="frota/">
         <Route path="Listagem" element={<Frota />} />

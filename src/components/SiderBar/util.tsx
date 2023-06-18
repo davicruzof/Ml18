@@ -30,28 +30,28 @@ export const MenuItens = [
       },
     ],
   },
-  {
-    title: "Frota",
-    itemId: "/frota/listagem",
-    elemBefore: () => <BiBus style={{ fontSize: 28 }} />,
-    subNav: [
-      {
-        title: "Listagem",
-        itemId: "/frota/listagem",
-      },
-    ],
-  },
-  {
-    title: "Empresa",
-    itemId: "/Admin/Empresas",
-    elemBefore: () => <BiBus style={{ fontSize: 28 }} />,
-    subNav: [
-      {
-        title: "Listagem",
-        itemId: "/Admin/Empresas",
-      },
-    ],
-  },
+  // {
+  //   title: "Frota",
+  //   itemId: "/frota/listagem",
+  //   elemBefore: () => <BiBus style={{ fontSize: 28 }} />,
+  //   subNav: [
+  //     {
+  //       title: "Listagem",
+  //       itemId: "/frota/listagem",
+  //     },
+  //   ],
+  // },
+  // {
+  //   title: "Empresa",
+  //   itemId: "/Admin/Empresas",
+  //   elemBefore: () => <BiBus style={{ fontSize: 28 }} />,
+  //   subNav: [
+  //     {
+  //       title: "Listagem",
+  //       itemId: "/Admin/Empresas",
+  //     },
+  //   ],
+  // },
   {
     title: "Monitoramento",
     itemId: "/monitoramento/ficha_ponto",
@@ -63,17 +63,17 @@ export const MenuItens = [
       },
     ],
   },
-  {
-    title: "RH",
-    itemId: "/rh/videos",
-    elemBefore: () => <BiUserVoice style={{ fontSize: 28 }} />,
-    subNav: [
-      {
-        title: "Videos",
-        itemId: "/rh/videos",
-      },
-    ],
-  },
+  // {
+  //   title: "RH",
+  //   itemId: "/rh/videos",
+  //   elemBefore: () => <BiUserVoice style={{ fontSize: 28 }} />,
+  //   subNav: [
+  //     {
+  //       title: "Videos",
+  //       itemId: "/rh/videos",
+  //     },
+  //   ],
+  // },
   // {
   //   title: "Admin",
   //   subitems: ["Empresas"],

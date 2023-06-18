@@ -1,4 +1,3 @@
-import { listRequestResponse } from "services/Solicitacoes/types";
 import React from "react";
 
 export type ValueType = {
@@ -10,6 +9,5 @@ export interface DialogProps {
   setStatus: (v: string) => void;
   openDialog: boolean;
   status: string;
-  updateStatusRequest: ({}) => void;
-  request: listRequestResponse;
+  handleChange: ({}) => void;
 }

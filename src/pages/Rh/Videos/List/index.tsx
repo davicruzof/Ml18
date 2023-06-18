@@ -3,7 +3,7 @@ import * as S from "./styles";
 import { useNavigate } from "react-router-dom";
 import ButtonComponent from "components/Button";
 import { useMutation, useQuery } from "react-query";
-import { IconButton } from "@mui/material";
+import { IconButton, List, Stack, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SendIcon from "@mui/icons-material/Telegram";
@@ -13,6 +13,7 @@ import { formatDataHuman } from "utils/format";
 import Loading from "components/Loading/Loading";
 import Table from "components/Table";
 import Snack from "components/Snack";
+import { CardVideo } from "components/CardVideo";
 
 export default function Videos() {
   const navigation = useNavigate();
@@ -143,7 +144,15 @@ export default function Videos() {
   }
   return (
     <S.Container>
-      <S.Wrapper>
+      <Stack
+        flexDirection="row"
+        alignItems="center"
+        justifyContent="space-between"
+        paddingX={8}
+      >
+        <Typography variant="h6" fontWeight={600} mb={2} color="text.primary">
+          Lista de videos
+        </Typography>
         <ButtonComponent
           onClick={() => {
             navigation("/rh/AddVideo", { replace: true });
@@ -152,15 +161,22 @@ export default function Videos() {
           title="+ Adicionar novo video"
           active={false}
         />
-      </S.Wrapper>
+      </Stack>
 
-      <Table
+      <Stack direction="row" spacing={2} paddingX={8}>
+        {rows.length > 0 &&
+          rows.map((item) => {
+            return <CardVideo props={item} />;
+          })}
+      </Stack>
+
+      {/* <Table
         loading={isLoading}
         fields={VISIBLE_FIELDS}
         rows={rows}
         pageSize={pageSize}
         setPageSize={setPageSize}
-      />
+      /> */}
 
       <Snack
         handleClose={() => setSnackStatus(false)}

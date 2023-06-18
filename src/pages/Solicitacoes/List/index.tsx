@@ -1,31 +1,24 @@
 import EditIcon from "@mui/icons-material/Edit";
 import { Chip, IconButton } from "@mui/material";
-import Snack from "components/Snack";
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { getMe } from "services/Auth/auth";
 import { UserData } from "services/Auth/types";
-import { listRequests, updateRequest } from "services/Solicitacoes";
+import { listRequests } from "services/Solicitacoes";
 import { listRequestResponse } from "services/Solicitacoes/types";
 import { TypeListRequest } from "services/Solicitacoes/types";
 import { returnTime } from "utils/format";
 
 import { formatRequests, statusUtil } from "../util";
-import Dialog from "./updateStatus";
 import Table from "components/Table";
+import { useNavigate } from "react-router-dom";
 
 const ListRequests = () => {
+  const navigation = useNavigate();
   const [requests, setRequests] = useState<listRequestResponse[]>([]);
-  const [updateRow, setUpdateRow] = useState<listRequestResponse>();
   const [pageSize, setPageSize] = useState<number>(10);
 
-  const [open, setOpen] = useState(false);
-  const [status, setStatus] = useState<string>("");
   const [idFunc, setIdFunc] = useState<number | string>("");
-
-  const [snackMessage, setSnackMessage] = useState("");
-  const [snackStatus, setSnackStatus] = useState(false);
-  const [snackType, setSnackType] = useState<"error" | "success">("success");
 
   const { data: UserData, isLoading: isLoadingUserData } = useQuery("getMe", {
     queryFn: () => getMe(),
@@ -49,38 +42,17 @@ const ListRequests = () => {
     return departamentosIds;
   };
 
-  const handleSnack = (type: "error" | "success", text: string) => {
-    setSnackStatus(true);
-    setSnackType(type);
-    setSnackMessage(text);
-  };
-
-  const { mutate: updateStatusRequest, isLoading: isLoadingUpdateRequests } =
-    useMutation({
-      mutationFn: (formData: any) => updateRequest(formData),
-      onSuccess: () => {
-        handleSnack("success", "Solicitação atualizada com sucesso!");
-        if (UserData) {
-          const sendData = {
-            status: "",
-            departamento: handleDptsID(UserData),
-          };
-          getRequests(sendData);
-          setOpen(false);
-        }
-      },
-      onError: () => {
-        handleSnack("error", "Ocorreu um erro, tente novamente!");
+  const handleUpdate = (data: listRequestResponse) => {
+    navigation(`/solicitacoes/Details`, {
+      replace: true,
+      state: {
+        request: data,
       },
     });
-
-  const handleUpdate = (data: listRequestResponse) => {
-    setOpen(!open);
-    setUpdateRow(data);
-    setStatus(data.status);
   };
 
   const VISIBLE_FIELDS = [
+    { field: "registro", headerName: "Registro", width: 100 },
     { field: "nome", headerName: "Funcionário", width: 300 },
     { field: "area", headerName: "Departamento", width: 200 },
     { field: "modulo", headerName: "Tipo", width: 150 },
@@ -144,8 +116,8 @@ const ListRequests = () => {
   }, [UserData]);
 
   const loading = useMemo(() => {
-    return isLoadingRequests || isLoadingUserData || isLoadingUpdateRequests;
-  }, [isLoadingRequests, isLoadingUserData, isLoadingUpdateRequests]);
+    return isLoadingRequests || isLoadingUserData;
+  }, [isLoadingRequests, isLoadingUserData]);
 
   return (
     <>
@@ -155,22 +127,6 @@ const ListRequests = () => {
         rows={requests}
         pageSize={pageSize}
         setPageSize={setPageSize}
-      />
-
-      <Dialog
-        setStatus={setStatus}
-        status={status}
-        openDialog={open}
-        setOpenDialog={setOpen}
-        updateStatusRequest={updateStatusRequest}
-        request={updateRow!}
-      />
-
-      <Snack
-        handleClose={() => setSnackStatus(false)}
-        message={snackMessage}
-        open={snackStatus}
-        type={snackType}
       />
     </>
   );

@@ -84,3 +84,25 @@ export const updateRequest = async (
     throw new Error(error);
   }
 };
+
+export const getMessages = async (id: string) => {
+  try {
+    const { data } = await api.post("requestsChat/getMessages", {
+      id_solicitacao: id,
+    });
+    return data;
+  } catch (err) {
+    const { error } = (err as AxiosError<any, any>)?.response?.data;
+    throw new Error(error);
+  }
+};
+
+export const sendMessage = async (credentials: any) => {
+  try {
+    const { data } = await api.post("requestsChat/create", credentials);
+    return data;
+  } catch (err) {
+    const { error } = (err as AxiosError<any, any>)?.response?.data;
+    throw new Error(error);
+  }
+};

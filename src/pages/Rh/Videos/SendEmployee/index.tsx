@@ -17,7 +17,6 @@ import {
   Checkbox,
   FormGroup,
   IconButton,
-  LinearProgress,
   List,
   ListItem,
   ListItemButton,
@@ -30,7 +29,7 @@ import RemoveCircle from "@mui/icons-material/RemoveCircle";
 import { ButtonsForm } from "components/ButtonsForm";
 import { ValueType } from "./types";
 import Button from "components/Button";
-import { sendVideoToEmployee } from "@services/Telemetria";
+import { sendVideoToEmployee } from "services/Telemetria";
 import { ProgressLoading } from "components/ProgressLoading";
 
 export default function SendEmployee() {
