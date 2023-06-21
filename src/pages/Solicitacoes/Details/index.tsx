@@ -140,7 +140,7 @@ export default function Details() {
             msgList.map((item: any) => {
               const dt = DateTime.fromISO(item.dt_resposta);
               const data = dt.toFormat("dd-LL-yyyy");
-              const time = dt.toFormat("hh:mm");
+              const time = dt.toLocaleString(DateTime.TIME_24_SIMPLE);
               return (
                 <CardChat
                   key={item.id}
