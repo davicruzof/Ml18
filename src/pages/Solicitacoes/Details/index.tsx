@@ -136,6 +136,12 @@ export default function Details() {
         </S.Header>
 
         <S.WrapperMessages>
+          <CardChat
+            title={request.nome}
+            date={request.dt_cadastro}
+            hour=""
+            message={request.justificativa}
+          />
           {msgList && msgList.length > 0 ? (
             msgList.map((item: any) => {
               const dt = DateTime.fromISO(item.dt_resposta);

@@ -7,7 +7,7 @@ export function CardChat({ title, message, date, hour }: ChatCardProps) {
       {title && <S.Title>{title}</S.Title>}
       <S.Message>{message}</S.Message>
       <S.DateTime>
-        {date} às {hour}
+        {date} {hour && `às ${hour}`}
       </S.DateTime>
     </S.Container>
   );
