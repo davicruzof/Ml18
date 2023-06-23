@@ -84,6 +84,11 @@ export default function Details() {
 
   if (mutationGetMessagesLoading) return <Loading />;
 
+  const isFerias = () => request.modulo === "Pedido de férias";
+
+  const date =
+    isFerias() && DateTime.fromISO(request.dt_informada).toFormat("dd/MM/yyyy");
+
   return (
     <>
       <S.Container>
@@ -140,7 +145,11 @@ export default function Details() {
             title={request.nome}
             date={request.dt_cadastro}
             hour=""
-            message={request.justificativa}
+            message={
+              isFerias()
+                ? `${request.justificativa}, ferias solicitada para ${date}`
+                : request.justificativa
+            }
           />
           {msgList && msgList.length > 0 ? (
             msgList.map((item: any) => {
