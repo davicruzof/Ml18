@@ -23,7 +23,6 @@ export function CardVideo({ props }: { props: videoType }) {
     setAnchorEl(null);
   };
 
-  console.log(props);
   return (
     <Box
       sx={{

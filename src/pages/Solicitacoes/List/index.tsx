@@ -89,12 +89,6 @@ const ListRequests = () => {
       headerName: "Status",
       width: 150,
       renderCell: ({ row }: { row: listRequestResponse }) => {
-        console.log(
-          row.status !== "ANDAMENTO" &&
-            row.status !== "ATENDIDA" &&
-            row.status !== "PENDENTE" &&
-            row?.id_solicitacao
-        );
         const { bg, color, title } = statusUtil[row?.status];
         return [<Chip label={title} style={{ color, backgroundColor: bg }} />];
       },
