@@ -87,7 +87,13 @@ export default function Details() {
   const isFerias = () => request.modulo === "Pedido de férias";
 
   const date =
-    isFerias() && DateTime.fromISO(request.dt_informada).toFormat("dd/MM/yyyy");
+    isFerias() && DateTime.fromISO(request.dt_informada).toFormat("MM/yyyy");
+
+  const dateRequest = DateTime.fromISO(
+    request.dt_cadastro_full.slice(0, request.dt_cadastro_full.indexOf("."))
+  )
+    .minus({ hour: 3 })
+    .toFormat("dd/MM/yyyy");
 
   return (
     <>
@@ -143,7 +149,7 @@ export default function Details() {
         <S.WrapperMessages>
           <CardChat
             title={request.nome}
-            date={request.dt_cadastro}
+            date={dateRequest}
             hour=""
             message={
               isFerias()
