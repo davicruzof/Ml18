@@ -69,7 +69,7 @@ export default function Details() {
       justificativa: msg,
       id_status_leitura: "1",
       respondido_por: "2",
-      dt_resposta: DateTime.now().minus({ hour: 3 }).toString(),
+      dt_resposta: DateTime.now().toString(),
     };
     sendMessagesMutation(dataSend);
   };
